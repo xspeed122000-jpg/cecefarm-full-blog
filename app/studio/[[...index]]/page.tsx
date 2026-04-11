@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 'use client'
 
 import { NextStudio } from 'next-sanity/studio'
