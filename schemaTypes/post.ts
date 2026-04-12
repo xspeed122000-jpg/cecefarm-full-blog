@@ -11,6 +11,13 @@ export default defineType({
       type: 'string',
     }),
     defineField({
+      name: 'description',
+      title: 'Meta Description',
+      type: 'text',
+      rows: 3,
+      description: '検索結果に表示される紹介文を入力してください（160文字程度推奨）',
+    }),
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
@@ -18,12 +25,6 @@ export default defineType({
         source: 'title',
         maxLength: 96,
       },
-    }),
-    defineField({
-      name: 'author',
-      title: 'Author',
-      type: 'reference',
-      to: {type: 'author'},
     }),
     defineField({
       name: 'mainImage',
