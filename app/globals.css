@@ -24,3 +24,54 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* カード全体のリンク設定 */
+.blog-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* カードの基本スタイル */
+.blog-card {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 【ここが重要！】マウスオーバー時の動き */
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.image-container {
+  width: 100%;
+  height: 180px;
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.text-container {
+  padding: 15px;
+}
+
+.text-container h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+
+.text-container p {
+  font-size: 0.8rem;
+  color: #999;
+  margin: 0;
+}

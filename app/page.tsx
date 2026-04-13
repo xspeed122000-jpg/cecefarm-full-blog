@@ -1,5 +1,3 @@
-'use client' // ← これを1行目に追加するだけで、マウスイベントが使えるようになります！
-
 import { createClient } from 'next-sanity'
 import Link from 'next/link'
 
@@ -9,6 +7,8 @@ const client = createClient({
   useCdn: false,
   apiVersion: '2024-03-01',
 })
+
+export const dynamic = 'force-static'
 
 export default async function HomePage() {
   const posts = await client.fetch(`
@@ -31,38 +31,18 @@ export default async function HomePage() {
           gap: '30px' 
         }}>
           {posts.map((post: any) => (
-            <Link key={post.slug} href={`/posts/${post.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-              <div 
-                style={{ 
-                  border: '1px solid #eee', 
-                  borderRadius: '12px', 
-                  overflow: 'hidden',
-                  transition: 'all 0.3s ease',
-                  backgroundColor: '#fff',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-                }}
-                // マウスイベントを有効にするために 'use client' を追加しました
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-5px)';
-                  e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
-                }}
-              >
-                <div style={{ width: '100%', height: '180px', backgroundColor: '#f0f0f0', overflow: 'hidden' }}>
+            <Link key={post.slug} href={`/posts/${post.slug}`} className="blog-card-link">
+              <div className="blog-card">
+                <div className="image-container">
                   {post.imageUrl ? (
-                    <img src={post.imageUrl} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={post.imageUrl} alt={post.title} className="card-image" />
                   ) : (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#ccc' }}>No Image</div>
+                    <div className="no-image">No Image</div>
                   )}
                 </div>
-                <div style={{ padding: '15px' }}>
-                  <h3 style={{ margin: '0 0 10px 0', fontSize: '1.1rem', lineHeight: '1.4' }}>{post.title}</h3>
-                  <p style={{ fontSize: '0.8rem', color: '#999', margin: 0 }}>
-                    {new Date(post._createdAt).toLocaleDateString('ja-JP')}
-                  </p>
+                <div className="text-container">
+                  <h3>{post.title}</h3>
+                  <p>{new Date(post._createdAt).toLocaleDateString('ja-JP')}</p>
                 </div>
               </div>
             </Link>
