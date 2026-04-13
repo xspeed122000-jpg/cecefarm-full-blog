@@ -13,8 +13,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body style={{ margin: 0, display: 'flex', flexDirection: 'column', minHeight: '100vh', fontFamily: 'sans-serif' }}>
-
+      // app/layout.tsx の body タグの部分
+      <body style={{
+        margin: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        fontFamily: 'sans-serif',
+        backgroundColor: '#FDFDFB', // ここで全体の背景色を指定
+        color: '#333'
+      }}>
         {/* --- ヘッダー（固定式） --- */}
         <header style={{
           position: 'sticky',
