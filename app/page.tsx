@@ -25,21 +25,36 @@ export default async function HomePage() {
     <main style={{ padding: '40px 20px', maxWidth: '1000px', margin: '0 auto', fontFamily: 'sans-serif' }}>
       <section>
         <h2 style={{ fontSize: '1.8rem', marginBottom: '30px', textAlign: 'center' }}>Latest Updates</h2>
-        
-        <div style={{ 
-          display: 'grid', 
+
+        <div style={{
+          display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', // 横に並べる設定
-          gap: '30px' 
+          gap: '30px'
         }}>
+         // ...（中略）
           {posts.map((post: any) => (
             <Link key={post.slug} href={`/posts/${post.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-              <div style={{ 
-                border: '1px solid #eee', 
-                borderRadius: '12px', 
-                overflow: 'hidden',
-                transition: 'transform 0.2s',
-                backgroundColor: '#fff'
-              }}>
+              <div
+                className="card" // ここにクラス名をつけておくと後でCSSが楽です
+                style={{
+                  border: '1px solid #eee',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease', // 動きを滑らかにする設定
+                  backgroundColor: '#fff',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)' // 軽い影をつける
+                }}
+                // マウスが乗った時の動き（簡易版）
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-5px)';
+                  e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)';
+                }}
+              >
+// ...（以下、画像エリアなどはそのまま）
                 {/* 画像エリア */}
                 <div style={{ width: '100%', height: '180px', backgroundColor: '#f0f0f0', overflow: 'hidden' }}>
                   {post.imageUrl ? (
