@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body style={{ margin: 0, display: 'flex', flexDirection: 'column', minHeight: '100vh', fontFamily: 'sans-serif' }}>
-        
+
         {/* --- ヘッダー（固定式） --- */}
         <header style={{
           position: 'sticky',
@@ -30,12 +30,19 @@ export default function RootLayout({
           backdropFilter: 'blur(5px)' // 背景を少しぼかすオシャレ加工
         }}>
           {/* ロゴエリア */}
-          <div style={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#2d5a27' }}>
-            <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-              Cece Farm
+          <div style={{ height: '50px', display: 'flex', alignItems: 'center' }}>
+            <Link href="/">
+              <img
+                src="/logo.png" // publicフォルダに入れたファイル名
+                alt="Cece Farm Logo"
+                style={{
+                  height: '45px', // ヘッダーに合わせて高さを調整
+                  width: 'auto',   // 横幅は自動計算
+                  display: 'block'
+                }}
+              />
             </Link>
           </div>
-
           {/* ナビゲーション */}
           <nav>
             <ul style={{
