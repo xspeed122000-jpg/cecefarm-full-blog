@@ -2,7 +2,7 @@ import { createClient } from 'next-sanity'
 import Link from 'next/link'
 
 const client = createClient({
-  projectId: 'あなたのプロジェクトID', // ← ここを書き換え！
+  projectId: '88s4pwup', // ← ここを書き換え！
   dataset: 'production',
   useCdn: false,
   apiVersion: '2024-03-01',
