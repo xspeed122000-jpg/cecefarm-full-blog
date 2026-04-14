@@ -12,8 +12,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ja">
-      // app/layout.tsx の body タグの部分
+    <html lang="ja">     
       <body style={{
         margin: 0,
         display: 'flex',
