@@ -1,20 +1,29 @@
+import React from 'react';
 import Link from 'next/link';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // --- スタイル定義をここに追加 (エラー防止) ---
+  // ナビゲーションリンクの共通スタイル
   const navLinkStyle: React.CSSProperties = {
     textDecoration: 'none',
     color: '#333',
-    fontSize: '1.05rem', // 少し文字を大きく
+    fontSize: '1.05rem',
     fontWeight: '600',
     transition: 'color 0.2s'
   };
 
   return (
     <html lang="ja">
-      <body style={{ margin: 0, backgroundColor: '#FDFDFB' }}>
+      <body style={{ 
+        margin: 0, 
+        backgroundColor: '#FDFDFB', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        minHeight: '100vh',
+        fontFamily: 'sans-serif'
+      }}>
+        {/* ヘッダー：縦幅を広げ、ロゴを大きく */}
         <header style={{ 
-          padding: '35px 50px', // 上下のパディングを35pxに広げて縦幅を確保
+          padding: '30px 50px', 
           backgroundColor: '#fff', 
           borderBottom: '1px solid #eee',
           display: 'flex',
@@ -25,16 +34,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           zIndex: 1000,
           boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
         }}>
-          {/* ロゴ：高さを60px以上に設定して大きく見せる */}
+          {/* ロゴエリア */}
           <Link href="/">
             <img 
               src="/logo.png" 
               alt="Cece Farm Logo" 
-              style={{ height: '70px', width: 'auto', display: 'block' }} 
+              style={{ height: '75px', width: 'auto', display: 'block' }} 
             />
           </Link>
 
-          {/* ナビゲーション：Aboutを追加 */}
+          {/* ナビゲーションエリア */}
           <nav style={{ display: 'flex', gap: '40px' }}>
             <Link href="/about" style={navLinkStyle}>About</Link>
             <Link href="/services" style={navLinkStyle}>Service</Link>
@@ -43,10 +52,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </nav>
         </header>
 
-        <main>{children}</main>
+        {/* メインコンテンツ */}
+        <main style={{ flex: 1 }}>
+          {children}
+        </main>
 
-        <footer style={{ padding: '40px', textAlign: 'center', backgroundColor: '#1B3022', color: '#fff' }}>
-          © {new Date().getFullYear()} Cece Farm & Cafe
+        {/* フッター */}
+        <footer style={{ 
+          padding: '40px', 
+          textAlign: 'center', 
+          backgroundColor: '#1B3022', 
+          color: '#fff',
+          marginTop: 'auto'
+        }}>
+          <p>© {new Date().getFullYear()} Cece Farm & Cafe</p>
         </footer>
       </body>
     </html>
