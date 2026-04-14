@@ -39,7 +39,38 @@ export default function ContactPage() {
 
                 {/* 右側：Google Map 埋め込み */}
                 <div style={{ height: '100%', minHeight: '400px', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
-
+                    <div style={{ backgroundColor: '#fff', padding: '30px', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+                        <h2 style={{ marginBottom: '25px', fontSize: '1.5rem', color: '#2d5a27' }}>Message Us</h2>
+                        <form style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                            <div>
+                                <label style={labelStyle}>Name</label>
+                                <input type="text" placeholder="Your Name" style={inputStyle} />
+                            </div>
+                            <div>
+                                <label style={labelStyle}>Email</label>
+                                <input type="email" placeholder="Your Email address" style={inputStyle} />
+                            </div>
+                            <div>
+                                <label style={labelStyle}>Message</label>
+                                <textarea placeholder="How can we help you?" rows={5} style={inputStyle}></textarea>
+                            </div>
+                            <button
+                                type="button"
+                                style={{
+                                    backgroundColor: '#2d5a27',
+                                    color: '#fff',
+                                    padding: '15px',
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    fontWeight: 'bold',
+                                    cursor: 'pointer',
+                                    fontSize: '1rem'
+                                }}
+                            >
+                                Send Message
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -53,7 +84,22 @@ const infoItemStyle = {
     marginBottom: '20px',
     fontSize: '1rem'
 };
-
+const labelStyle = {
+    display: 'block',
+    fontSize: '0.8rem',
+    color: '#666',
+    marginBottom: '8px',
+    fontWeight: 'bold' as const
+};
+const inputStyle = {
+    width: '100%',
+    padding: '12px',
+    borderRadius: '8px',
+    border: '1px solid #ddd',
+    fontSize: '1rem',
+    boxSizing: 'border-box' as const,
+    fontFamily: 'inherit'
+};
 const buttonStyle = (bgColor: string, textColor: string = '#fff') => ({
     display: 'block',
     padding: '12px',
