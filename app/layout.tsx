@@ -12,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ja">     
+    <html lang="ja">
       <body style={{
         margin: 0,
         display: 'flex',
@@ -24,49 +24,31 @@ export default function RootLayout({
       }}>
         {/* --- ヘッダー（固定式） --- */}
         <header style={{
+          padding: '25px 40px', // 縦の25pxをさらに大きく（30px〜40pxなど）するとロゴの余裕が生まれます
+          backgroundColor: '#fff',
+          borderBottom: '1px solid #eee',
           position: 'sticky',
           top: 0,
           zIndex: 1000,
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          borderBottom: '1px solid #eee',
-          padding: '0 20px',
-          height: '70px',
           display: 'flex',
-          alignItems: 'center',
           justifyContent: 'space-between',
-          backdropFilter: 'blur(5px)' // 背景を少しぼかすオシャレ加工
+          alignItems: 'center'
         }}>
           {/* ロゴエリア */}
-          <div style={{ height: '50px', display: 'flex', alignItems: 'center' }}>
-            <Link href="/">
-              <img
-                src="/logo.png" // publicフォルダに入れたファイル名
-                alt="Cece Farm Logo"
-                style={{
-                  height: '45px', // ヘッダーに合わせて高さを調整
-                  width: 'auto',   // 横幅は自動計算
-                  display: 'block'
-                }}
-              />
-            </Link>
-          </div>
+          <Link href="/">
+            <img
+              src="/logo.png"
+              alt="Cece Farm Logo"
+              style={{ height: '60px', width: 'auto' }} // heightを大きく設定すればロゴが大きく表示されます
+            />
+          </Link>
+
           {/* ナビゲーション */}
-          <nav>
-            <ul style={{
-              listStyle: 'none',
-              display: 'flex',
-              gap: '20px',
-              margin: 0,
-              padding: 0,
-              fontSize: '0.9rem',
-              fontWeight: 500
-            }}>
-              <li><Link href="/" style={navItemStyle}>Home</Link></li>
-              <li><Link href="/products" style={navItemStyle}>商品一覧</Link></li>
-              <li><Link href="/services" style={navItemStyle}>Service</Link></li>
-              <li><Link href="/shop" style={navItemStyle}>店舗情報</Link></li>
-              <li><Link href="/contact" style={navItemStyle}>お問い合わせ</Link></li>
-            </ul>
+          <nav style={{ display: 'flex', gap: '30px', fontWeight: 'bold' }}>
+            <Link href="/about" style={navLinkStyle}>About</Link>
+            <Link href="/services" style={navLinkStyle}>Service</Link>
+            <Link href="/shop" style={navLinkStyle}>Shop Info</Link>
+            <Link href="/contact" style={navLinkStyle}>Contact</Link>
           </nav>
         </header>
 
