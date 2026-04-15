@@ -13,9 +13,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ja">
       <body style={{ margin: 0, backgroundColor: '#FDFDFB', display: 'flex', flexDirection: 'column', minHeight: '100vh', fontFamily: 'sans-serif' }}>
-        <header style={{ 
-          padding: '30px 50px', 
-          backgroundColor: '#fff', 
+        <header style={{
+          padding: '30px 50px',
+          backgroundColor: '#fff',
           borderBottom: '1px solid #eee',
           display: 'flex',
           justifyContent: 'space-between',
@@ -33,7 +33,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <nav style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
             <Link href="/" style={navLinkStyle}>Home</Link>
             <Link href="/about" style={navLinkStyle}>About</Link>
-            <Link href="/items" style={navLinkStyle}>Items</Link> {/* 「商品一覧」のパスを確認してください */}
+            <Link href="/items" style={navLinkStyle}>Items</Link>
+            <Link href="/pizza" style={navLinkStyle}>Pizza</Link> {/* 追加 */}
             <Link href="/services" style={navLinkStyle}>Service</Link>
             <Link href="/shop" style={navLinkStyle}>Shop Info</Link>
             <Link href="/contact" style={navLinkStyle}>Contact</Link>
