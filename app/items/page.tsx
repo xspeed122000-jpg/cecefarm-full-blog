@@ -1,6 +1,7 @@
 import React from 'react';
 import { createClient } from 'next-sanity';
 import Link from 'next/link';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 // Sanityクライアントの設定
 const client = createClient({
@@ -23,6 +24,20 @@ export default async function ItemsPage() {
       "imageUrl": mainImage.asset->url
     }
   `);
+
+return (
+    <main style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+      {/* パンくずリストを追加 */}
+      <Breadcrumbs items={[{ label: 'Items' }]} />
+
+      <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+        <h1 style={{ fontSize: '2.5rem', color: '#2d5a27' }}>Plant Collection</h1>
+        {/* ... */}
+  f    </div>
+      {/* ... */}
+    </main>
+  );
+}
 
   return (
     <main style={{ padding: '40px 20px', maxWidth: '1200px', margin: '0 auto', fontFamily: 'sans-serif' }}>
