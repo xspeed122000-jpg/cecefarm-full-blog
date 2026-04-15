@@ -1,9 +1,8 @@
 import React from 'react';
 import { createClient } from 'next-sanity';
 import Link from 'next/link';
-import Breadcrumbs from '@/components/Breadcrumbs';
+import Breadcrumbs from '@/components/Breadcrumbs'; // フォルダ移動に合わせて調整
 
-// Sanityクライアントの設定
 const client = createClient({
   projectId: '88s4pwup',
   dataset: 'production',
@@ -14,8 +13,6 @@ const client = createClient({
 export const dynamic = 'force-static';
 
 export default async function ItemsPage() {
-  // 「post」タイプの中から、ピザ以外の植物（商品）を取得する
-  // ※もしSanity側で"item"などの別タイプを作っている場合は、"_type == 'item'"に変更してください
   const items = await client.fetch(`
     *[_type == "post"] | order(_createdAt desc) {
       title,
@@ -25,29 +22,19 @@ export default async function ItemsPage() {
     }
   `);
 
-return (
-    <main style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      {/* パンくずリストを追加 */}
-      <Breadcrumbs items={[{ label: 'Items' }]} />
-
-      <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-        <h1 style={{ fontSize: '2.5rem', color: '#2d5a27' }}>Plant Collection</h1>
-        {/* ... */}
-  f    </div>
-      {/* ... */}
-    </main>
-  );
-}
-
+  // ここから下の return が関数の中に入っている必要があります
   return (
     <main style={{ padding: '40px 20px', maxWidth: '1200px', margin: '0 auto', fontFamily: 'sans-serif' }}>
       
+      {/* パンくずリスト */}
+      <Breadcrumbs items={[{ label: 'Items' }]} />
+
       <div style={{ textAlign: 'center', marginBottom: '50px' }}>
         <h1 style={{ fontSize: '2.5rem', color: '#2d5a27', marginBottom: '10px' }}>Plant Collection</h1>
         <p style={{ color: '#666' }}>Rare variegated plants from Cece Farm</p>
       </div>
 
-      {/* --- サイト内検索窓 (UIのみ) --- */}
+      {/* サイト内検索窓 (UIのみ) */}
       <div style={{ marginBottom: '40px', display: 'flex', gap: '10px', maxWidth: '600px', margin: '0 auto 50px' }}>
         <input 
           type="text" 
@@ -74,7 +61,7 @@ return (
         </button>
       </div>
 
-      {/* --- 商品一覧グリッド --- */}
+      {/* 商品一覧グリッド */}
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
