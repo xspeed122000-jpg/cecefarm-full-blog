@@ -21,28 +21,46 @@ export default async function HomePage() {
   `)
 
   return (
-    <main style={{ padding: '40px 20px', maxWidth: '1000px', margin: '0 auto', fontFamily: 'sans-serif' }}>
+    <main style={{ padding: '40px 20px', maxWidth: '1200px', margin: '0 auto', fontFamily: 'sans-serif' }}>
       <section>
-        <h2 style={{ fontSize: '1.8rem', marginBottom: '30px', textAlign: 'center' }}>Latest Updates</h2>
+        <h2 style={{ fontSize: '1.8rem', marginBottom: '40px', textAlign: 'center', color: '#2d5a27' }}>Latest Updates</h2>
         
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
           gap: '30px' 
         }}>
           {posts.map((post: any) => (
-            <Link key={post.slug} href={`/posts/${post.slug}`} className="blog-card-link">
-              <div className="blog-card">
-                <div className="image-container">
+            <Link key={post.slug} href={`/posts/${post.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <div style={cardStyle}>
+                {/* 画像コンテナ：ここで高さを固定します */}
+                <div style={{ width: '100%', height: '200px', overflow: 'hidden', backgroundColor: '#f0f0f0' }}>
                   {post.imageUrl ? (
-                    <img src={post.imageUrl} alt={post.title} className="card-image" />
+                    <img 
+                      src={post.imageUrl} 
+                      alt={post.title} 
+                      style={{ 
+                        width: '100%', 
+                        height: '100%', 
+                        objectFit: 'cover', // 枠に合わせて自動でトリミング
+                        transition: 'transform 0.3s'
+                      }} 
+                    />
                   ) : (
-                    <div className="no-image">No Image</div>
+                    <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999' }}>
+                      No Image
+                    </div>
                   )}
                 </div>
-                <div className="text-container">
-                  <h3>{post.title}</h3>
-                  <p>{new Date(post._createdAt).toLocaleDateString('ja-JP')}</p>
+
+                {/* テキスト部分 */}
+                <div style={{ padding: '20px' }}>
+                  <h3 style={{ fontSize: '1.1rem', margin: '0 0 10px 0', lineHeight: '1.4', height: '3em', overflow: 'hidden' }}>
+                    {post.title}
+                  </h3>
+                  <p style={{ fontSize: '0.85rem', color: '#888', margin: 0 }}>
+                    {new Date(post._createdAt).toLocaleDateString('ja-JP')}
+                  </p>
                 </div>
               </div>
             </Link>
@@ -52,3 +70,16 @@ export default async function HomePage() {
     </main>
   )
 }
+
+// カード全体のスタイル
+const cardStyle: React.CSSProperties = {
+  backgroundColor: '#fff',
+  borderRadius: '16px',
+  overflow: 'hidden',
+  boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
+  transition: 'transform 0.2s, boxShadow 0.2s',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  border: '1px solid #eee'
+};
