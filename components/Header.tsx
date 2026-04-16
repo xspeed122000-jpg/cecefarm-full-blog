@@ -20,43 +20,58 @@ export default function Header() {
     router.push(`/items?q=${encodeURIComponent(keyword)}`);
   };
 
+  const navLinkStyle: React.CSSProperties = {
+    textDecoration: 'none',
+    color: '#333',
+    fontSize: '0.9rem',
+    fontWeight: '600',
+    whiteSpace: 'nowrap'
+  };
+
   return (
     <header style={headerStyle}>
       <div style={containerStyle}>
-        {/* ロゴ部分：テキストではなく画像を使うように変更 */}
-        <Link href="/" style={{ textDecoration: 'none' }}>
-          <img 
-            src="/logo.png" // ★Oliverさんのロゴ画像のパスに合わせてください
-            alt="Cece Farm" 
-            style={{ height: '40px', width: 'auto' }} 
-          />
+        {/* 左側：ロゴ画像 */}
+        <Link href="/">
+          <img src="/logo.png" alt="Cece Farm" style={{ height: '50px', width: 'auto' }} />
         </Link>
 
+        {/* 中央：ナビゲーションメニュー */}
+        <nav style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+          <Link href="/" style={navLinkStyle}>Home</Link>
+          <Link href="/about" style={navLinkStyle}>About</Link>
+          <Link href="/items" style={navLinkStyle}>Items</Link>
+          <Link href="/pizza" style={navLinkStyle}>Pizza</Link>
+          <Link href="/contact" style={navLinkStyle}>Contact</Link>
+        </nav>
+
+        {/* 右側：検索窓 */}
         <form onSubmit={handleSearch} style={searchFormStyle}>
           <input 
             type="text" 
-            placeholder="Search plants..." 
+            placeholder="Search..." 
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             style={inputStyle}
           />
-          <button type="submit" style={buttonStyle}>Search</button>
+          <button type="submit" style={buttonStyle}>Go</button>
         </form>
       </div>
     </header>
   );
 }
 
-// sticky（固定）の設定を入れることで、スクロールしても常に上に出るようになります
+// スタイル設定（1つにまとめるため調整）
 const headerStyle: React.CSSProperties = { 
   borderBottom: '1px solid #eee', 
   padding: '10px 20px', 
   backgroundColor: '#fff', 
-  position: 'sticky', // ★常に画面の一番上に固定
+  position: 'sticky', 
   top: 0, 
-  zIndex: 1000 
+  zIndex: 1000,
+  boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
 };
 const containerStyle: React.CSSProperties = { maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px' };
-const searchFormStyle: React.CSSProperties = { display: 'flex', flex: 1, maxWidth: '400px' };
-const inputStyle: React.CSSProperties = { flex: 1, padding: '8px 15px', borderRadius: '8px 0 0 8px', border: '1px solid #ddd', outline: 'none' };
-const buttonStyle: React.CSSProperties = { padding: '8px 15px', backgroundColor: '#2d5a27', color: '#fff', border: 'none', borderRadius: '0 8px 8px 0', cursor: 'pointer' };
+const searchFormStyle: React.CSSProperties = { display: 'flex', minWidth: '150px' };
+const inputStyle: React.CSSProperties = { width: '100%', padding: '6px 12px', borderRadius: '20px 0 0 20px', border: '1px solid #ddd', fontSize: '0.8rem' };
+const buttonStyle: React.CSSProperties = { padding: '6px 12px', backgroundColor: '#2d5a27', color: '#fff', border: 'none', borderRadius: '0 20px 20px 0', cursor: 'pointer', fontSize: '0.8rem' };
