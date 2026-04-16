@@ -10,7 +10,7 @@ const client = createClient({
   apiVersion: '2024-03-01',
 });
 
-export const dynamic = 'force-static';
+export const dynamic = 'force-dynamic';
 
 export default async function ItemsPage() {
   // Sanityから全ての植物データを取得

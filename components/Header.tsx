@@ -1,3 +1,4 @@
+// components/Header.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -9,7 +10,6 @@ export default function Header() {
   const searchParams = useSearchParams();
   const [keyword, setKeyword] = useState('');
 
-  // URLの検索ワードが変わったら、入力欄の文字も同期させる
   useEffect(() => {
     const q = searchParams.get('q');
     if (q) setKeyword(q);
@@ -17,15 +17,19 @@ export default function Header() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // 検索実行：Itemsページへキーワードを持って移動
     router.push(`/items?q=${encodeURIComponent(keyword)}`);
   };
 
   return (
     <header style={headerStyle}>
       <div style={containerStyle}>
+        {/* ロゴ部分：テキストではなく画像を使うように変更 */}
         <Link href="/" style={{ textDecoration: 'none' }}>
-          <h1 style={{ margin: 0, fontSize: '1.5rem', color: '#2d5a27' }}>Cece Farm</h1>
+          <img 
+            src="/logo.png" // ★Oliverさんのロゴ画像のパスに合わせてください
+            alt="Cece Farm" 
+            style={{ height: '40px', width: 'auto' }} 
+          />
         </Link>
 
         <form onSubmit={handleSearch} style={searchFormStyle}>
@@ -43,9 +47,16 @@ export default function Header() {
   );
 }
 
-// 簡易的なスタイル
-const headerStyle: React.CSSProperties = { borderBottom: '1px solid #eee', padding: '15px 20px', backgroundColor: '#fff', position: 'sticky', top: 0, zIndex: 100 };
+// sticky（固定）の設定を入れることで、スクロールしても常に上に出るようになります
+const headerStyle: React.CSSProperties = { 
+  borderBottom: '1px solid #eee', 
+  padding: '10px 20px', 
+  backgroundColor: '#fff', 
+  position: 'sticky', // ★常に画面の一番上に固定
+  top: 0, 
+  zIndex: 1000 
+};
 const containerStyle: React.CSSProperties = { maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px' };
-const searchFormStyle: React.CSSProperties = { display: 'flex', flex: 1, maxWidth: '500px' };
-const inputStyle: React.CSSProperties = { flex: 1, padding: '10px 15px', borderRadius: '8px 0 0 8px', border: '1px solid #ddd', outline: 'none' };
-const buttonStyle: React.CSSProperties = { padding: '10px 20px', backgroundColor: '#2d5a27', color: '#fff', border: 'none', borderRadius: '0 8px 8px 0', cursor: 'pointer' };
+const searchFormStyle: React.CSSProperties = { display: 'flex', flex: 1, maxWidth: '400px' };
+const inputStyle: React.CSSProperties = { flex: 1, padding: '8px 15px', borderRadius: '8px 0 0 8px', border: '1px solid #ddd', outline: 'none' };
+const buttonStyle: React.CSSProperties = { padding: '8px 15px', backgroundColor: '#2d5a27', color: '#fff', border: 'none', borderRadius: '0 8px 8px 0', cursor: 'pointer' };
