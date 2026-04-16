@@ -11,6 +11,7 @@ const client = createClient({
 });
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
 
 export default async function ItemsPage() {
   // Sanityから全ての植物データを取得
