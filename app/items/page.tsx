@@ -15,12 +15,14 @@ export const dynamic = 'force-static';
 export default async function ItemsPage() {
   // Sanityから全ての植物データを取得
   const allItems = await client.fetch(`
-    *[_type == "post"] | order(_createdAt desc) {
-      title,
-      "slug": slug.current,
-      _createdAt,
-      "imageUrl": mainImage.asset->url
-    }
+    *[_type == "post"] {
+  title,
+  titleEn, // 英語タイトル
+  titleTh, // タイ語タイトル
+  description, // 説明文
+  "slug": slug.current,
+  "imageUrl": mainImage.asset->url
+}
   `);
 
   return (

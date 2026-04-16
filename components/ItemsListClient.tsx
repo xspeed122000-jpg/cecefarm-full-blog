@@ -1,59 +1,56 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import SearchBox from './SearchBox';
+import { useSearchParams } from 'next/navigation';
 
 export default function ItemsListClient({ initialItems }: { initialItems: any[] }) {
-  const [query, setQuery] = useState('');
+  const searchParams = useSearchParams();
+  const query = searchParams.get('q') || ''; // URLから検索ワードを取得
 
-  // 入力された文字でアイテムを絞り込む（大文字小文字を区別しない）
-  const filteredItems = initialItems.filter((item) =>
-    item.title.toLowerCase().includes(query.toLowerCase())
-  );
+  // 3ヵ国語対応のフィルタリング
+  const filteredItems = initialItems.filter((item) => {
+    const searchTerm = query.toLowerCase();
+    
+    // 検索対象を広げる：タイトル、英語名、タイ語名、あるいは説明文など
+    return (
+      item.title?.toLowerCase().includes(searchTerm) ||
+      item.titleEn?.toLowerCase().includes(searchTerm) || // 英語フィールドがあれば
+      item.titleTh?.toLowerCase().includes(searchTerm) || // タイ語フィールドがあれば
+      item.description?.toLowerCase().includes(searchTerm) // 説明文も対象にする
+    );
+  });
 
   return (
-    <>
-      <SearchBox query={query} setQuery={setQuery} />
-
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-        gap: '30px' 
-      }}>
+    <div>
+      {/* 以前ここにあったSearchBoxはヘッダーに移動したので削除してOKです */}
+      
+      <div style={gridStyle}>
         {filteredItems.map((item: any) => (
           <Link key={item.slug} href={`/posts/${item.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
             <div style={cardStyle}>
-              <div style={{ width: '100%', height: '250px', overflow: 'hidden', backgroundColor: '#f0f0f0' }}>
-                {item.imageUrl ? (
-                  <img src={item.imageUrl} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : (
-                  <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999' }}>No Image</div>
-                )}
+              {/* カードの中身（画像やタイトルの表示）はそのまま */}
+              <div style={imageWrapperStyle}>
+                {item.imageUrl && <img src={item.imageUrl} alt={item.title} style={imageStyle} />}
               </div>
               <div style={{ padding: '20px' }}>
-                <h3 style={{ fontSize: '1.1rem', margin: '0 0 10px 0', color: '#333' }}>{item.title}</h3>
-                <p style={{ fontSize: '0.85rem', color: '#888', margin: 0 }}>View Details →</p>
+                <h3 style={{ fontSize: '1.1rem', margin: 0 }}>{item.title}</h3>
               </div>
             </div>
           </Link>
         ))}
       </div>
 
-      {/* 検索結果がゼロの場合の表示 */}
       {filteredItems.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '50px', color: '#999' }}>
-          一致する植物が見つかりませんでした。
-        </div>
+        <p style={{ textAlign: 'center', marginTop: '50px', color: '#999' }}>
+          "{query}" に一致する植物は見つかりませんでした。
+        </p>
       )}
-    </>
+    </div>
   );
 }
 
-const cardStyle: React.CSSProperties = {
-  backgroundColor: '#fff',
-  borderRadius: '16px',
-  overflow: 'hidden',
-  boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
-  border: '1px solid #eee'
-};
+const gridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '30px' };
+const cardStyle: React.CSSProperties = { backgroundColor: '#fff', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', border: '1px solid #eee' };
+const imageWrapperStyle: React.CSSProperties = { width: '100%', height: '250px', backgroundColor: '#f0f0f0', overflow: 'hidden' };
+const imageStyle: React.CSSProperties = { width: '100%', height: '100%', objectFit: 'cover' };

@@ -1,5 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
+import { Suspense } from 'react'; // 追加
+import Header from '@/components/Header';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const navLinkStyle: React.CSSProperties = {
@@ -13,6 +15,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ja">
       <body style={{ margin: 0, backgroundColor: '#FDFDFB', display: 'flex', flexDirection: 'column', minHeight: '100vh', fontFamily: 'sans-serif' }}>
+        <Suspense fallback={<div style={{ height: '60px' }} />}>
+          <Header />
+        </Suspense>
         <header style={{
           padding: '30px 50px',
           backgroundColor: '#fff',
