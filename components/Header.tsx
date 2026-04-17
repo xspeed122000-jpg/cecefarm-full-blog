@@ -33,7 +33,7 @@ export default function Header() {
       <div style={containerStyle}>
         {/* 左側：ロゴ */}
         <Link href="/">
-          <img src="/logo.png" alt="Cece Farm" style={{ height: '50px', width: 'auto' }} />
+          <img src="/logo.png" alt="Cece Farm" style={{ height: '75px', width: 'auto' }} />
         </Link>
 
         {/* 中央：ナビゲーションメニュー（7種類すべて） */}
@@ -65,12 +65,12 @@ export default function Header() {
 
 const headerStyle: React.CSSProperties = { 
   borderBottom: '1px solid #eee', 
-  padding: '10px 20px', 
+  padding: '25px 40px', // 上下 25px、左右 40px に広げました
   backgroundColor: '#fff', 
   position: 'sticky', 
   top: 0, 
   zIndex: 1000,
-  boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+  boxShadow: '0 2px 10px rgba(0,0,0,0.03)' // 少し影を柔らかくしました
 };
 const containerStyle: React.CSSProperties = { maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px' };
 const searchFormStyle: React.CSSProperties = { display: 'flex', minWidth: '150px' };

@@ -10,6 +10,7 @@ const client = createClient({
   apiVersion: '2024-03-01',
 });
 
+export const revalidate = 0;
 export const dynamic = 'force-dynamic';
 export const runtime = 'edge';
 
