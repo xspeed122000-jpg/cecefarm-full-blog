@@ -16,19 +16,19 @@ export const runtime = 'edge';
 export default async function ItemsPage() {
   // Sanityから全ての植物データを取得
   const allItems = await client.fetch(`
-    *[_type == "post"] {
-  title,
-  titleEn, // 英語タイトル
-  titleTh, // タイ語タイトル
-  description, // 説明文
-  "slug": slug.current,
-  "imageUrl": mainImage.asset->url
-}
-  `);
+  *[_type == "post"] | order(_createdAt desc) {
+    title,
+    titleEn,
+    titleTh,      // ★これがないとタイ語で検索できません
+    description,  // ★これがないと「アロカシア」という言葉が説明文にあってもヒットしません
+    "slug": slug.current,
+    "imageUrl": mainImage.asset->url
+  }
+`);
 
   return (
     <main style={{ padding: '40px 20px', maxWidth: '1200px', margin: '0 auto', fontFamily: 'sans-serif' }}>
-      
+
       <Breadcrumbs items={[{ label: 'Items' }]} />
 
       <div style={{ textAlign: 'center', marginBottom: '50px' }}>
@@ -38,7 +38,7 @@ export default async function ItemsPage() {
 
       {/* 検索とリスト表示の処理をクライアントコンポーネントに渡す */}
       <ItemsListClient initialItems={allItems} />
-      
+
     </main>
   );
 }

@@ -31,17 +31,19 @@ export default function Header() {
   return (
     <header style={headerStyle}>
       <div style={containerStyle}>
-        {/* 左側：ロゴ画像 */}
+        {/* 左側：ロゴ */}
         <Link href="/">
           <img src="/logo.png" alt="Cece Farm" style={{ height: '50px', width: 'auto' }} />
         </Link>
 
-        {/* 中央：ナビゲーションメニュー */}
+        {/* 中央：ナビゲーションメニュー（7種類すべて） */}
         <nav style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
           <Link href="/" style={navLinkStyle}>Home</Link>
           <Link href="/about" style={navLinkStyle}>About</Link>
           <Link href="/items" style={navLinkStyle}>Items</Link>
           <Link href="/pizza" style={navLinkStyle}>Pizza</Link>
+          <Link href="/services" style={navLinkStyle}>Service</Link>
+          <Link href="/shop" style={navLinkStyle}>Shop Info</Link>
           <Link href="/contact" style={navLinkStyle}>Contact</Link>
         </nav>
 
@@ -61,7 +63,6 @@ export default function Header() {
   );
 }
 
-// スタイル設定（1つにまとめるため調整）
 const headerStyle: React.CSSProperties = { 
   borderBottom: '1px solid #eee', 
   padding: '10px 20px', 
