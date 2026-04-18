@@ -9,17 +9,23 @@ export default function Header() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [keyword, setKeyword] = useState('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // メニューの開閉状態
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
+  // 検索ワードの同期
   useEffect(() => {
     const q = searchParams.get('q');
     if (q) setKeyword(q);
   }, [searchParams]);
 
-  // ページ遷移したらメニューを閉じる
+  // スクロール監視（固定ヘッダーと「上に戻る」ボタン用）
   useEffect(() => {
-    setIsMenuOpen(false);
-  }, [router]);
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,92 +33,118 @@ export default function Header() {
     setIsMenuOpen(false);
   };
 
-  const navLinkStyle: React.CSSProperties = {
-    textDecoration: 'none',
-    color: '#333',
-    fontSize: '1rem',
-    fontWeight: '600',
-    padding: '10px 0',
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <header style={headerStyle}>
-      {/* スマホでメニューが開いている時に背景を固定するスタイル */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @media (max-width: 992px) {
-          .nav-menu {
-            display: ${isMenuOpen ? 'flex' : 'none'} !important;
-            flex-direction: column;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: white;
-            padding: 20px;
-            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-            z-index: 999;
+    <>
+      <header style={headerStyle}>
+        {/* レスポンシブ用スタイル（メディアクエリ） */}
+        <style dangerouslySetInnerHTML={{ __html: `
+          @media (max-width: 768px) {
+            .header-container {
+              flex-wrap: wrap !important;
+              padding: 10px 0 !important;
+            }
+            .logo-area {
+              width: 50% !important;
+              order: 1;
+            }
+            .menu-button-area {
+              width: 50% !important;
+              order: 2;
+              display: flex !important;
+              justify-content: flex-end;
+            }
+            .search-area {
+              width: 100% !important;
+              order: 3;
+              margin-top: 10px;
+              display: block !important;
+            }
+            .nav-menu {
+              display: ${isMenuOpen ? 'flex' : 'none'} !important;
+              position: absolute;
+              top: 100%;
+              left: 0;
+              width: 100%;
+              background: white;
+              flex-direction: column;
+              padding: 20px;
+              box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            }
+            .desktop-only { display: none !important; }
           }
-          .search-form {
-            display: ${isMenuOpen ? 'flex' : 'none'} !important;
-            margin-top: 15px;
+          @media (min-width: 769px) {
+            .mobile-only { display: none !important; }
           }
-          .hamburger {
-            display: block !important;
-          }
-        }
-      `}} />
+        `}} />
 
-      <div style={containerStyle}>
-        {/* 左側：ロゴ */}
-        <Link href="/" style={{ flexShrink: 0 }}>
-          <img src="/logo.png" alt="Cece Farm" style={logoStyle} />
-        </Link>
+        <div className="header-container" style={containerStyle}>
+          {/* 1. ロゴエリア */}
+          <div className="logo-area" style={{ flex: '0 0 auto' }}>
+            <Link href="/">
+              <img src="/logo.png" alt="Cece Farm" style={logoStyle} />
+            </Link>
+          </div>
 
-        {/* スマホ用ハンバーガーボタン */}
-        <button 
-          className="hamburger"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          style={hamburgerButtonStyle}
-        >
-          {isMenuOpen ? '✕' : '☰'}
-        </button>
+          {/* 2. PC用ナビゲーション（中央） */}
+          <nav className="nav-menu desktop-only" style={navStyle}>
+            <Link href="/" style={navLinkStyle}>Home</Link>
+            <Link href="/about" style={navLinkStyle}>About</Link>
+            <Link href="/items" style={navLinkStyle}>Items</Link>
+            <Link href="/pizza" style={navLinkStyle}>Pizza</Link>
+            <Link href="/services" style={navLinkStyle}>Service</Link>
+            <Link href="/shop" style={navLinkStyle}>Shop Info</Link>
+            <Link href="/contact" style={navLinkStyle}>Contact</Link>
+          </nav>
 
-        {/* 中央：ナビゲーションメニュー */}
-        <nav className="nav-menu" style={navStyle}>
-          <Link href="/" style={navLinkStyle}>Home</Link>
-          <Link href="/about" style={navLinkStyle}>About</Link>
-          <Link href="/items" style={navLinkStyle}>Items</Link>
-          <Link href="/pizza" style={navLinkStyle}>Pizza</Link>
-          <Link href="/services" style={navLinkStyle}>Service</Link>
-          <Link href="/shop" style={navLinkStyle}>Shop Info</Link>
-          <Link href="/contact" style={navLinkStyle}>Contact</Link>
-          
-          {/* スマホの時だけメニュー内に出現する検索窓 */}
-          <form onSubmit={handleSearch} className="search-form" style={mobileSearchFormStyle}>
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              style={inputStyle}
-            />
-            <button type="submit" style={buttonStyle}>Go</button>
-          </form>
+          {/* 3. 検索エリア（スマホでは2段目、PCでは右端） */}
+          <div className="search-area" style={searchAreaStyle}>
+            <form onSubmit={handleSearch} style={searchFormStyle}>
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                style={inputStyle}
+              />
+              <button type="submit" style={buttonStyle}>Go</button>
+            </form>
+          </div>
+
+          {/* 4. スマホ用MENUボタン */}
+          <div className="menu-button-area mobile-only" style={{ display: 'none' }}>
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              style={hamburgerButtonStyle}
+            >
+              <div style={{ fontSize: '1.2rem', lineHeight: '1' }}>{isMenuOpen ? '✕' : '☰'}</div>
+              <div style={{ fontSize: '0.6rem', fontWeight: 'bold', marginTop: '2px' }}>{isMenuOpen ? 'CLOSE' : 'MENU'}</div>
+            </button>
+          </div>
+        </div>
+
+        {/* スマホ用展開メニュー */}
+        <nav className="nav-menu mobile-only" style={{ display: 'none' }}>
+          <Link href="/" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Home</Link>
+          <Link href="/about" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>About</Link>
+          <Link href="/items" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Items</Link>
+          <Link href="/pizza" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Pizza</Link>
+          <Link href="/services" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Service</Link>
+          <Link href="/shop" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Shop Info</Link>
+          <Link href="/contact" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Contact</Link>
         </nav>
+      </header>
 
-        {/* 右側：PC用検索窓（画面が広い時だけ表示） */}
-        <form onSubmit={handleSearch} className="search-form-desktop" style={desktopSearchFormStyle}>
-          <input 
-            type="text" 
-            placeholder="Search..." 
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            style={inputStyle}
-          />
-          <button type="submit" style={buttonStyle}>Go</button>
-        </form>
-      </div>
-    </header>
+      {/* 5. 上に戻るボタン */}
+      {showScrollTop && (
+        <button onClick={scrollToTop} style={scrollTopButtonStyle}>
+          ▲
+        </button>
+      )}
+    </>
   );
 }
 
@@ -120,9 +152,10 @@ export default function Header() {
 
 const headerStyle: React.CSSProperties = { 
   borderBottom: '1px solid #eee', 
-  padding: '15px 20px', 
+  padding: '10px 20px', 
   backgroundColor: '#fff', 
-  position: 'sticky', 
+  position: 'fixed', // 'sticky'から'fixed'へ。より確実に固定されます
+  width: '100%',
   top: 0, 
   zIndex: 1000,
   boxShadow: '0 2px 10px rgba(0,0,0,0.03)'
@@ -133,56 +166,50 @@ const containerStyle: React.CSSProperties = {
   margin: '0 auto', 
   display: 'flex', 
   justifyContent: 'space-between', 
-  alignItems: 'center',
-  position: 'relative'
+  alignItems: 'center'
 };
 
 const logoStyle: React.CSSProperties = {
-  height: '60px', // スマホでも邪魔にならないよう少しだけ調整
+  height: '50px', // スマホでも邪魔にならないサイズ
   width: 'auto',
   display: 'block'
 };
 
-const navStyle: React.CSSProperties = {
-  display: 'flex',
-  gap: '20px',
-  alignItems: 'center'
-};
+const navStyle: React.CSSProperties = { display: 'flex', gap: '15px' };
+const navLinkStyle: React.CSSProperties = { textDecoration: 'none', color: '#333', fontSize: '0.85rem', fontWeight: '600' };
+const mobileNavLinkStyle: React.CSSProperties = { textDecoration: 'none', color: '#333', fontSize: '1.1rem', fontWeight: '600', padding: '15px 0', borderBottom: '1px solid #f5f5f5' };
+
+const searchAreaStyle: React.CSSProperties = { flex: '0 0 auto' };
+const searchFormStyle: React.CSSProperties = { display: 'flex' };
+const inputStyle: React.CSSProperties = { width: '100%', padding: '8px 12px', borderRadius: '20px 0 0 20px', border: '1px solid #ddd', fontSize: '0.9rem' };
+const buttonStyle: React.CSSProperties = { padding: '8px 15px', backgroundColor: '#2d5a27', color: '#fff', border: 'none', borderRadius: '0 20px 20px 0', cursor: 'pointer' };
 
 const hamburgerButtonStyle: React.CSSProperties = {
-  display: 'none', // 基本は隠す
-  fontSize: '2rem',
   background: 'none',
   border: 'none',
   cursor: 'pointer',
-  color: '#333',
+  color: '#2d5a27',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
   padding: '5px'
 };
 
-const desktopSearchFormStyle: React.CSSProperties = {
+const scrollTopButtonStyle: React.CSSProperties = {
+  position: 'fixed',
+  bottom: '20px',
+  right: '20px',
+  width: '45px',
+  height: '45px',
+  borderRadius: '50%',
+  backgroundColor: 'rgba(45, 90, 39, 0.8)', // Cece Farmカラーの半透明
+  color: '#fff',
+  border: 'none',
+  fontSize: '1.2rem',
+  cursor: 'pointer',
+  zIndex: 999,
+  boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
   display: 'flex',
-  minWidth: '180px'
-};
-
-const mobileSearchFormStyle: React.CSSProperties = {
-  display: 'none', // デフォルトは隠してメディアクエリで制御
-  width: '100%'
-};
-
-const inputStyle: React.CSSProperties = { 
-  width: '100%', 
-  padding: '8px 15px', 
-  borderRadius: '20px 0 0 20px', 
-  border: '1px solid #ddd', 
-  fontSize: '0.9rem' 
-};
-
-const buttonStyle: React.CSSProperties = { 
-  padding: '8px 15px', 
-  backgroundColor: '#2d5a27', 
-  color: '#fff', 
-  border: 'none', 
-  borderRadius: '0 20px 20px 0', 
-  cursor: 'pointer', 
-  fontSize: '0.9rem' 
+  justifyContent: 'center',
+  alignItems: 'center'
 };
