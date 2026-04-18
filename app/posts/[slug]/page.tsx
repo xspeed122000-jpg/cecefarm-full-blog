@@ -48,11 +48,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       {/* 2. 記事本文セクション */}
       <article style={{ marginTop: '20px' }}>
         <h1 style={{ fontSize: '2.5rem', marginBottom: '10px', color: '#333' }}>{post.title}</h1>
-        
-        {post.description && (
-          <p style={{ color: '#666', marginBottom: '30px', fontSize: '1.1rem' }}>{post.description}</p>
-        )}
-
+                
         {post.imageUrl && (
           <img 
             src={post.imageUrl} 
