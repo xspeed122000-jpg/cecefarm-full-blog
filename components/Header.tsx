@@ -39,94 +39,108 @@ export default function Header() {
 
     // components/Header.tsx (抜粋・修正版)
 
-    // ...（上部のimportやStateはそのまま）
+    // ★ここ！ Header関数の中に定義を移動します
+  const hamburgerButtonStyle: React.CSSProperties = {
+    background: isMenuOpen ? '#000' : 'none',
+    border: isMenuOpen ? '2px solid #000' : 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    color: isMenuOpen ? '#fff' : '#2d5a27',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '8px 12px',
+    transition: 'all 0.3s ease'
+  };
 
     return (
-        <>
-            <header style={headerStyle}>
-                <style dangerouslySetInnerHTML={{
-                    __html: `
+    <>
+      <header style={headerStyle}>
+        <style dangerouslySetInnerHTML={{ __html: `
           @media (max-width: 768px) {
-            .header-container {
-              flex-wrap: wrap !important;
-              padding: 0 !important; /* 横の余白を一旦リセット */
-            }
+            .header-container { flex-wrap: wrap !important; padding: 0 !important; }
             .logo-area { width: 60% !important; order: 1; }
             .menu-button-area { width: 40% !important; order: 2; display: flex !important; justify-content: flex-end; }
             .search-area { 
-    width: 100% !important; 
-    order: 3; 
-    margin-top: 10px; 
-    display: flex !important;
-    justify-content: center; /* ★スマホでは2段目の中央に配置 */
-    padding: 0 20px; 
-    box-sizing: border-box;
-  }
-  .search-area form {
-    max-width: 80%; /* ★スマホで横幅を少し短くして上品に */
-  }
-            .nav-menu {
-              display: ${isMenuOpen ? 'flex' : 'none'} !important;
-              position: absolute;
-              top: 100%;
-              left: 0;
-              width: 100%;
-              background: white;
-              flex-direction: column;
-              padding: 20px;
-              box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-              box-sizing: border-box;
+              width: 100% !important; order: 3; margin-top: 10px; display: flex !important;
+              justify-content: center; padding: 0 10px; box-sizing: border-box;
             }
+            .search-area form { max-width: 90%; }
+            .nav-menu.mobile-only {
+              display: ${isMenuOpen ? 'flex' : 'none'} !important;
+              position: absolute; top: 100%; left: 0; width: 100%;
+              background: white; flex-direction: column; padding: 20px;
+              box-shadow: 0 10px 15px rgba(0,0,0,0.1); box-sizing: border-box;
+            }
+            .desktop-only { display: none !important; }
           }
+          @media (min-width: 769px) { .mobile-only { display: none !important; } }
         `}} />
 
-                <div className="header-container" style={containerStyle}>
-                    {/* ロゴ、MENU、検索窓の構造はそのまま、スタイルで調整 */}
-                    <div className="logo-area">
-                        <Link href="/">
-                            <img src="/logo.png" alt="Cece Farm" style={logoStyle} />
-                        </Link>
-                    </div>
+        <div className="header-container" style={containerStyle}>
+          {/* 左：ロゴ */}
+          <div className="logo-area">
+            <Link href="/">
+              <img src="/logo.png" alt="Cece Farm" style={logoStyle} />
+            </Link>
+          </div>
 
-                    <nav className="nav-menu desktop-only" style={navStyle}>
-                        {/* ...PCメニューリンク... */}
-                        <Link href="/" style={navLinkStyle}>Home</Link>
-                        <Link href="/about" style={navLinkStyle}>About</Link>
-                        <Link href="/items" style={navLinkStyle}>Items</Link>
-                        <Link href="/pizza" style={navLinkStyle}>Pizza</Link>
-                        <Link href="/services" style={navLinkStyle}>Service</Link>
-                        <Link href="/shop" style={navLinkStyle}>Shop Info</Link>
-                        <Link href="/contact" style={navLinkStyle}>Contact</Link>
-                    </nav>
+          {/* 中央：PCメニュー（スマホでは隠れます） */}
+          <nav className="nav-menu desktop-only" style={navStyle}>
+            <Link href="/" style={navLinkStyle}>Home</Link>
+            <Link href="/about" style={navLinkStyle}>About</Link>
+            <Link href="/items" style={navLinkStyle}>Items</Link>
+            <Link href="/pizza" style={navLinkStyle}>Pizza</Link>
+            <Link href="/services" style={navLinkStyle}>Service</Link>
+            <Link href="/shop" style={navLinkStyle}>Shop Info</Link>
+            <Link href="/contact" style={navLinkStyle}>Contact</Link>
+          </nav>
 
-                    <div className="search-area">
-                        <form onSubmit={handleSearch} style={searchFormStyle}>
-                            <input
-                                type="text"
-                                placeholder="Search..."
-                                value={keyword}
-                                onChange={(e) => setKeyword(e.target.value)}
-                                style={inputStyle}
-                            />
-                            <button type="submit" style={buttonStyle}>Go</button>
-                        </form>
-                    </div>
+          {/* 右：検索窓 */}
+          <div className="search-area">
+            <form onSubmit={handleSearch} style={searchFormStyle}>
+              <input 
+                type="text" placeholder="Search..." value={keyword}
+                onChange={(e) => setKeyword(e.target.value)} style={inputStyle}
+              />
+              <button type="submit" style={buttonStyle}>Go</button>
+            </form>
+          </div>
 
-                    <div className="menu-button-area mobile-only" style={{ display: 'none' }}>
-                        <button onClick={() => setIsMenuOpen(!isMenuOpen)} style={hamburgerButtonStyle}>
-                            <div style={{ fontSize: '1.5rem', lineHeight: '1' }}>{isMenuOpen ? '✕' : '☰'}</div>
-                            <div style={{ fontSize: '0.6rem', fontWeight: 'bold' }}>{isMenuOpen ? 'CLOSE' : 'MENU'}</div>
-                        </button>
-                    </div>
-                </div>
-            </header>
+          {/* 右端：ハンバーガーボタン（スマホのみ） */}
+          <div className="menu-button-area mobile-only">
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} style={hamburgerButtonStyle}>
+              <div style={{ fontSize: '1.5rem', lineHeight: '1' }}>{isMenuOpen ? '✕' : '☰'}</div>
+              <div style={{ fontSize: '0.6rem', fontWeight: 'bold' }}>{isMenuOpen ? 'CLOSE' : 'MENU'}</div>
+            </button>
+          </div>
+        </div>
 
-            {/* 上に戻るボタン */}
-            {showScrollTop && (
-                <button onClick={scrollToTop} style={scrollTopButtonStyle}>▲</button>
-            )}
-        </>
-    );
+        {/* 【ここが探していた場所です！】スマホ用展開メニュー */}
+        <nav className="nav-menu mobile-only">
+          {/* メニュー内の一番上に「太枠のCLOSE」ボタンを配置 */}
+          <div style={{ textAlign: 'right', marginBottom: '15px' }}>
+            <button onClick={() => setIsMenuOpen(false)} style={closeMenuButtonStyle}>
+               CLOSE ✕
+            </button>
+          </div>
+          
+          <Link href="/" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Home</Link>
+          <Link href="/about" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>About</Link>
+          <Link href="/items" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Items</Link>
+          <Link href="/pizza" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Pizza</Link>
+          <Link href="/services" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Service</Link>
+          <Link href="/shop" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Shop Info</Link>
+          <Link href="/contact" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Contact</Link>
+        </nav>
+      </header>
+
+      {/* 上に戻るボタン */}
+      {showScrollTop && (
+        <button onClick={scrollToTop} style={scrollTopButtonStyle}>▲</button>
+      )}
+    </>
+  );
 }
 
 // Header.tsx の一番下、 return 以降のスタイル定義をこれに差し替えてください
@@ -212,15 +226,16 @@ const buttonStyle: React.CSSProperties = {
     fontSize: '0.85rem'
 };
 
-const hamburgerButtonStyle: React.CSSProperties = {
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    color: '#2d5a27',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '5px'
+const closeMenuButtonStyle: React.CSSProperties = {
+  backgroundColor: '#000',      // 黒背景
+  color: '#fff',               // 白文字
+  border: '2px solid #000',    // 黒の太枠
+  padding: '8px 16px',
+  borderRadius: '4px',
+  fontSize: '0.8rem',
+  fontWeight: 'bold',
+  cursor: 'pointer',
+  letterSpacing: '1px'
 };
 
 const scrollTopButtonStyle: React.CSSProperties = {
