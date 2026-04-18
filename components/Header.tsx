@@ -54,13 +54,17 @@ export default function Header() {
             .logo-area { width: 60% !important; order: 1; }
             .menu-button-area { width: 40% !important; order: 2; display: flex !important; justify-content: flex-end; }
             .search-area { 
-              width: 100% !important; 
-              order: 3; 
-              margin-top: 10px; 
-              display: block !important;
-              padding: 0 5px; /* 検索窓が端に当たりすぎないよう微調整 */
-              box-sizing: border-box;
-            }
+    width: 100% !important; 
+    order: 3; 
+    margin-top: 10px; 
+    display: flex !important;
+    justify-content: center; /* ★スマホでは2段目の中央に配置 */
+    padding: 0 20px; 
+    box-sizing: border-box;
+  }
+  .search-area form {
+    max-width: 80%; /* ★スマホで横幅を少し短くして上品に */
+  }
             .nav-menu {
               display: ${isMenuOpen ? 'flex' : 'none'} !important;
               position: absolute;
@@ -127,104 +131,113 @@ export default function Header() {
 
 // Header.tsx の一番下、 return 以降のスタイル定義をこれに差し替えてください
 
-const headerStyle: React.CSSProperties = { 
-  borderBottom: '1px solid #eee', 
-  padding: '10px 20px', 
-  backgroundColor: '#fff', 
-  position: 'fixed', 
-  width: '100%',
-  top: 0, 
-  zIndex: 1000,
-  boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
-  boxSizing: 'border-box' // 右側のはみ出し防止
+const headerStyle: React.CSSProperties = {
+    borderBottom: '1px solid #eee',
+    padding: '10px 20px',
+    backgroundColor: '#fff',
+    position: 'fixed',
+    width: '100%',
+    top: 0,
+    zIndex: 1000,
+    boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
+    boxSizing: 'border-box' // 右側のはみ出し防止
 };
 
-const containerStyle: React.CSSProperties = { 
-  maxWidth: '1200px', 
-  margin: '0 auto', 
-  display: 'flex', 
-  justifyContent: 'space-between', 
-  alignItems: 'center',
-  boxSizing: 'border-box'
+const containerStyle: React.CSSProperties = {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    boxSizing: 'border-box'
 };
 
 const logoStyle: React.CSSProperties = {
-  height: '50px',
-  width: 'auto',
-  maxWidth: '100%',
-  display: 'block'
+    height: '50px',
+    width: 'auto',
+    maxWidth: '100%',
+    display: 'block'
 };
 
 const navStyle: React.CSSProperties = { display: 'flex', gap: '15px' };
 
-const navLinkStyle: React.CSSProperties = { 
-  textDecoration: 'none', 
-  color: '#333', 
-  fontSize: '0.85rem', 
-  fontWeight: '600' 
+const navLinkStyle: React.CSSProperties = {
+    textDecoration: 'none',
+    color: '#333',
+    fontSize: '0.85rem',
+    fontWeight: '600'
 };
 
-const mobileNavLinkStyle: React.CSSProperties = { 
-  textDecoration: 'none', 
-  color: '#333', 
-  fontSize: '1.1rem', 
-  fontWeight: '600', 
-  padding: '15px 0', 
-  borderBottom: '1px solid #f5f5f5' 
+const mobileNavLinkStyle: React.CSSProperties = {
+    textDecoration: 'none',
+    color: '#333',
+    fontSize: '1.1rem',
+    fontWeight: '600',
+    padding: '15px 0',
+    borderBottom: '1px solid #f5f5f5'
 };
 
-const searchAreaStyle: React.CSSProperties = { flex: '0 0 auto' };
+// components/Header.tsx のスタイル定義部分を修正
 
-// ★ここがエラーの原因だった箇所です（1つだけにします）
-const searchFormStyle: React.CSSProperties = { 
-  display: 'flex',
-  boxSizing: 'border-box',
-  width: '100%' 
+const searchAreaStyle: React.CSSProperties = {
+    flex: '0 0 auto',
+    marginLeft: 'auto', // これでPC時に右側に寄ります
+    maxWidth: '300px',  // ★検索窓の最大幅を制限（お好みで 250px などに）
+    width: '100%',      // スマホでは maxWidth の範囲で広がります
 };
 
-const inputStyle: React.CSSProperties = { 
-  width: '100%', 
-  padding: '8px 12px', 
-  borderRadius: '20px 0 0 20px', 
-  border: '1px solid #ddd', 
-  fontSize: '0.9rem' 
+const searchFormStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'flex-end', // 中身を右側に寄せます
+    boxSizing: 'border-box',
+    width: '100%'
 };
 
-const buttonStyle: React.CSSProperties = { 
-  padding: '8px 15px', 
-  backgroundColor: '#2d5a27', 
-  color: '#fff', 
-  border: 'none', 
-  borderRadius: '0 20px 20px 0', 
-  cursor: 'pointer' 
+// 入力欄も少しスリムに調整
+const inputStyle: React.CSSProperties = {
+    width: '100%',
+    padding: '6px 12px', // 少し上下を細くしました
+    borderRadius: '20px 0 0 20px',
+    border: '1px solid #ddd',
+    fontSize: '0.85rem'
+};
+
+const buttonStyle: React.CSSProperties = {
+    padding: '6px 12px',
+    backgroundColor: '#2d5a27',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '0 20px 20px 0',
+    cursor: 'pointer',
+    fontSize: '0.85rem'
 };
 
 const hamburgerButtonStyle: React.CSSProperties = {
-  background: 'none',
-  border: 'none',
-  cursor: 'pointer',
-  color: '#2d5a27',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: '5px'
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    color: '#2d5a27',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '5px'
 };
 
 const scrollTopButtonStyle: React.CSSProperties = {
-  position: 'fixed',
-  bottom: '20px',
-  right: '20px',
-  width: '45px',
-  height: '45px',
-  borderRadius: '50%',
-  backgroundColor: 'rgba(45, 90, 39, 0.8)',
-  color: '#fff',
-  border: 'none',
-  fontSize: '1.2rem',
-  cursor: 'pointer',
-  zIndex: 999,
-  boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center'
+    position: 'fixed',
+    bottom: '20px',
+    right: '20px',
+    width: '45px',
+    height: '45px',
+    borderRadius: '50%',
+    backgroundColor: 'rgba(45, 90, 39, 0.8)',
+    color: '#fff',
+    border: 'none',
+    fontSize: '1.2rem',
+    cursor: 'pointer',
+    zIndex: 999,
+    boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
 };
