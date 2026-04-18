@@ -3,21 +3,26 @@ import React from 'react';
 import { Suspense } from 'react';
 import Header from '@/components/Header';
 
+// app/layout.tsx
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja">
-      <body style={{ margin: 0, backgroundColor: '#FDFDFB', display: 'flex', flexDirection: 'column', minHeight: '100vh', fontFamily: 'sans-serif' }}>
-        
-        {/* このHeaderの中にロゴ、メニュー7種、検索窓がすべて入っています */}
-        <Suspense fallback={<div style={{ height: '70px' }} />}>
+      <body style={{ /* 既存のスタイル */ }}>
+        <Suspense fallback={<div style={{ height: '130px' }} />}>
           <Header />
         </Suspense>
 
-        <main style={{ flex: 1 }}>
+        {/* mainタグにヘッダーの高さ分の余白を追加 */}
+        <main style={{ 
+          flex: 1, 
+          paddingTop: '140px', // ★スマホの2段ヘッダー分、上を空けます
+          boxSizing: 'border-box' 
+        }}>
           {children}
         </main>
 
-        <footer style={{ padding: '40px', textAlign: 'center', backgroundColor: '#1B3022', color: '#fff', marginTop: 'auto' }}>
+        <footer style={{ /* 既存のスタイル */ }}>
           <p>© {new Date().getFullYear()} Cece Farm & Cafe</p>
         </footer>
       </body>
