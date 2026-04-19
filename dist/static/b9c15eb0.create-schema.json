@@ -61,6 +61,46 @@
       {
         "name": "body",
         "type": "blockContent"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "description": "リール動画や投稿のURLを貼り付けてください",
+        "name": "insta_url",
+        "type": "url",
+        "title": "InstagramのURL"
+      },
+      {
+        "options": {
+          "layout": "grid"
+        },
+        "of": [
+          {
+            "type": "image"
+          }
+        ],
+        "name": "gallery_images",
+        "type": "array",
+        "title": "ギャラリー画像"
       }
     ],
     "name": "post",

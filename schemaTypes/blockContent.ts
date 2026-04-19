@@ -39,33 +39,7 @@ export default defineType({
         ],
       },
     }),
-
-    // 2. SNS埋め込みの設定
-    defineArrayMember({
-      type: 'object',
-      name: 'socialEmbed',
-      title: 'SNS Embed',
-      fields: [
-        {
-          name: 'url',
-          type: 'url',
-          title: 'URL',
-          description: 'X(Twitter)やInstagramの投稿URLを貼ってください'
-        },
-        {
-          name: 'platform',
-          type: 'string',
-          title: 'Platform',
-          options: {
-            list: [
-              { title: 'X (Twitter)', value: 'twitter' },
-              { title: 'Instagram', value: 'instagram' },
-            ]
-          }
-        }
-      ]
-    }),
-
+    
     // 3. 画像の設定
     defineArrayMember({
       type: 'image',
