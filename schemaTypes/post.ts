@@ -50,24 +50,24 @@ export default defineType({
       title: 'Body',
       type: 'blockContent',
     }),
-    // 1. Instagram URL用の項目を追加
-    {
+    // 1. Instagram URL
+    defineField({
       name: 'insta_url',
       type: 'url',
       title: 'InstagramのURL',
       description: 'リール動画や投稿のURLを貼り付けてください',
-    },
+    }),
 
-    // 2. ギャラリー画像用の項目を追加（複数枚）
-    {
+    // 2. ギャラリー画像
+    defineField({
       name: 'gallery_images',
       type: 'array',
       title: 'ギャラリー画像',
       of: [{ type: 'image' }],
       options: {
-        layout: 'grid', // 管理画面でグリッド表示されて見やすくなります
+        layout: 'grid',
       },
-    },
+    }),
   ],
 
   preview: {
