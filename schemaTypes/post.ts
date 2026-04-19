@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity'
 
 export default defineType({
   name: 'post',
@@ -38,7 +38,7 @@ export default defineType({
       name: 'categories',
       title: 'Categories',
       type: 'array',
-      of: [{type: 'reference', to: {type: 'category'}}],
+      of: [{ type: 'reference', to: { type: 'category' } }],
     }),
     defineField({
       name: 'publishedAt',
@@ -50,6 +50,24 @@ export default defineType({
       title: 'Body',
       type: 'blockContent',
     }),
+    // 1. Instagram URL用の項目を追加
+    {
+      name: 'insta_url',
+      type: 'url',
+      title: 'InstagramのURL',
+      description: 'リール動画や投稿のURLを貼り付けてください',
+    },
+
+    // 2. ギャラリー画像用の項目を追加（複数枚）
+    {
+      name: 'gallery_images',
+      type: 'array',
+      title: 'ギャラリー画像',
+      of: [{ type: 'image' }],
+      options: {
+        layout: 'grid', // 管理画面でグリッド表示されて見やすくなります
+      },
+    },
   ],
 
   preview: {
@@ -59,8 +77,8 @@ export default defineType({
       media: 'mainImage',
     },
     prepare(selection) {
-      const {author} = selection
-      return {...selection, subtitle: author && `by ${author}`}
+      const { author } = selection
+      return { ...selection, subtitle: author && `by ${author}` }
     },
   },
 })
