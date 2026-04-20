@@ -11,6 +11,8 @@ const client = createClient({
   apiVersion: '2024-03-01',
 });
 
+export const runtime = 'edge';
+
 export default async function ItemDetailPage({ params }: { params: { slug: string } }) {
   // 詳細データを取得（insta_url と gallery_images を含める）
   const item = await client.fetch(`
