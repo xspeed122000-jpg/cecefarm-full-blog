@@ -15,15 +15,17 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'edge';
 
 export default async function ItemsPage() {
-  // Sanityから全ての植物データを取得
+  // ItemsPage 内のクエリ修正
   const allItems = await client.fetch(`
   *[_type == "post"] | order(_createdAt desc) {
     title,
     titleEn,
-    titleTh,      // ★これがないとタイ語で検索できません
-    description,  // ★これがないと「アロカシア」という言葉が説明文にあってもヒットしません
+    titleTh,
+    description,
     "slug": slug.current,
-    "imageUrl": mainImage.asset->url
+    "imageUrl": mainImage.asset->url,
+    insta_url,           // ★追加：これがあれば一覧にアイコンを出したりできます
+    "hasGallery": count(gallery_images) > 0 // ★追加：ギャラリーがあるかどうかの判定
   }
 `);
 
