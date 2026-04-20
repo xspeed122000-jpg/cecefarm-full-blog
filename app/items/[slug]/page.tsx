@@ -1,5 +1,6 @@
 import React from 'react';
 import { createClient } from 'next-sanity';
+import { PortableText } from '@portabletext/react'; // ★追加
 import InstagramEmbed from '@/components/InstagramEmbed';
 import ImageGallery from '@/components/ImageGallery';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -20,7 +21,7 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ slu
   const item = await client.fetch(`
     *[_type == "post" && slug.current == $slug][0] {
       title,
-      description,
+      body,        // ★重要：descriptionを消すか、bodyを追加します
       "imageUrl": mainImage.asset->url,
       insta_url,
       "gallery_images": gallery_images[].asset->url
@@ -33,41 +34,48 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ slu
 
   return (
     <main style={{ padding: '40px 20px', maxWidth: '800px', margin: '0 auto', fontFamily: 'sans-serif' }}>
+      {/* 1. タイトル（パンくずリスト含む） */}
       <Breadcrumbs items={[{ label: 'Items', href: '/items' }, { label: item.title }]} />
-      
       <h1 style={{ fontSize: '2.5rem', color: '#2d5a27', marginTop: '20px' }}>{item.title}</h1>
       
-      {/* メイン画像 */}
+      {/* 2. アイキャッチ（メイン画像） */}
       {item.imageUrl && (
-        <img src={item.imageUrl} alt={item.title} style={{ width: '100%', borderRadius: '20px', margin: '20px 0', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }} />
+        <img 
+          src={item.imageUrl} 
+          alt={item.title} 
+          style={{ width: '100%', borderRadius: '20px', margin: '20px 0', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }} 
+        />
       )}
 
-      {/* --- Instagramの表示 --- */}
+      {/* 3. インスタ動画 */}
       {item.insta_url && (
         <div style={{ margin: '40px 0' }}>
-          <h3 style={{ borderLeft: '4px solid #E1306C', paddingLeft: '10px', marginBottom: '20px' }}>Instagram Video</h3>
           <InstagramEmbed url={item.insta_url} />
         </div>
       )}
 
-      {/* 説明文 */}
-      <div style={{ backgroundColor: '#fdfdfd', padding: '30px', borderRadius: '15px', border: '1px solid #eee', margin: '40px 0' }}>
-        <p style={{ lineHeight: '1.8', whiteSpace: 'pre-wrap', color: '#333' }}>{item.description}</p>
-      </div>
+      {/* 4. 本文 (Body) */}
+      {item.body && (
+        <div style={{ 
+          lineHeight: '1.8', 
+          color: '#333', 
+          margin: '40px 0', 
+          fontSize: '1.1rem',
+          backgroundColor: '#fff' 
+        }}>
+          {/* PortableTextコンポーネントを使ってリッチテキストを表示 */}
+          <PortableText value={item.body} />
+        </div>
+      )}
 
-      {/* --- 3枚ギャラリーの表示 --- */}
+      {/* 5. ギャラリー */}
       {item.gallery_images && item.gallery_images.length > 0 && (
-        <div style={{ margin: '40px 0' }}>
+        <div style={{ margin: '60px 0' }}>
           <h3 style={{ borderLeft: '4px solid #2d5a27', paddingLeft: '10px', marginBottom: '20px' }}>Photo Gallery</h3>
           <ImageGallery images={item.gallery_images} />
         </div>
       )}
-
-      {/* デバッグ用（不要になったら消してOK） */}
-      <details style={{ marginTop: '100px', opacity: 0.3 }}>
-        <summary>Debug Info</summary>
-        <pre>{JSON.stringify(item, null, 2)}</pre>
-      </details>
+      
     </main>
   );
 }
