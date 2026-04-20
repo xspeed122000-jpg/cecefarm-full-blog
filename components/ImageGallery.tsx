@@ -1,6 +1,5 @@
 // components/ImageGallery.tsx
 'use client';
-import React from 'react';
 
 interface ImageGalleryProps {
   images: string[]; // 画像URLの配列
