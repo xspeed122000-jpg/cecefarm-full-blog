@@ -14,12 +14,10 @@ const client = createClient({
 export const runtime = 'edge';
 
 export default async function ItemDetailPage({ params }: { params: { slug: string } }) {
-  // 詳細データを取得（insta_url と gallery_images を含める）
+  // データの取得（クエリ）
   const item = await client.fetch(`
     *[_type == "post" && slug.current == $slug][0] {
       title,
-      titleEn,
-      titleTh,
       description,
       "imageUrl": mainImage.asset->url,
       insta_url,
@@ -27,16 +25,26 @@ export default async function ItemDetailPage({ params }: { params: { slug: strin
     }
   `, { slug: params.slug });
 
-  if (!item) return <div>Item not found</div>;
+  // ★重要：データが見つからない場合の安全策
+  if (!item) {
+    return (
+      <div style={{ padding: '50px', textAlign: 'center' }}>
+        <h2>Item not found (Slug: {params.slug})</h2>
+        <p>SanityのデータとURLのスラッグが一致しているか確認してください。</p>
+      </div>
+    );
+  }
 
   return (
     <main style={{ padding: '40px 20px', maxWidth: '800px', margin: '0 auto' }}>
-      <Breadcrumbs items={[{ label: 'Items', href: '/items' }, { label: item.title }]} />
+      <Breadcrumbs items={[{ label: 'Items', href: '/items' }, { label: item.title || 'No Title' }]} />
 
       <h1 style={{ fontSize: '2rem', color: '#2d5a27', marginTop: '20px' }}>{item.title}</h1>
       
-      {/* メイン画像 */}
-      <img src={item.imageUrl} alt={item.title} style={{ width: '100%', borderRadius: '15px', margin: '20px 0' }} />
+      {/* メイン画像（ある場合のみ表示） */}
+      {item.imageUrl && (
+        <img src={item.imageUrl} alt={item.title} style={{ width: '100%', borderRadius: '15px', margin: '20px 0' }} />
+      )}
 
       {/* --- Instagram埋め込み --- */}
       {item.insta_url && (
@@ -46,7 +54,7 @@ export default async function ItemDetailPage({ params }: { params: { slug: strin
         </div>
       )}
 
-      {/* 植物の説明文 */}
+      {/* 説明文 */}
       <p style={{ lineHeight: '1.8', color: '#444', whiteSpace: 'pre-wrap' }}>{item.description}</p>
 
       {/* --- 3枚ギャラリー --- */}
@@ -56,6 +64,12 @@ export default async function ItemDetailPage({ params }: { params: { slug: strin
           <ImageGallery images={item.gallery_images} />
         </div>
       )}
+
+      {/* デバッグ用：念のためデータの中身を画面下部に表示 */}
+      <details style={{ marginTop: '50px', opacity: 0.5 }}>
+        <summary>Debug: Data JSON</summary>
+        <pre>{JSON.stringify(item, null, 2)}</pre>
+      </details>
     </main>
   );
 }
