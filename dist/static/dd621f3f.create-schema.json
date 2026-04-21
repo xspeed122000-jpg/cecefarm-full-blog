@@ -26,6 +26,24 @@
         "type": "string"
       },
       {
+        "validation": [
+          {
+            "level": "warning",
+            "rules": [
+              {
+                "flag": "max",
+                "constraint": 60
+              }
+            ],
+            "message": "60文字以内が推奨されます"
+          }
+        ],
+        "description": "検索結果に表示されるタイトル（空欄の場合は通常のタイトルが使用されます）",
+        "name": "seoTitle",
+        "type": "string",
+        "title": "SEO Title"
+      },
+      {
         "rows": 3,
         "description": "検索結果に表示される紹介文を入力してください（160文字程度推奨）",
         "name": "description",

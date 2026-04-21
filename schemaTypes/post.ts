@@ -11,6 +11,13 @@ export default defineType({
       type: 'string',
     }),
     defineField({
+      name: 'seoTitle',
+      title: 'SEO Title',
+      type: 'string',
+      description: '検索結果に表示されるタイトル（空欄の場合は通常のタイトルが使用されます）',
+      validation: (Rule) => Rule.max(60).warning('60文字以内が推奨されます'),
+    }),
+    defineField({
       name: 'description',
       title: 'Meta Description',
       type: 'text',

@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-04-21T02:59:59.840Z",
+  "createdAt": "2026-04-21T06:52:17.605Z",
   "studioVersion": "5.21.0",
   "version": 3,
   "workspaces": [
@@ -13,7 +13,7 @@
       },
       "name": "default",
       "projectId": "88s4pwup",
-      "schema": "40957404.create-schema.json",
+      "schema": "dd621f3f.create-schema.json",
       "title": "cecefarm-web",
       "tools": "3bc46b10.create-tools.json"
     }
