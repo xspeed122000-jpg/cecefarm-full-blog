@@ -2,6 +2,26 @@
   {
     "fields": [
       {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ]
+          }
+        ],
+        "name": "name",
+        "type": "slug"
+      }
+    ],
+    "name": "media.tag",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
         "name": "title",
         "type": "string"
       },
@@ -322,56 +342,6 @@
           }
         ],
         "type": "block"
-      },
-      {
-        "fields": [
-          {
-            "validation": [
-              {
-                "level": "error",
-                "rules": [
-                  {
-                    "flag": "uri",
-                    "constraint": {
-                      "options": {
-                        "scheme": [
-                          "/^http$/",
-                          "/^https$/"
-                        ],
-                        "allowRelative": false,
-                        "relativeOnly": false,
-                        "allowCredentials": false
-                      }
-                    }
-                  }
-                ]
-              }
-            ],
-            "description": "X(Twitter)やInstagramの投稿URLを貼ってください",
-            "name": "url",
-            "type": "url",
-            "title": "URL"
-          },
-          {
-            "options": {
-              "list": [
-                {
-                  "title": "X (Twitter)",
-                  "value": "twitter"
-                },
-                {
-                  "title": "Instagram",
-                  "value": "instagram"
-                }
-              ]
-            },
-            "name": "platform",
-            "type": "string"
-          }
-        ],
-        "type": "object",
-        "name": "socialEmbed",
-        "title": "SNS Embed"
       },
       {
         "options": {

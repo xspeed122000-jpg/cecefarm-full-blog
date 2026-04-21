@@ -34,7 +34,7 @@ export default function ItemsListClient({ initialItems }: { initialItems: any[] 
 
             <div style={gridStyle}>
                 {filteredItems.map((item: any) => (
-                    <Link key={item.slug} href={`/posts/${item.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Link key={item.slug} href={`/items/${item.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div style={cardStyle}>
                             {/* カードの中身（画像やタイトルの表示）はそのまま */}
                             <div style={imageWrapperStyle}>
