@@ -52,11 +52,7 @@ export default defineType({
       title: 'Published at',
       type: 'datetime',
     }),
-    defineField({
-      name: 'body',
-      title: 'Body',
-      type: 'blockContent',
-    }),
+    
     // 1. Instagram URL
     defineField({
       name: 'insta_url',
@@ -64,7 +60,31 @@ export default defineType({
       title: 'InstagramのURL',
       description: 'リール動画や投稿のURLを貼り付けてください',
     }),
+    // schemaTypes/post.ts (または item.ts)
 
+    defineField({
+      name: 'body',
+      title: 'Body',
+      type: 'array',
+      of: [
+        { type: 'block' }, // 通常のテキスト
+        { type: 'image' }, // 画像
+        { type: 'table' }, // ★テーブル（@sanity/table）
+        {
+          // ★カスタムHTML（アフィリエイト用）
+          type: 'object',
+          name: 'customHtml',
+          title: 'Custom HTML',
+          fields: [
+            {
+              name: 'html',
+              title: 'HTML Code',
+              type: 'text',
+            }
+          ]
+        }
+      ],
+    }),
     // 2. ギャラリー画像
     defineField({
       name: 'gallery_images',
