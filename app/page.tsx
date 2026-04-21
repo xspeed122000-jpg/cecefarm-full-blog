@@ -31,7 +31,7 @@ export default async function HomePage() {
           gap: '30px' 
         }}>
           {posts.map((post: any) => (
-            <Link key={post.slug} href={`/posts/${post.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link key={post.slug} href={`/items/${post.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <div style={cardStyle}>
                 {/* 画像コンテナ：ここで高さを固定します */}
                 <div style={{ width: '100%', height: '200px', overflow: 'hidden', backgroundColor: '#f0f0f0' }}>
