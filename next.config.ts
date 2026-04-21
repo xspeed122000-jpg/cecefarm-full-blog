@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
         // - 固定ページ（about, pizza, contact）
         // - システム（items, studio, api, _next, static）
         // - ドットを含むファイル名（logo.png, favicon.ico, qr.webpなど全て）
-        source: '/:slug((?!$|about|pizza|contact|items|studio|api|_next|static|favicon\\.ico|.*\\.[a-zA-Z0-9]+).+)',
+        source: '/:slug((?!$|about|pizza|contact|items|studio|Service|shop|api|_next|static|favicon\\.ico|.*\\.[a-zA-Z0-9]+).+)',
         destination: '/items/:slug',
         permanent: true,
       },
