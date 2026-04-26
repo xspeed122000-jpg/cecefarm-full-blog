@@ -1,33 +1,36 @@
 export const runtime = 'edge';
+// キャッシュによる「古い404」を防ぐため、常に最新のデータを取得するように強制します
+export const dynamic = 'force-dynamic'; 
+
 import { client } from '@/sanityClient';
 import { PortableText } from '@portabletext/react';
-
-// 言語のパターンを事前に定義（Cloudflareでの動作を安定させるため）
-export function generateStaticParams() {
-  return [{ lang: 'jp' }, { lang: 'en' }, { lang: 'th' }];
-}
 
 export default async function PhytoPage({
   params,
 }: {
   params: Promise<{ lang: string }>;
 }) {
-  // 1. paramsを確実に解決する
-  const resolvedParams = await params;
-  const lang = resolvedParams.lang;
+  // 1. paramsを解決
+  const { lang } = await params;
 
   // 2. Sanityからデータを取得
-  // クエリの中身を確認：_typeが"staticPage"、slugが"phyto_cites"、languageがlangと一致するか
+  // デバッグ用に、まずは全ての staticPage を取得するテストも兼ねたクエリ
   const query = `*[_type == "staticPage" && slug.current == "phyto_cites" && language == $lang][0]`;
   const page = await client.fetch(query, { lang });
 
-  // 3. データがない場合のデバッグ表示
+  // 3. データが見つからない場合の表示
   if (!page) {
     return (
-      <div style={{ padding: '40px', textAlign: 'center' }}>
-        <h1>Page Not Found</h1>
-        <p>Debug Info: Language is "{lang}"</p>
-        <p>Sanityに _type: "staticPage", slug: "phyto_cites", language: "{lang}" のデータがあるか確認してください。</p>
+      <div style={{ padding: '40px', fontFamily: 'sans-serif' }}>
+        <h1>Page Not Found (Data Error)</h1>
+        <p>現在の言語設定: <strong>{lang}</strong></p>
+        <hr />
+        <p>以下の点を確認してください：</p>
+        <ul>
+          <li>Sanityで <b>_type</b> が <code>staticPage</code> になっているか</li>
+          <li><b>slug</b> が <code>phyto_cites</code> になっているか</li>
+          <li><b>language</b> フィールドが <code>{lang}</code> になっているか</li>
+        </ul>
       </div>
     );
   }
