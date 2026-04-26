@@ -1,6 +1,7 @@
-// app/[lang]/phyto_cites/page.tsx
+export const runtime = 'edge';
 import { client } from '@/sanityClient'; // 先ほど作ったファイルを指定
 import { PortableText } from '@portabletext/react';
+
 
 export default async function PhytoPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
