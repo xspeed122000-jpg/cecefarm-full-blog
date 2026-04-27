@@ -1,45 +1,55 @@
 export const runtime = 'edge';
-// キャッシュによる「古い404」を防ぐため、常に最新のデータを取得するように強制します
-export const dynamic = 'force-dynamic'; 
+export const dynamic = 'force-dynamic';
 
 import { client } from '@/sanityClient';
 import { PortableText } from '@portabletext/react';
+import imageUrlBuilder from '@sanity/image-url';
+
+// 画像のURLを作るための準備
+const builder = imageUrlBuilder(client);
+function urlFor(source: any) {
+  return builder.image(source);
+}
+
+// PortableTextの中で「画像」が出てきた時の表示ルール
+const components = {
+  types: {
+    image: ({ value }: any) => {
+      return (
+        <div style={{ margin: '20px 0', textAlign: 'center' }}>
+          <img
+            src={urlFor(value).url()}
+            alt={value.alt || 'Content Image'}
+            style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
+          />
+          {value.caption && (
+            <p style={{ fontSize: '14px', color: '#666' }}>{value.caption}</p>
+          )}
+        </div>
+      );
+    },
+  },
+};
 
 export default async function PhytoPage({
   params,
 }: {
   params: Promise<{ lang: string }>;
 }) {
-  // 1. paramsを解決
   const { lang } = await params;
 
-  // 2. Sanityからデータを取得
- // 修正案：まずは言語チェックを外して「slug」だけで探してみる
-  const query = `*[_type == "staticPage" && slug.current == "phyto_cites"][0]`;
-  const page = await client.fetch(query); // langを渡さない
+  // slugを指定してデータを取得
+  const query = `*[_type == "staticPage" && slug.current == "phyto_cites" && language == $lang][0]`;
+  const page = await client.fetch(query, { lang });
 
-  // 3. データが見つからない場合の表示
-  if (!page) {
-    return (
-      <div style={{ padding: '40px', fontFamily: 'sans-serif' }}>
-        <h1>Page Not Found (Data Error)</h1>
-        <p>現在の言語設定: <strong>{lang}</strong></p>
-        <hr />
-        <p>以下の点を確認してください：</p>
-        <ul>
-          <li>Sanityで <b>_type</b> が <code>staticPage</code> になっているか</li>
-          <li><b>slug</b> が <code>phyto_cites</code> になっているか</li>
-          <li><b>language</b> フィールドが <code>{lang}</code> になっているか</li>
-        </ul>
-      </div>
-    );
-  }
+  if (!page) return <div>Page Not Found</div>;
 
   return (
     <main style={{ padding: '40px 20px', maxWidth: '800px', margin: '0 auto' }}>
       <h1>{page.title}</h1>
       <article>
-        <PortableText value={page.body} />
+        {/* components={components} を追加することで画像が表示されるようになります */}
+        <PortableText value={page.body} components={components} />
       </article>
     </main>
   );

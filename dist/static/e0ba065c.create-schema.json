@@ -441,7 +441,8 @@
       },
       {
         "options": {
-          "source": "title"
+          "source": "title",
+          "maxLength": 96
         },
         "validation": [
           {
