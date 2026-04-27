@@ -1,4 +1,3 @@
-// components/Header.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -8,18 +7,19 @@ import Link from 'next/link';
 export default function Header() {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  // --- 1. 状態（State）の定義 ---
   const [isServiceOpen, setIsServiceOpen] = useState(false);
   const [keyword, setKeyword] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // 検索ワードの同期
+  // --- 2. 効果（Effect）とハンドラー ---
   useEffect(() => {
     const q = searchParams.get('q');
     if (q) setKeyword(q);
   }, [searchParams]);
 
-  // スクロール監視（固定ヘッダーと「上に戻る」ボタン用）
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 400);
@@ -38,9 +38,6 @@ export default function Header() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // components/Header.tsx (抜粋・修正版)
-
-  // ★ここ！ Header関数の中に定義を移動します
   const hamburgerButtonStyle: React.CSSProperties = {
     background: isMenuOpen ? '#000' : 'none',
     border: isMenuOpen ? '2px solid #000' : 'none',
@@ -54,17 +51,17 @@ export default function Header() {
     transition: 'all 0.3s ease'
   };
 
+  // --- 3. 実際の表示（JSX） ---
   return (
     <>
       <header style={headerStyle}>
         <style dangerouslySetInnerHTML={{
           __html: `
-          /* PC用：Serviceにホバーした時にメニューを出す */
           .service-container { position: relative; }
           .service-dropdown { 
             display: none; position: absolute; top: 100%; left: 0; 
             background: white; min-width: 180px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            padding: 10px 0; z-index: 100; borderRadius: 8px;
+            padding: 10px 0; z-index: 100; border-radius: 8px;
           }
           .service-container:hover .service-dropdown { display: block; }
           .dropdown-item { 
@@ -72,14 +69,7 @@ export default function Header() {
             color: #333; font-size: 0.85rem; 
           }
           .dropdown-item:hover { background: #f5f5f5; color: #2d5a27; }
-          @media (max-width: 768px) {
-            /* スマホ用メニューの調整 */
-            .mobile-service-sub { 
-               padding-left: 20px; 
-               display: ${isServiceOpen ? 'flex' : 'none'} !important;
-               flex-direction: column;
-               background: #fafafa;
-            }
+
           @media (max-width: 768px) {
             .header-container { flex-wrap: wrap !important; padding: 0 !important; }
             .logo-area { width: 60% !important; order: 1; }
@@ -88,12 +78,16 @@ export default function Header() {
               width: 100% !important; order: 3; margin-top: 10px; display: flex !important;
               justify-content: center; padding: 0 10px; box-sizing: border-box;
             }
-            .search-area form { max-width: 90%; }
             .nav-menu.mobile-only {
               display: ${isMenuOpen ? 'flex' : 'none'} !important;
               position: absolute; top: 100%; left: 0; width: 100%;
               background: white; flex-direction: column; padding: 20px;
               box-shadow: 0 10px 15px rgba(0,0,0,0.1); box-sizing: border-box;
+              z-index: 999;
+            }
+            .mobile-service-sub { 
+               display: ${isServiceOpen ? 'flex' : 'none'} !important;
+               flex-direction: column; background: #fafafa; padding-left: 20px;
             }
             .desktop-only { display: none !important; }
           }
@@ -101,17 +95,14 @@ export default function Header() {
         `}} />
 
         <div className="header-container" style={containerStyle}>
-          {/* 左：ロゴ */}
           <div className="logo-area">
             <Link href="/">
               <img src="/logo.png" alt="Cece Farm" style={logoStyle} />
             </Link>
           </div>
 
-          {/* 中央：PCメニュー */}
           <nav className="nav-menu desktop-only" style={navStyle}>
             <Link href="/" style={navLinkStyle}>Home</Link>
-            {/* Serviceをドロップダウン化 */}
             <div className="service-container">
               <Link href="/services" style={navLinkStyle}>Service ▾</Link>
               <div className="service-dropdown">
@@ -127,7 +118,6 @@ export default function Header() {
             <Link href="/contact" style={navLinkStyle}>Contact</Link>
           </nav>
 
-          {/* 右：検索窓 */}
           <div className="search-area">
             <form onSubmit={handleSearch} style={searchFormStyle}>
               <input
@@ -138,7 +128,6 @@ export default function Header() {
             </form>
           </div>
 
-          {/* 右端：ハンバーガーボタン（スマホのみ） */}
           <div className="menu-button-area mobile-only">
             <button onClick={() => setIsMenuOpen(!isMenuOpen)} style={hamburgerButtonStyle}>
               <div style={{ fontSize: '1.5rem', lineHeight: '1' }}>{isMenuOpen ? '✕' : '☰'}</div>
@@ -147,22 +136,19 @@ export default function Header() {
           </div>
         </div>
 
-        {/* スマホ用展開メニュー */}
+        {/* スマホメニュー本体 */}
         <nav className="nav-menu mobile-only">
-          {/* ... CLOSEボタン ... */}
           <Link href="/" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Home</Link>
 
-          {/* スマホ版 Service展開 */}
           <div style={{ ...mobileNavLinkStyle, cursor: 'pointer' }} onClick={() => setIsServiceOpen(!isServiceOpen)}>
             Service {isServiceOpen ? '▴' : '▾'}
           </div>
-          {isServiceOpen && (
-            <div className="mobile-service-sub">
-              <Link href="/jp/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', paddingLeft: '20px' }}>Phyto / CITES (JP)</Link>
-              <Link href="/en/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', paddingLeft: '20px' }}>Phyto / CITES (EN)</Link>
-              <Link href="/th/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', paddingLeft: '20px' }}>Phyto / CITES (TH)</Link>
-            </div>
-          )}
+          <div className="mobile-service-sub">
+            <Link href="/jp/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>Phyto / CITES (JP)</Link>
+            <Link href="/en/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>Phyto / CITES (EN)</Link>
+            <Link href="/th/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>Phyto / CITES (TH)</Link>
+          </div>
+
           <Link href="/about" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>About</Link>
           <Link href="/items" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Items</Link>
           <Link href="/pizza" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Pizza</Link>
@@ -171,7 +157,6 @@ export default function Header() {
         </nav>
       </header>
 
-      {/* 上に戻るボタン */}
       {showScrollTop && (
         <button onClick={scrollToTop} style={scrollTopButtonStyle}>▲</button>
       )}
@@ -179,8 +164,7 @@ export default function Header() {
   );
 }
 
-// Header.tsx の一番下、 return 以降のスタイル定義をこれに差し替えてください
-
+// --- 4. スタイル（CSS）の定義 ---
 const headerStyle: React.CSSProperties = {
   borderBottom: '1px solid #eee',
   padding: '10px 20px',
@@ -190,7 +174,7 @@ const headerStyle: React.CSSProperties = {
   top: 0,
   zIndex: 1000,
   boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
-  boxSizing: 'border-box' // 右側のはみ出し防止
+  boxSizing: 'border-box'
 };
 
 const containerStyle: React.CSSProperties = {
@@ -205,7 +189,6 @@ const containerStyle: React.CSSProperties = {
 const logoStyle: React.CSSProperties = {
   height: '50px',
   width: 'auto',
-  maxWidth: '100%',
   display: 'block'
 };
 
@@ -224,29 +207,19 @@ const mobileNavLinkStyle: React.CSSProperties = {
   fontSize: '1.1rem',
   fontWeight: '600',
   padding: '15px 0',
-  borderBottom: '1px solid #f5f5f5'
-};
-
-// components/Header.tsx のスタイル定義部分を修正
-
-const searchAreaStyle: React.CSSProperties = {
-  flex: '0 0 auto',
-  marginLeft: 'auto', // これでPC時に右側に寄ります
-  maxWidth: '300px',  // ★検索窓の最大幅を制限（お好みで 250px などに）
-  width: '100%',      // スマホでは maxWidth の範囲で広がります
+  borderBottom: '1px solid #f5f5f5',
+  display: 'block'
 };
 
 const searchFormStyle: React.CSSProperties = {
   display: 'flex',
-  justifyContent: 'flex-end', // 中身を右側に寄せます
-  boxSizing: 'border-box',
+  justifyContent: 'flex-end',
   width: '100%'
 };
 
-// 入力欄も少しスリムに調整
 const inputStyle: React.CSSProperties = {
   width: '100%',
-  padding: '6px 12px', // 少し上下を細くしました
+  padding: '6px 12px',
   borderRadius: '20px 0 0 20px',
   border: '1px solid #ddd',
   fontSize: '0.85rem'
@@ -262,18 +235,6 @@ const buttonStyle: React.CSSProperties = {
   fontSize: '0.85rem'
 };
 
-const closeMenuButtonStyle: React.CSSProperties = {
-  backgroundColor: '#000',      // 黒背景
-  color: '#fff',               // 白文字
-  border: '2px solid #000',    // 黒の太枠
-  padding: '8px 16px',
-  borderRadius: '4px',
-  fontSize: '0.8rem',
-  fontWeight: 'bold',
-  cursor: 'pointer',
-  letterSpacing: '1px'
-};
-
 const scrollTopButtonStyle: React.CSSProperties = {
   position: 'fixed',
   bottom: '20px',
@@ -287,7 +248,6 @@ const scrollTopButtonStyle: React.CSSProperties = {
   fontSize: '1.2rem',
   cursor: 'pointer',
   zIndex: 999,
-  boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center'
