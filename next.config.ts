@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
       },
       // 3. ドメイン直下のアクセスのみを転送（★最後の .+ を [^/]+ に変更しました）
       {
-        source: '/:slug((?!$|about|pizza|service|shop|contact|items|studio|api|jp|en|th|_next|static|favicon\\.ico|.*\\.[a-zA-Z0-9]+)[^/]+)',
+        source: '/:slug((?!$|about|pizza|service|shop|contact|items|studio|api|privacy-policy|jp|en|th|_next|static|favicon\\.ico|.*\\.[a-zA-Z0-9]+)[^/]+)',
         destination: '/items/:slug',
         permanent: true,
       },
