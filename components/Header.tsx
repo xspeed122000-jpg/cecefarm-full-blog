@@ -110,7 +110,8 @@ export default function Header() {
 
           {/* 中央：PCメニュー */}
           <nav className="nav-menu desktop-only" style={navStyle}>
-           {/* Serviceをドロップダウン化 */}
+            <Link href="/" style={navLinkStyle}>Home</Link>
+            {/* Serviceをドロップダウン化 */}
             <div className="service-container">
               <Link href="/services" style={navLinkStyle}>Service ▾</Link>
               <div className="service-dropdown">
@@ -118,9 +119,7 @@ export default function Header() {
                 <Link href="/en/phyto_cites" className="dropdown-item">Phyto / CITES (EN)</Link>
                 <Link href="/th/phyto_cites" className="dropdown-item">Phyto / CITES (TH)</Link>
               </div>
-            </div>  
-          
-            <Link href="/" style={navLinkStyle}>Home</Link>
+            </div>
             <Link href="/about" style={navLinkStyle}>About</Link>
             <Link href="/items" style={navLinkStyle}>Items</Link>
             <Link href="/pizza" style={navLinkStyle}>Pizza</Link>
@@ -148,23 +147,22 @@ export default function Header() {
           </div>
         </div>
 
-       {/* スマホ用展開メニュー */}
+        {/* スマホ用展開メニュー */}
         <nav className="nav-menu mobile-only">
           {/* ... CLOSEボタン ... */}
           <Link href="/" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Home</Link>
-          
+
           {/* スマホ版 Service展開 */}
-          <div style={{...mobileNavLinkStyle, cursor: 'pointer'}} onClick={() => setIsServiceOpen(!isServiceOpen)}>
+          <div style={{ ...mobileNavLinkStyle, cursor: 'pointer' }} onClick={() => setIsServiceOpen(!isServiceOpen)}>
             Service {isServiceOpen ? '▴' : '▾'}
           </div>
           {isServiceOpen && (
             <div className="mobile-service-sub">
-              <Link href="/jp/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{...mobileNavLinkStyle, fontSize: '0.9rem', paddingLeft: '20px'}}>Phyto / CITES (JP)</Link>
-              <Link href="/en/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{...mobileNavLinkStyle, fontSize: '0.9rem', paddingLeft: '20px'}}>Phyto / CITES (EN)</Link>
-              <Link href="/th/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{...mobileNavLinkStyle, fontSize: '0.9rem', paddingLeft: '20px'}}>Phyto / CITES (TH)</Link>
+              <Link href="/jp/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', paddingLeft: '20px' }}>Phyto / CITES (JP)</Link>
+              <Link href="/en/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', paddingLeft: '20px' }}>Phyto / CITES (EN)</Link>
+              <Link href="/th/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', paddingLeft: '20px' }}>Phyto / CITES (TH)</Link>
             </div>
           )}
-        
           <Link href="/about" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>About</Link>
           <Link href="/items" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Items</Link>
           <Link href="/pizza" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Pizza</Link>
