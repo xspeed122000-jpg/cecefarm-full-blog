@@ -38,8 +38,8 @@ export default async function PhytoPage({
 }) {
   const { lang } = await params;
 
-  // slugを指定してデータを取得
-  const query = `*[_type == "staticPage" && slug.current == "phyto_cites" && language == $lang][0]`;
+  // query をこのように変更（"==" ではなく "match" を使う）
+  const query = `*[_type == "staticPage" && slug.current match "phyto_cites*" && language == $lang][0]`;
   const page = await client.fetch(query, { lang });
 
   if (!page) return <div>Page Not Found</div>;
