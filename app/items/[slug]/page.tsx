@@ -91,7 +91,7 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ slu
           backgroundColor: '#fff'
         }}>
           {/* PortableTextコンポーネントを使ってリッチテキストを表示 */}
-          <PortableText value={item.body} />
+         <PortableText value={item.body}/>
         </div>
       )}
 

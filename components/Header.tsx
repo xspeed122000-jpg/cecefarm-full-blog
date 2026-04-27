@@ -110,14 +110,7 @@ export default function Header() {
 
           {/* 中央：PCメニュー */}
           <nav className="nav-menu desktop-only" style={navStyle}>
-            
-          
-            <Link href="/" style={navLinkStyle}>Home</Link>
-            <Link href="/about" style={navLinkStyle}>About</Link>
-            <Link href="/items" style={navLinkStyle}>Items</Link>
-            <Link href="/pizza" style={navLinkStyle}>Pizza</Link>
-           <Link href="/" style={navLinkStyle}>Home</Link>
-            {/* Serviceをドロップダウン化 */}
+           {/* Serviceをドロップダウン化 */}
             <div className="service-container">
               <Link href="/services" style={navLinkStyle}>Service ▾</Link>
               <div className="service-dropdown">
@@ -125,7 +118,12 @@ export default function Header() {
                 <Link href="/en/phyto_cites" className="dropdown-item">Phyto / CITES (EN)</Link>
                 <Link href="/th/phyto_cites" className="dropdown-item">Phyto / CITES (TH)</Link>
               </div>
-            </div>
+            </div>  
+          
+            <Link href="/" style={navLinkStyle}>Home</Link>
+            <Link href="/about" style={navLinkStyle}>About</Link>
+            <Link href="/items" style={navLinkStyle}>Items</Link>
+            <Link href="/pizza" style={navLinkStyle}>Pizza</Link>
             <Link href="/shop" style={navLinkStyle}>Shop Info</Link>
             <Link href="/contact" style={navLinkStyle}>Contact</Link>
           </nav>
@@ -170,7 +168,6 @@ export default function Header() {
           <Link href="/about" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>About</Link>
           <Link href="/items" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Items</Link>
           <Link href="/pizza" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Pizza</Link>
-          <Link href="/services" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Service</Link>
           <Link href="/shop" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Shop Info</Link>
           <Link href="/contact" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Contact</Link>
         </nav>
