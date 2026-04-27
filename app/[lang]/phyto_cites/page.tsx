@@ -14,9 +14,9 @@ export default async function PhytoPage({
   const { lang } = await params;
 
   // 2. Sanityからデータを取得
-  // デバッグ用に、まずは全ての staticPage を取得するテストも兼ねたクエリ
-  const query = `*[_type == "staticPage" && slug.current == "phyto_cites" && language == $lang][0]`;
-  const page = await client.fetch(query, { lang });
+ // 修正案：まずは言語チェックを外して「slug」だけで探してみる
+  const query = `*[_type == "staticPage" && slug.current == "phyto_cites"][0]`;
+  const page = await client.fetch(query); // langを渡さない
 
   // 3. データが見つからない場合の表示
   if (!page) {
