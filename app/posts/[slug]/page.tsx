@@ -4,6 +4,8 @@ import { PortableText } from '@portabletext/react';
 import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs'; // パンくずリストをインポート
 
+export const runtime = 'edge';
+
 const client = createClient({
   projectId: '88s4pwup',
   dataset: 'production',

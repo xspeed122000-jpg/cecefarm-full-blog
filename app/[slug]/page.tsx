@@ -2,6 +2,8 @@ import { client } from "@/sanityClient";
 import { PortableText } from "@portabletext/react";
 import { notFound } from "next/navigation";
 
+export const runtime = 'edge';
+
 // Sanityからデータを取得する関数
 async function getStaticPage(slug: string) {
   const query = `*[_type == "staticPage" && slug.current == $slug][0]`;
