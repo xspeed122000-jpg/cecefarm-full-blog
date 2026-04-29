@@ -33,7 +33,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
 
         <footer style={{ /* 既存のスタイル */ }}>
-          <p>© {new Date().getFullYear()} Cece Farm & Cafe</p>
         </footer>
       </body>
     </html>

@@ -4,15 +4,11 @@ import { notFound } from "next/navigation";
 
 export const runtime = 'edge';
 
-// ★追加：Sanityのカスタムブロックをレンダリングするための設定
 const portableTextComponents = {
     types: {
-        // Sanity側での型名（恐らく 'html' や 'customHtml'）に合わせて設定します
+        // defineType の name である 'customHtml' を指定
         customHtml: ({ value }: any) => (
-            <div dangerouslySetInnerHTML={{ __html: value.html }} />
-        ),
-        // もし型名が 'html' の場合は以下も追加
-        html: ({ value }: any) => (
+            // defineField の name である 'html' から中身を取り出す
             <div dangerouslySetInnerHTML={{ __html: value.html }} />
         ),
     },
