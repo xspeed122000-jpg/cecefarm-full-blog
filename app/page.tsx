@@ -36,34 +36,47 @@ const dummyArticles = Array(6).fill(0).map((_, i) => ({
 
 export default function HomePage() {
   return (
-    <div>
-      {/* 1. Our Services セクション（3項目） */}
-      <section style={{ padding: '80px 20px', backgroundColor: '#fafafa' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '60px', fontSize: '2rem' }}>Our Services</h2>
-        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', justifyContent: 'center', gap: '40px', flexWrap: 'wrap' }}>
+    <main>
+      {/* --- 1. Our Services セクション --- */}
+      <section style={{ padding: '100px 20px', backgroundColor: '#fff' }}>
+        <div style={{ textAlign: 'center', marginBottom: '80px' }}>
+          {/* ★赤背景のロゴ画像。maxWidthでサイズを調整しています */}
+          <div style={{ maxWidth: '300px', margin: '0 auto 40px auto' }}>
+             <Image 
+               src="/home/logo.webp" 
+               alt="Cece Farm Logo" 
+               width={1400} 
+               height={750} 
+               style={{ width: '100%', height: 'auto' }} 
+             />
+          </div>
+          <h2 style={{ fontSize: '2.2rem', letterSpacing: '0.1em', fontWeight: 'bold' }}>OUR SERVICES</h2>
+        </div>
+
+        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', justifyContent: 'center', gap: '50px', flexWrap: 'wrap' }}>
           
           <ServiceItem 
-            image="/home/home_service_01.webp" // image_0.png のファイルパス
+            image="/home/home_service_01.webp"
             title="Plants (Items)"
             subTitle="Rare & Exotic Collection"
-            text="Cece Farm自社農園から厳選した、希少な斑入りモンステラなどのレアプランツをご紹介。コレクター垂涎の一鉢がここに。"
+            text={`Experience the beauty of nature with our curated selection of rare variegated plants. From the lush fields of Chiang Mai, we bring you the finest botanical treasures.\n\n自社農園から厳選した、希少な斑入りモンステラなどのレアプランツをご紹介。コレクター垂涎の一鉢がここに。`}
             href="/items"
           />
 
           <ServiceItem 
-            image="/home/home_service_02.webp" // image_1.png のファイルパス
+            image="/home/home_service_02.webp"
             title="Plant Export Support"
-            subTitle="(Phyto & CITES)"
-            text="複雑なPhyto（植物検疫証明書）とCITES（ワシントン条約）の手続きを完全サポート。世界中へ安全に届けた実績があります。"
-            href="/phyto_cites"
+            subTitle="Phyto & CITES Service"
+            text={`We provide professional assistance for obtaining Phytosanitary and CITES certificates, ensuring your plants reach their global destination safely and legally.\n\n複雑な植物検疫証明書（Phyto）やCITESの手続きを完全サポート。世界中へ安全に植物を届けるためのお手伝いをいたします。`}
+            href="/service"
           />
 
           <ServiceItem 
-            image="/home/home_service_03.webp" // image_2.png のファイルパス
+            image="/home/home_service_03.webp"
             title="Pizza & Coffee"
-            subTitle="(Cafe & Kitchen)"
-            text="プロのピザ職人が焼き上げる本格ピザと、厳選された豆を使用したこだわりのコーヒーを提供。植物に囲まれた癒しの空間で。"
-            href="/contact" // カフェの情報ページがあればそこにリンク
+            subTitle="Cafe & Kitchen"
+            text={`Enjoy authentic pizzas crafted by professional chefs and premium coffee brewed from selected beans, all within a relaxing space surrounded by greenery.\n\nプロの職人が焼き上げる本格ピザと、厳選された豆を使用したこだわりのコーヒーを提供。植物に囲まれた癒しの空間で。`}
+            href="/contact"
           />
 
         </div>
@@ -124,6 +137,6 @@ export default function HomePage() {
           animation: blink 1s infinite; /* 1秒かけて点滅を繰り返す */
         }
       ` }} />
-    </div>
-  )
+    </main>
+  );
 }

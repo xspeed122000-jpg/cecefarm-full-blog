@@ -5,9 +5,9 @@ export default function Footer() {
     return (
         <footer style={{
             marginTop: 'auto',
-            padding: '60px 20px',
-            borderTop: '1px solid #eee',
-            backgroundColor: '#f9f9f9'
+            padding: '80px 20px',
+            backgroundColor: '#1a1a1a', // 濃い目のグレー（赤ロゴを引き立てます）
+            color: '#eee'
         }}>
             <div style={{
                 maxWidth: '1000px',
@@ -15,25 +15,12 @@ export default function Footer() {
                 display: 'flex',
                 flexWrap: 'wrap',
                 justifyContent: 'space-between',
-                alignItems: 'flex-start'
-            }}>        
-            </div>
-            <div style={{
-                maxWidth: '1000px',
-                margin: '0 auto',
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
+                alignItems: 'center', // ★これで横並びの要素が綺麗に中央で揃います
                 gap: '40px'
             }}>
-                
-                {/* 左：店名 */}
                 <div style={{ flex: '1', minWidth: '200px' }}>
-                    <h2 style={{ margin: 0, fontSize: '1.2rem' }}>Cece Farm</h2>
-                    <p style={{ fontSize: '0.8rem', color: '#666', lineHeight: '1.6' }}>
-                        Rare Plants & pizza coffee<br />
-                        Chiang Mai, Thailand
-                    </p>
+                    <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#fff' }}>Cece Farm</h2>
+                    <p style={{ fontSize: '0.8rem', color: '#999', marginTop: '5px' }}>Rare Plants & Japanese Soul Food</p>
                 </div>
 
                 {/* 中央：主要サービス（ここを埋める） */}
