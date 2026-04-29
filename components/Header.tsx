@@ -192,7 +192,11 @@ const logoStyle: React.CSSProperties = {
   display: 'block'
 };
 
-const navStyle: React.CSSProperties = { display: 'flex', gap: '15px' };
+const navStyle: React.CSSProperties = { 
+  display: 'flex', 
+  gap: '15px',
+  alignItems: 'center' // 垂直方向の中央揃え
+};
 
 const navLinkStyle: React.CSSProperties = {
   textDecoration: 'none',

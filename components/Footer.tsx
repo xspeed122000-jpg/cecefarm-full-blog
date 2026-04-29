@@ -16,8 +16,7 @@ export default function Footer() {
                 flexWrap: 'wrap',
                 justifyContent: 'space-between',
                 alignItems: 'flex-start'
-            }}>
-        // components/Footer.tsx
+            }}>        
             </div>
             <div style={{
                 maxWidth: '1000px',
@@ -31,7 +30,7 @@ export default function Footer() {
                 <div style={{ flex: '1', minWidth: '200px' }}>
                     <h2 style={{ margin: 0, fontSize: '1.2rem' }}>Cece Farm</h2>
                     <p style={{ fontSize: '0.8rem', color: '#666', lineHeight: '1.6' }}>
-                        Rare Plants & Japanese Soul Food<br />
+                        Rare Plants & pizza coffee<br />
                         Chiang Mai, Thailand
                     </p>
                 </div>
