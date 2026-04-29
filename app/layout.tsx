@@ -18,22 +18,27 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja">
-      <body style={{ /* 既存のスタイル */ }}>
+      {/* 1. bodyにflexを設定すると、コンテンツが少なくてもフッターが下に固定されます */}
+      <body style={{ 
+        margin: 0, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        minHeight: '100vh' 
+      }}>
         <Suspense fallback={<div style={{ height: '130px' }} />}>
           <Header />
         </Suspense>
 
-        {/* mainタグにヘッダーの高さ分の余白を追加 */}
         <main style={{
-          flex: 1,
-          paddingTop: '140px', // ★スマホの2段ヘッダー分、上を空けます
+          flex: 1, // これにより、メイン部分が余ったスペースを埋めます
+          paddingTop: '140px',
           boxSizing: 'border-box'
         }}>
           {children}
         </main>
 
-        <footer style={{ /* 既存のスタイル */ }}>
-        </footer>
+        {/* 2. ここを修正！ HTMLのタグではなく、作成したコンポーネントを呼び出します */}
+        <Footer /> 
       </body>
     </html>
   );
