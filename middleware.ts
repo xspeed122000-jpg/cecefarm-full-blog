@@ -16,6 +16,7 @@ export function middleware(request: NextRequest) {
     '/studio',
     '/api',
     '/privacy-policy', 
+    '/sitemap',
     '/jp',
     '/en',
     '/th',
