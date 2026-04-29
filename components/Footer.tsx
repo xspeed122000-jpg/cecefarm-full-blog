@@ -20,7 +20,7 @@ export default function Footer() {
             }}>
                 <div style={{ flex: '1', minWidth: '200px' }}>
                     <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#fff' }}>Cece Farm</h2>
-                    <p style={{ fontSize: '0.8rem', color: '#999', marginTop: '5px' }}>Rare Plants & Japanese Soul Food</p>
+                    <p style={{ fontSize: '0.8rem', color: '#999', marginTop: '5px' }}>Rare Plants & coffee</p>
                 </div>
 
                 {/* 中央：主要サービス（ここを埋める） */}

@@ -3,12 +3,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 // 丸い画像の紹介項目のコンポーネント
-function ServiceItem({ image, title, subTitle, text, href }: { 
-  image: string; 
-  title: string; 
-  subTitle: string; 
-  text: string; 
-  href: string; 
+function ServiceItem({ image, title, subTitle, text, href }: {
+  image: string;
+  title: string;
+  subTitle: string;
+  text: string;
+  href: string;
 }) {
   return (
     <div style={{ flex: '1', minWidth: '300px', maxWidth: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -37,25 +37,41 @@ const dummyArticles = Array(6).fill(0).map((_, i) => ({
 export default function HomePage() {
   return (
     <main>
-      {/* --- 1. Our Services セクション --- */}
-      <section style={{ padding: '100px 20px', backgroundColor: '#fff' }}>
-        <div style={{ textAlign: 'center', marginBottom: '80px' }}>
-          {/* ★赤背景のロゴ画像。maxWidthでサイズを調整しています */}
-          <div style={{ maxWidth: '300px', margin: '0 auto 40px auto' }}>
-             <Image 
-               src="/home/logo.webp" 
-               alt="Cece Farm Logo" 
-               width={1400} 
-               height={750} 
-               style={{ width: '100%', height: 'auto' }} 
-             />
+      {/* 1. Our Services セクション */}
+      <section style={{
+        padding: '20px 20px 100px 20px', // ★ 上の余白をさらに 20px まで詰めました
+        backgroundColor: '#fff'
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+          {/* ロゴ画像：上下のマージンを最小限に */}
+          <div style={{
+            maxWidth: '260px',
+            margin: '0 auto 10px auto' // ★ ロゴの下の文字との隙間もさらに詰めました
+          }}>
+            <Image
+              src="/home/logo.png" // 手書き風の新ロゴに差し替え
+              alt="Cece Farm Logo"
+              width={1400}
+              height={750}
+              style={{ width: '100%', height: 'auto' }}
+              priority // ★ トップの画像なので優先読み込み
+            />
           </div>
-          <h2 style={{ fontSize: '2.2rem', letterSpacing: '0.1em', fontWeight: 'bold' }}>OUR SERVICES</h2>
+
+          <h2 style={{
+            fontSize: '1.8rem',
+            letterSpacing: '0.15em',
+            fontWeight: 'bold',
+            marginTop: '0',
+            color: '#333'
+          }}>
+            OUR SERVICES
+          </h2>
         </div>
 
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', justifyContent: 'center', gap: '50px', flexWrap: 'wrap' }}>
-          
-          <ServiceItem 
+
+          <ServiceItem
             image="/home/home_service_01.webp"
             title="Plants (Items)"
             subTitle="Rare & Exotic Collection"
@@ -63,7 +79,7 @@ export default function HomePage() {
             href="/items"
           />
 
-          <ServiceItem 
+          <ServiceItem
             image="/home/home_service_02.webp"
             title="Plant Export Support"
             subTitle="Phyto & CITES Service"
@@ -71,7 +87,7 @@ export default function HomePage() {
             href="/service"
           />
 
-          <ServiceItem 
+          <ServiceItem
             image="/home/home_service_03.webp"
             title="Pizza & Coffee"
             subTitle="Cafe & Kitchen"
@@ -125,7 +141,8 @@ export default function HomePage() {
       </section>
 
       {/* ★ピカピカするNewアイコン用のCSSアニメーション */}
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @keyframes blink {
           0% { opacity: 1; }
           50% { opacity: 0; }
