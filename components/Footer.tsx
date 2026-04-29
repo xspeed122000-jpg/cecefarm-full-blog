@@ -26,6 +26,7 @@ export default function Footer() {
                 justifyContent: 'space-between',
                 gap: '40px'
             }}>
+                
                 {/* 左：店名 */}
                 <div style={{ flex: '1', minWidth: '200px' }}>
                     <h2 style={{ margin: 0, fontSize: '1.2rem' }}>Cece Farm</h2>
