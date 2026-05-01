@@ -12,11 +12,12 @@ const client = createClient({
 });
 
 async function getItems() {
-  // カテゴリーが確実に存在する記事だけを取得し、画像URLをより強固に取得します
-  const query = `*[_type == "post" && defined(category)] | order(publishedAt desc) {
+  // 条件を最小限にして、全記事を取得します
+  const query = `*[_type == "post"] | order(publishedAt desc) {
     title,
     "slug": slug.current,
     category,
+    Category,
     "imageUrl": mainImage.asset->url
   }`;
   return await client.fetch(query);
@@ -25,26 +26,34 @@ async function getItems() {
 export default async function ItemsPage() {
   const items = await getItems();
 
-  // 1. カテゴリーごとにグループ化（大文字小文字の差をなくす）
+  // 1. カテゴリーの分類処理（大文字・小文字、空欄に対応）
   const groupedItems = items.reduce((acc: any, item: any) => {
-    // カテゴリー名をトリミングして「見た目」を整える
-    const rawCat = item.category.trim();
-    // 表示用には元の名前を、キー（分類用）には小文字を使います
-    if (!acc[rawCat]) acc[rawCat] = [];
-    acc[rawCat].push(item);
+    // category または Category フィールドから値を取得
+    const rawCat = item.category || item.Category;
+    
+    // カテゴリーがない場合は表示しない（ここでUncategorizedを排除）
+    if (!rawCat) return acc;
+
+    const catName = rawCat.trim();
+    if (!acc[catName]) acc[catName] = [];
+    acc[catName].push(item);
     return acc;
   }, {});
 
-  // 2. カテゴリー名をアルファベット順にソート
   const sortedCategories = Object.keys(groupedItems).sort((a, b) => 
     a.toLowerCase().localeCompare(b.toLowerCase())
   );
 
   return (
     <main style={{ maxWidth: '1100px', margin: '120px auto', padding: '0 20px' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '60px', fontSize: '2.5rem' }}>Our Collection</h1>
+      <h1 style={{ textAlign: 'center', marginBottom: '10px', fontSize: '2.5rem' }}>Our Collection</h1>
+      
+      {/* デバッグ用：データが届いているか確認するための表示 */}
+      <p style={{ textAlign: 'center', color: '#999', marginBottom: '60px', fontSize: '0.8rem' }}>
+        {items.length} items found
+      </p>
 
-      {/* カテゴリー目次（Uncategorizedは自動で消えます） */}
+      {/* カテゴリー目次 */}
       <nav style={{ display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '80px' }}>
         {sortedCategories.map(cat => (
           <a key={cat} href={`#${cat}`} style={{ 
@@ -65,20 +74,18 @@ export default async function ItemsPage() {
       {sortedCategories.map(category => (
         <section key={category} id={category} style={{ marginBottom: '120px' }}>
           <h2 style={{ 
-            fontSize: '1.8rem', 
-            borderBottom: '2px solid #222', 
+            fontSize: '1.6rem', 
+            borderBottom: '2px solid #333', 
             paddingBottom: '12px', 
             marginBottom: '40px',
-            textTransform: 'capitalize',
-            color: '#222'
+            textTransform: 'capitalize'
           }}>
             {category}
           </h2>
 
-          {/* この div の中でだけ横に並ぶように固定します */}
           <div style={{ 
             display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
             gap: '40px' 
           }}>
             {groupedItems[category]
@@ -86,23 +93,22 @@ export default async function ItemsPage() {
               .map((item: any) => (
                 <Link href={`/items/${item.slug}`} key={item.slug} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <div style={{ overflow: 'hidden', borderRadius: '12px' }}>
-                    <div style={{ position: 'relative', width: '100%', height: '350px', backgroundColor: '#f0f0f0' }}>
+                    <div style={{ position: 'relative', width: '100%', height: '300px', backgroundColor: '#f0f0f0' }}>
                       {item.imageUrl ? (
                         <Image 
                           src={item.imageUrl} 
                           alt={item.title} 
                           fill 
                           style={{ objectFit: 'cover' }} 
-                          unoptimized // ★画像が表示されない場合のデバッグ用に追加
                         />
                       ) : (
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#ccc' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#ccc', fontSize: '0.8rem' }}>
                           No Image
                         </div>
                       )}
                     </div>
-                    <div style={{ padding: '20px 10px', textAlign: 'center' }}>
-                      <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 'bold', color: '#333' }}>{item.title}</h3>
+                    <div style={{ padding: '15px 5px', textAlign: 'center' }}>
+                      <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 'bold' }}>{item.title}</h3>
                     </div>
                   </div>
                 </Link>
