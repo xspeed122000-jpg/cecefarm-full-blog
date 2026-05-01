@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // ★ ここを追加：Sanityの画像を許可する設定
+  // 画像の許可設定
   images: {
     remotePatterns: [
       {
@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.sanity.io',
       },
     ],
-  }
+  },
   async redirects() {
     return [
       // 1. 旧URLから新URL（日本語）への転送
