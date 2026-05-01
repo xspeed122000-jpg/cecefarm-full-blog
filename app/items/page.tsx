@@ -28,7 +28,7 @@ async function getItems() {
 export default async function ItemsPage() {
   const items = await getItems();
 
-  // ★ どんなデータ構造が来ても絶対にエラーにならない安全な分類処理
+  // ★ どんなデータ構造が来ても絶対エラーにならない安全な分類処理
   const groupedItems = items.reduce((acc: any, item: any) => {
     let catName = "";
 
