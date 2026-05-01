@@ -1,3 +1,4 @@
+// app/items/page.tsx
 import { createClient } from 'next-sanity';
 import Image from "next/image";
 import Link from "next/link";
@@ -12,12 +13,13 @@ const client = createClient({
 });
 
 async function getItems() {
-  // 条件を最小限にして、全記事を取得します
+  // Sanityの標準的なカテゴリースキーマにも対応できるように取得項目を増やしています
   const query = `*[_type == "post"] | order(publishedAt desc) {
     title,
     "slug": slug.current,
     category,
     Category,
+    "categories": categories[]->title, 
     "imageUrl": mainImage.asset->url
   }`;
   return await client.fetch(query);
@@ -26,15 +28,25 @@ async function getItems() {
 export default async function ItemsPage() {
   const items = await getItems();
 
-  // 1. カテゴリーの分類処理（大文字・小文字、空欄に対応）
+  // ★ どんなデータ構造が来ても絶対にエラーにならない安全な分類処理
   const groupedItems = items.reduce((acc: any, item: any) => {
-    // category または Category フィールドから値を取得
-    const rawCat = item.category || item.Category;
-    
-    // カテゴリーがない場合は表示しない（ここでUncategorizedを排除）
-    if (!rawCat) return acc;
+    let catName = "";
 
-    const catName = rawCat.trim();
+    // データが文字列か配列かを自動判定して取得
+    if (typeof item.category === 'string') {
+      catName = item.category;
+    } else if (Array.isArray(item.category) && item.category.length > 0) {
+      catName = item.category[0]; // 配列の場合（例：["Monstera"]）
+    } else if (item.categories && Array.isArray(item.categories) && item.categories.length > 0) {
+      catName = item.categories[0]; // Sanity標準の参照カテゴリの場合
+    } else if (typeof item.Category === 'string') {
+      catName = item.Category;
+    }
+
+    // カテゴリーが空欄のものはリストから除外
+    if (!catName || typeof catName !== 'string') return acc;
+
+    catName = catName.trim();
     if (!acc[catName]) acc[catName] = [];
     acc[catName].push(item);
     return acc;
@@ -48,7 +60,7 @@ export default async function ItemsPage() {
     <main style={{ maxWidth: '1100px', margin: '120px auto', padding: '0 20px' }}>
       <h1 style={{ textAlign: 'center', marginBottom: '10px', fontSize: '2.5rem' }}>Our Collection</h1>
       
-      {/* デバッグ用：データが届いているか確認するための表示 */}
+      {/* 取得できたアイテム数を表示 */}
       <p style={{ textAlign: 'center', color: '#999', marginBottom: '60px', fontSize: '0.8rem' }}>
         {items.length} items found
       </p>
@@ -70,7 +82,7 @@ export default async function ItemsPage() {
         ))}
       </nav>
 
-      {/* カテゴリー別表示 */}
+      {/* カテゴリー別表示（横並び混ざり防止済） */}
       {sortedCategories.map(category => (
         <section key={category} id={category} style={{ marginBottom: '120px' }}>
           <h2 style={{ 
@@ -108,7 +120,7 @@ export default async function ItemsPage() {
                       )}
                     </div>
                     <div style={{ padding: '15px 5px', textAlign: 'center' }}>
-                      <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 'bold' }}>{item.title}</h3>
+                      <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 'bold', color: '#333' }}>{item.title}</h3>
                     </div>
                   </div>
                 </Link>
