@@ -8,31 +8,25 @@ export default function ItemsListClient({ initialItems }: { initialItems: any[] 
     const searchParams = useSearchParams();
     const query = searchParams.get('q') || ''; // URLから検索ワードを取得
 
-    // ★ 修正箇所：検索ワードがない場合は空っぽ（[]）にする
-    const filteredItems = query === '' ? [] : initialItems.filter((item) => {
-        const searchTerm = query.toLowerCase();
+    // ★ 修正箇所：検索ワードが空（''）の時は、空っぽにするのではなく「全件（initialItems）」を表示する！
+    const filteredItems = query === ''
+        ? initialItems
+        : initialItems.filter((item) => {
+            const searchTerm = query.toLowerCase();
+            const title = (item.title || '').toLowerCase();
+            const titleEn = (item.titleEn || '').toLowerCase();
+            const titleTh = (item.titleTh || '').toLowerCase();
 
-        const title = (item.title || '').toLowerCase();
-        const titleEn = (item.titleEn || '').toLowerCase();
-        const titleTh = (item.titleTh || '').toLowerCase();
-        // descriptionはSanityに無い場合エラーになるのを防ぐため、一旦外すかオプショナルにします
-        // const description = (item.description || '').toLowerCase();
-
-        return (
-            title.includes(searchTerm) ||
-            titleEn.includes(searchTerm) ||
-            titleTh.includes(searchTerm)
-        );
-    });
+            return (
+                title.includes(searchTerm) ||
+                titleEn.includes(searchTerm) ||
+                titleTh.includes(searchTerm)
+            );
+        });
 
     return (
         <div>
-            {/* 検索ワードが空の場合のメッセージ */}
-            {query === '' && (
-                <p style={{ textAlign: 'center', marginTop: '50px', color: '#666' }}>
-                    検索したい植物の名前を入力してください。
-                </p>
-            )}
+            {/* ↓ 前回追加した「検索ワードが空の場合のメッセージ」は削除してOKです */}
 
             <div style={gridStyle}>
                 {/* マップ処理はそのまま */}
