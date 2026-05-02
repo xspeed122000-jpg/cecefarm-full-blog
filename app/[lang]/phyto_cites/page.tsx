@@ -31,6 +31,8 @@ const components = {
   },
 };
 
+export const runtime = 'edge';
+
 export default async function PhytoPage({
   params,
 }: {
@@ -53,11 +55,4 @@ export default async function PhytoPage({
       </article>
     </main>
   );
-}
-export async function generateStaticParams() {
-  return [
-    { lang: 'ja' },
-    { lang: 'en' },
-    { lang: 'th' }
-  ];
 }
