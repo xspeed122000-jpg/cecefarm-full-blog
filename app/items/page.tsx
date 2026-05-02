@@ -1,12 +1,16 @@
 // app/items/page.tsx
+
 import { createClient } from 'next-sanity';
 import Image from "next/image";
 import Link from "next/link";
 
-export const runtime = 'edge';
+// ★ 一旦、runtime = 'edge' を削除またはコメントアウトします
+// export const runtime = 'edge'; 
 
 const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  // ★ projectId に直接、ご自身のプロジェクトID（英数字の文字列）を記述してください
+  // 例: projectId: "abc12345", 
+  projectId: "88s4pwup", 
   dataset: "production",
   apiVersion: "2024-01-01",
   useCdn: false,

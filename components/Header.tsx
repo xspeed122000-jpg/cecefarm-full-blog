@@ -168,7 +168,7 @@ export default function Header() {
 const headerStyle: React.CSSProperties = {
   borderBottom: '1px solid #eee',
   padding: '10px 20px',
-  backgroundColor: '#fff',
+  backgroundColor: '#FAF8F5',
   position: 'fixed',
   width: '100%',
   top: 0,

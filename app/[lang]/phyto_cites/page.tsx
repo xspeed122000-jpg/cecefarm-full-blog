@@ -1,4 +1,4 @@
-export const runtime = 'edge';
+// export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 import { client } from '@/sanityClient';
@@ -53,4 +53,11 @@ export default async function PhytoPage({
       </article>
     </main>
   );
+}
+export async function generateStaticParams() {
+  return [
+    { lang: 'ja' },
+    { lang: 'en' },
+    { lang: 'th' }
+  ];
 }

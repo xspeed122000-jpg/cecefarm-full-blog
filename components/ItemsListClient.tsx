@@ -8,31 +8,34 @@ export default function ItemsListClient({ initialItems }: { initialItems: any[] 
     const searchParams = useSearchParams();
     const query = searchParams.get('q') || ''; // URLから検索ワードを取得
 
-    // ItemsListClient.tsx の中身（一部抜粋）
-
-    const filteredItems = initialItems.filter((item) => {
+    // ★ 修正箇所：検索ワードがない場合は空っぽ（[]）にする
+    const filteredItems = query === '' ? [] : initialItems.filter((item) => {
         const searchTerm = query.toLowerCase();
 
-        // 安全に検索するために、データが存在しない場合は空文字を入れるようにします
         const title = (item.title || '').toLowerCase();
         const titleEn = (item.titleEn || '').toLowerCase();
         const titleTh = (item.titleTh || '').toLowerCase();
-        const description = (item.description || '').toLowerCase();
+        // descriptionはSanityに無い場合エラーになるのを防ぐため、一旦外すかオプショナルにします
+        // const description = (item.description || '').toLowerCase();
 
-        // いずれかの項目にキーワードが含まれていれば true を返す
         return (
             title.includes(searchTerm) ||
             titleEn.includes(searchTerm) ||
-            titleTh.includes(searchTerm) ||
-            description.includes(searchTerm)
+            titleTh.includes(searchTerm)
         );
     });
 
     return (
         <div>
-            {/* 以前ここにあったSearchBoxはヘッダーに移動したので削除してOKです */}
+            {/* 検索ワードが空の場合のメッセージ */}
+            {query === '' && (
+                <p style={{ textAlign: 'center', marginTop: '50px', color: '#666' }}>
+                    検索したい植物の名前を入力してください。
+                </p>
+            )}
 
             <div style={gridStyle}>
+                {/* マップ処理はそのまま */}
                 {filteredItems.map((item: any) => (
                     <Link key={item.slug} href={`/items/${item.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div style={cardStyle}>

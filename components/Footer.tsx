@@ -25,20 +25,20 @@ export default function Footer() {
 
                 {/* 中央：主要サービス（ここを埋める） */}
                 <div style={{ flex: '1', minWidth: '200px' }}>
-                    <h3 style={{ fontSize: '0.9rem', color: '#333' }}>Categories</h3>
+                    <h3 style={{ fontSize: '0.9rem', color: '#555555' }}>Categories</h3>
                     <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.85rem' }}>
-                        <Link href="/items" style={{ color: '#666', textDecoration: 'none' }}>All Plants</Link>
-                        <Link href="/phyto_cites" style={{ color: '#666', textDecoration: 'none' }}>Phyto & CITES</Link>
+                        <Link href="/items" style={{ color: '#7f7c7c', textDecoration: 'none' }}>All Plants</Link>
+                        <Link href="/phyto_cites" style={{ color: '#7f7c7c', textDecoration: 'none' }}>Phyto & CITES</Link>
                     </nav>
                 </div>
 
                 {/* 右：サポート（縦並び） */}
                 <div style={{ flex: '1', minWidth: '150px' }}>
-                    <h3 style={{ fontSize: '0.9rem', color: '#333' }}>Support</h3>
+                    <h3 style={{ fontSize: '0.9rem', color: '#555555' }}>Support</h3>
                     <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.85rem' }}>
-                        <Link href="/sitemap" style={{ color: '#666', textDecoration: 'none' }}>Sitemap</Link>
-                        <Link href="/privacy-policy" style={{ color: '#666', textDecoration: 'none' }}>Privacy Policy</Link>
-                        <Link href="/contact" style={{ color: '#666', textDecoration: 'none' }}>Contact</Link>
+                        <Link href="/sitemap" style={{ color: '#7f7c7c', textDecoration: 'none' }}>Sitemap</Link>
+                        <Link href="/privacy-policy" style={{ color: '#7f7c7c', textDecoration: 'none' }}>Privacy Policy</Link>
+                        <Link href="/contact" style={{ color: '#7f7c7c', textDecoration: 'none' }}>Contact</Link>
                     </nav>
                 </div>
             </div>

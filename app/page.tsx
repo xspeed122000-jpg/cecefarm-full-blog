@@ -1,6 +1,16 @@
 // app/page.tsx
 import Link from 'next/link';
 import Image from 'next/image';
+import { createClient } from 'next-sanity';
+
+// ★ ここに電話（client）の組み立て設定を追加します！
+const client = createClient({
+  // ↓ ここは Itemsページと同じご自身のプロジェクトIDを入れてください
+  projectId: "88s4pwup", 
+  dataset: "production",
+  apiVersion: "2024-01-01",
+  useCdn: false,
+});
 
 // 丸い画像の紹介項目のコンポーネント
 function ServiceItem({ image, title, subTitle, text, href }: {
@@ -25,16 +35,34 @@ function ServiceItem({ image, title, subTitle, text, href }: {
   );
 }
 
-// ダミーの記事データ（人気Plants、最新記事用）
-const dummyArticles = Array(6).fill(0).map((_, i) => ({
-  id: `article-${i}`,
-  date: `2026.${4 - (i % 2)}.${20 - i}`, // 簡易的な日付
-  title: `Rare Variegated Monstera #${i + 1}`,
-  subTitle: 'Thai Constellation',
-  image: '/items/item-01.png', // ダミー画像
-}));
+// ★ 1. ファイルの上部（他の関数の外）にデータ取得関数を追加します
+async function getPopularPlants() {
+  const popularSlugs = [
+    "caladium-black-knight",
+    "monstera-lechleriana-variegata",
+    "philodendron-caramel-marble-variegated"
+  ];
 
-export default function HomePage() {
+  // Sanityから指定した3つの記事を取得
+  const query = `*[_type == "post" && slug.current in $slugs] {
+    title,
+    "slug": slug.current,
+    "category": category,
+    "imageUrl": mainImage.asset->url
+  }`;
+  
+  // ※ 上部で定義した client を使います
+  const plants = await client.fetch(query, { slugs: popularSlugs });
+
+  // 指定した1位〜3位の順番通りに並び替えて返します
+  return popularSlugs.map(slug => plants.find((p: any) => p.slug === slug)).filter(Boolean);
+}
+
+// ★ 2. ページ本体の関数内でデータを呼び出します
+export default async function HomePage() {
+  // データを取得
+  const popularPlants = await getPopularPlants();
+
   return (
     <main>
       {/* 1. Our Services セクション */}
@@ -102,18 +130,25 @@ export default function HomePage() {
       <section style={{ backgroundColor: '#fff', padding: '80px 20px' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
           <h2 style={{ textAlign: 'center', marginBottom: '50px' }}>Popular Plants</h2>
-          {/* アクセス解析から3記事を選ぶためのプレースホルダー */}
+          
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px' }}>
-            {dummyArticles.slice(0, 3).map((item) => (
-              <div key={item.id} style={{ border: '1px solid #eee', borderRadius: '8px', overflow: 'hidden' }}>
-                <div style={{ position: 'relative', width: '100%', height: '200px' }}>
-                  <Image src={item.image} alt={item.title} fill style={{ objectFit: 'cover' }} />
+            {/* ★ dummyArticles から popularPlants に変更 */}
+            {popularPlants.map((item: any) => (
+              <Link href={`/items/${item.slug}`} key={item.slug} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div style={{ border: '1px solid #eee', borderRadius: '8px', overflow: 'hidden' }}>
+                  <div style={{ position: 'relative', width: '100%', height: '250px', backgroundColor: '#f0f0f0' }}>
+                    {item.imageUrl && (
+                      <Image src={item.imageUrl} alt={item.title} fill style={{ objectFit: 'cover' }} />
+                    )}
+                  </div>
+                  <div style={{ padding: '20px', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.8rem', color: '#666', margin: '0 0 5px 0', textTransform: 'capitalize' }}>
+                      {item.category || 'Cece Farm'}
+                    </p>
+                    <h4 style={{ margin: '0', fontSize: '1.1rem', color: '#222' }}>{item.title}</h4>
+                  </div>
                 </div>
-                <div style={{ padding: '15px' }}>
-                  <p style={{ fontSize: '0.8rem', color: '#999', margin: '0' }}>{item.subTitle}</p>
-                  <h4 style={{ margin: '5px 0' }}>{item.title}</h4>
-                </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -124,7 +159,7 @@ export default function HomePage() {
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <h2 style={{ textAlign: 'center', marginBottom: '50px' }}>Latest Articles</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {dummyArticles.map((item, i) => (
+            {popularPlants.map((item, i) => (
               <Link href="#" key={item.id} style={{ display: 'flex', gap: '15px', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '15px', textDecoration: 'none', color: '#444' }}>
                 {/* 投稿日 */}
                 <div style={{ fontSize: '0.9rem', color: '#888', minWidth: '85px' }}>{item.date}</div>
