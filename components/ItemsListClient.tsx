@@ -26,8 +26,17 @@ export default function ItemsListClient({ initialItems }: { initialItems: any[] 
 
     return (
         <div>
-            {/* ↓ 前回追加した「検索ワードが空の場合のメッセージ」は削除してOKです */}
-
+            {/* ★ 検索中のみ表示される結果ヘッダーを追加 */}
+            {query !== '' && (
+                <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+                    <h2 style={{ fontSize: '1.5rem', color: '#2C3E35' }}>
+                        「{query}」の検索結果: {filteredItems.length}件
+                    </h2>
+                    <Link href="/items" style={{ color: '#666', textDecoration: 'underline', marginTop: '10px', display: 'inline-block' }}>
+                        × 検索をクリアして全件表示に戻る
+                    </Link>
+                </div>
+            )}
             <div style={gridStyle}>
                 {/* マップ処理はそのまま */}
                 {filteredItems.map((item: any) => (

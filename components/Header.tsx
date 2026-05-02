@@ -30,7 +30,8 @@ export default function Header() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push(`/items?q=${encodeURIComponent(keyword)}`);
+    // ★ router.push をやめて、確実にページを再読み込みさせる
+    window.location.href = `/items?q=${encodeURIComponent(keyword)}`;
     setIsMenuOpen(false);
   };
 
