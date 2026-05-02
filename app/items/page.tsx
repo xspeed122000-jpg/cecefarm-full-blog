@@ -10,7 +10,7 @@ import Link from "next/link";
 const client = createClient({
   // ★ projectId に直接、ご自身のプロジェクトID（英数字の文字列）を記述してください
   // 例: projectId: "abc12345", 
-  projectId: "88s4pwup", 
+  projectId: "88s4pwup",
   dataset: "production",
   apiVersion: "2024-01-01",
   useCdn: false,
@@ -29,11 +29,29 @@ async function getItems() {
   return await client.fetch(query);
 }
 
-export default async function ItemsPage() {
+// ★ 1. 関数が searchParams を受け取れるようにします
+export default async function ItemsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const items = await getItems();
+  // ★ 2. URLから検索ワード（q）を取得します
+  const params = await searchParams;
+  const query = typeof params.q === 'string' ? params.q.toLowerCase() : '';
 
+  // ★ 3. 取得した全アイテム（items）を、検索ワードで絞り込みます！
+  const filteredItems = query === '' 
+    ? items 
+    : items.filter((item: any) => {
+        const title = (item.title || '').toLowerCase();
+        const titleEn = (item.titleEn || '').toLowerCase();
+        const titleTh = (item.titleTh || '').toLowerCase();
+        return title.includes(query) || titleEn.includes(query) || titleTh.includes(query);
+      });
+  
   // ★ どんなデータ構造が来ても絶対エラーにならない安全な分類処理
-  const groupedItems = items.reduce((acc: any, item: any) => {
+  const groupedItems = filteredItems.reduce((acc: any, item: any) => {
     let catName = "";
 
     // データが文字列か配列かを自動判定して取得
@@ -56,82 +74,94 @@ export default async function ItemsPage() {
     return acc;
   }, {});
 
-  const sortedCategories = Object.keys(groupedItems).sort((a, b) => 
+  const sortedCategories = Object.keys(groupedItems).sort((a, b) =>
     a.toLowerCase().localeCompare(b.toLowerCase())
   );
 
   return (
     <main style={{ maxWidth: '1100px', margin: '120px auto', padding: '0 20px' }}>
       <h1 style={{ textAlign: 'center', marginBottom: '10px', fontSize: '2.5rem' }}>Our Collection</h1>
-      
-      {/* 取得できたアイテム数を表示 */}
+
+      {/* ★ 検索中のみ表示されるメッセージを追加 */}
+      {query !== '' && (
+        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <h2 style={{ fontSize: '1.5rem', color: '#2C3E35' }}>
+            「{query}」の検索結果: {filteredItems.length}件
+          </h2>
+          <Link href="/items" style={{ color: '#666', textDecoration: 'underline', marginTop: '10px', display: 'inline-block' }}>
+            × 検索をクリアして全件表示に戻る
+          </Link>
+        </div>
+      )}
+
+      {/* 取得できたアイテム数を表示（items を filteredItems に変更） */}
       <p style={{ textAlign: 'center', color: '#999', marginBottom: '60px', fontSize: '0.8rem' }}>
-        {items.length} items found
+        {filteredItems.length} items found
       </p>
 
-      {/* カテゴリー目次 */}
-      <nav style={{ display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '80px' }}>
-        {sortedCategories.map(cat => (
-          <a key={cat} href={`#${cat}`} style={{ 
-            padding: '6px 14px', 
-            backgroundColor: '#f8f8f8', 
-            borderRadius: '20px', 
-            fontSize: '0.8rem', 
-            textDecoration: 'none', 
-            color: '#666',
-            border: '1px solid #eee'
-          }}>
-            {cat}
-          </a>
-        ))}
-      </nav>
+      {/* ★ 検索結果が0件の場合は「見つかりません」と表示してリストを隠す */}
+      {filteredItems.length === 0 && query !== '' ? (
+        <p style={{ textAlign: 'center', color: '#999', marginTop: '50px', fontSize: '1.2rem' }}>
+          一致する植物が見つかりませんでした。別のキーワードをお試しください。
+        </p>
+      ) : (
+        <>
+          {/* カテゴリー目次 */}
+          <nav style={{ display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '80px' }}>
+            {sortedCategories.map(cat => (
+              <a key={cat} href={`#${cat}`} style={{
+                padding: '6px 14px',
+                backgroundColor: '#f8f8f8',
+                borderRadius: '20px',
+                fontSize: '0.8rem',
+                textDecoration: 'none',
+                color: '#666',
+                border: '1px solid #eee'
+              }}>
+                {cat}
+              </a>
+            ))}
+          </nav>
 
-      {/* カテゴリー別表示（横並び混ざり防止済） */}
-      {sortedCategories.map(category => (
-        <section key={category} id={category} style={{ marginBottom: '120px' }}>
-          <h2 style={{ 
-            fontSize: '1.6rem', 
-            borderBottom: '2px solid #333', 
-            paddingBottom: '12px', 
-            marginBottom: '40px',
-            textTransform: 'capitalize'
-          }}>
-            {category}
-          </h2>
+          {/* カテゴリー別表示 */}
+          {sortedCategories.map(category => (
+            <section key={category} id={category} style={{ marginBottom: '120px' }}>
+              <h2 style={{
+                fontSize: '1.6rem',
+                borderBottom: '2px solid #333',
+                paddingBottom: '12px',
+                marginBottom: '40px',
+                textTransform: 'capitalize'
+              }}>
+                {category}
+              </h2>
 
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-            gap: '40px' 
-          }}>
-            {groupedItems[category]
-              .sort((a: any, b: any) => a.title.localeCompare(b.title))
-              .map((item: any) => (
-                <Link href={`/items/${item.slug}`} key={item.slug} style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <div style={{ overflow: 'hidden', borderRadius: '12px' }}>
-                    <div style={{ position: 'relative', width: '100%', height: '300px', backgroundColor: '#f0f0f0' }}>
-                      {item.imageUrl ? (
-                        <Image 
-                          src={item.imageUrl} 
-                          alt={item.title} 
-                          fill 
-                          style={{ objectFit: 'cover' }} 
-                        />
-                      ) : (
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#ccc', fontSize: '0.8rem' }}>
-                          No Image
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '40px' }}>
+                {groupedItems[category]
+                  .sort((a: any, b: any) => a.title.localeCompare(b.title))
+                  .map((item: any) => (
+                    <Link href={`/items/${item.slug}`} key={item.slug} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <div style={{ overflow: 'hidden', borderRadius: '12px' }}>
+                        <div style={{ position: 'relative', width: '100%', height: '300px', backgroundColor: '#f0f0f0' }}>
+                          {item.imageUrl ? (
+                            <Image src={item.imageUrl} alt={item.title} fill style={{ objectFit: 'cover' }} />
+                          ) : (
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#ccc', fontSize: '0.8rem' }}>
+                              No Image
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                    <div style={{ padding: '15px 5px', textAlign: 'center' }}>
-                      <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 'bold', color: '#333' }}>{item.title}</h3>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-          </div>
-        </section>
-      ))}
+                        <div style={{ padding: '15px 5px', textAlign: 'center' }}>
+                          <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 'bold', color: '#333' }}>{item.title}</h3>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+              </div>
+            </section>
+          ))}
+        </>
+      )}
     </main>
   );
 }
