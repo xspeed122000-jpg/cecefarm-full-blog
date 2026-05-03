@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Inter, Playfair_Display } from 'next/font/google';
-import type { Metadata } from "next"; // すでに import があればそのままでOK
+import type { Metadata } from "next";
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 const playfair = Playfair_Display({
@@ -22,11 +22,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // ★ 2. htmlタグに、設定したフォントの情報を追加します
+    // ★ htmlタグに設定したフォントの情報を追加します
     <html lang="ja" className={`${inter.className} ${playfair.variable}`}>
-      <body>{children}</body>
-
-      {/* 1. bodyにflexを設定すると、コンテンツが少なくてもフッターが下に固定されます */}
+      
+      {/* ★ 不要な <body>{children}</body> を削除し、こちらに統一しました */}
       <body style={{
         margin: 0,
         display: 'flex',
@@ -45,7 +44,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
 
-        {/* 2. ここを修正！ HTMLのタグではなく、作成したコンポーネントを呼び出します */}
         <Footer />
       </body>
     </html>
