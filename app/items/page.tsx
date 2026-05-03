@@ -175,7 +175,16 @@ export default async function ItemsPage({
                           )}
                         </div>
                         <div style={{ padding: '15px 5px', textAlign: 'center' }}>
-                          <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 'bold', color: '#333' }}>{item.title}</h3>
+                          <h3 style={{
+                            margin: 0,
+                            fontSize: '1.1rem', // 少しだけ大きく
+                            fontWeight: '500',  // bold（太字）をやめる
+                            color: '#2C3E35',   // ただの黒ではなく、少し上品なダークグリーン系の黒に
+                            fontFamily: 'var(--font-playfair), serif', // ★ここで高級フォントを適用！
+                            letterSpacing: '0.02em'
+                          }}>
+                            {item.title}
+                          </h3>
                         </div>
                       </div>
                     </Link>

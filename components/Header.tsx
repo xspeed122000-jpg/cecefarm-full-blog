@@ -107,7 +107,7 @@ export default function Header() {
             <div className="service-container">
               <Link href="/services" style={navLinkStyle}>Service ▾</Link>
               <div className="service-dropdown">
-                <Link href="/jp/phyto_cites" className="dropdown-item">Phyto / CITES (JP)</Link>
+                <Link href="/jp/phyto_cites" className="dropdown-item">検疫証明書取得 (JP)</Link>
                 <Link href="/en/phyto_cites" className="dropdown-item">Phyto / CITES (EN)</Link>
                 <Link href="/th/phyto_cites" className="dropdown-item">Phyto / CITES (TH)</Link>
               </div>
@@ -145,7 +145,7 @@ export default function Header() {
             Service {isServiceOpen ? '▴' : '▾'}
           </div>
           <div className="mobile-service-sub">
-            <Link href="/jp/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>Phyto / CITES (JP)</Link>
+            <Link href="/jp/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>検疫証明書取得 (JP)</Link>
             <Link href="/en/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>Phyto / CITES (EN)</Link>
             <Link href="/th/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>Phyto / CITES (TH)</Link>
           </div>
@@ -203,14 +203,17 @@ const navLinkStyle: React.CSSProperties = {
   textDecoration: 'none',
   color: '#333',
   fontSize: '0.85rem',
-  fontWeight: '600'
+  fontWeight: '500', // ★ 600から500（少し細め）に変更
+  letterSpacing: '0.05em', // ★ 文字の間隔を少し開けてスッキリさせる
+  textTransform: 'uppercase' // ★（おまけ）英語を大文字に揃えるとさらに洗練されます
 };
 
 const mobileNavLinkStyle: React.CSSProperties = {
   textDecoration: 'none',
   color: '#333',
   fontSize: '1.1rem',
-  fontWeight: '600',
+  fontWeight: '500', // ★ こちらも500に変更
+  letterSpacing: '0.05em', // ★ 文字の間隔を開ける
   padding: '15px 0',
   borderBottom: '1px solid #f5f5f5',
   display: 'block'
