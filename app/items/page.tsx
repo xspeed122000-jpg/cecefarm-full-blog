@@ -4,7 +4,7 @@ import { createClient } from 'next-sanity';
 import Image from "next/image";
 import Link from "next/link";
 
-export const runtime = 'edge'; 
+export const runtime = 'edge';
 
 const client = createClient({
   // ★ projectId に直接、ご自身のプロジェクトID（英数字の文字列）を記述してください
@@ -40,15 +40,15 @@ export default async function ItemsPage({
   const query = typeof params.q === 'string' ? params.q.toLowerCase() : '';
 
   // ★ 3. 取得した全アイテム（items）を、検索ワードで絞り込みます！
-  const filteredItems = query === '' 
-    ? items 
+  const filteredItems = query === ''
+    ? items
     : items.filter((item: any) => {
-        const title = (item.title || '').toLowerCase();
-        const titleEn = (item.titleEn || '').toLowerCase();
-        const titleTh = (item.titleTh || '').toLowerCase();
-        return title.includes(query) || titleEn.includes(query) || titleTh.includes(query);
-      });
-  
+      const title = (item.title || '').toLowerCase();
+      const titleEn = (item.titleEn || '').toLowerCase();
+      const titleTh = (item.titleTh || '').toLowerCase();
+      return title.includes(query) || titleEn.includes(query) || titleTh.includes(query);
+    });
+
   // ★ どんなデータ構造が来ても絶対エラーにならない安全な分類処理
   const groupedItems = filteredItems.reduce((acc: any, item: any) => {
     let catName = "";
@@ -83,12 +83,36 @@ export default async function ItemsPage({
 
       {/* ★ 検索中のみ表示されるメッセージを追加 */}
       {query !== '' && (
-        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-          <h2 style={{ fontSize: '1.5rem', color: '#2C3E35' }}>
-            「{query}」の検索結果: {filteredItems.length}件
+        <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+          {/* 1. 英語メイン（少し大きく、太めに） */}
+          <h2 style={{
+            fontSize: '1.6rem',
+            fontWeight: '700',
+            color: '#2C3E35',
+            marginBottom: '4px',
+            letterSpacing: '0.05em'
+          }}>
+            Search results for "{query}": {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'}
           </h2>
-          <Link href="/items" style={{ color: '#666', textDecoration: 'underline', marginTop: '10px', display: 'inline-block' }}>
-            × 検索をクリアして全件表示に戻る
+
+          {/* 2. 日本語サブ（小さく、控えめなグレーで） */}
+          <p style={{ fontSize: '0.9rem', color: '#888', marginBottom: '20px' }}>
+            「{query}」の検索結果: {filteredItems.length}件
+          </p>
+
+          {/* 3. クリアボタン（スタイリッシュに） */}
+          <Link href="/items" style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            textDecoration: 'none',
+            color: '#666',
+            fontSize: '0.85rem',
+            borderBottom: '1px solid #ccc',
+            paddingBottom: '2px',
+            transition: 'all 0.2s'
+          }}>
+            <span style={{ fontWeight: '600', marginRight: '6px' }}>Clear search results</span>
+            <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>(検索をクリアして戻る)</span>
           </Link>
         </div>
       )}
