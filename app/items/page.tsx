@@ -4,8 +4,7 @@ import { createClient } from 'next-sanity';
 import Image from "next/image";
 import Link from "next/link";
 
-// ★ 一旦、runtime = 'edge' を削除またはコメントアウトします
-// export const runtime = 'edge'; 
+export const runtime = 'edge'; 
 
 const client = createClient({
   // ★ projectId に直接、ご自身のプロジェクトID（英数字の文字列）を記述してください
