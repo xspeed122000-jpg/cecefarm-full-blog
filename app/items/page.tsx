@@ -180,7 +180,7 @@ export default async function ItemsPage({
                             fontSize: '1.1rem', // 少しだけ大きく
                             fontWeight: '500',  // bold（太字）をやめる
                             color: '#2C3E35',   // ただの黒ではなく、少し上品なダークグリーン系の黒に
-                            fontFamily: 'var(--font-playfair), serif', // ★ここで高級フォントを適用！
+                            fontFamily: 'var(--font-playfair), var(--font-inter), sans-serif', 
                             letterSpacing: '0.02em'
                           }}>
                             {item.title}
