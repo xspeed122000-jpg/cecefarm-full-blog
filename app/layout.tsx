@@ -5,13 +5,13 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Inter, Playfair_Display } from 'next/font/google';
 import type { Metadata } from "next";
+
 const playfair = Playfair_Display({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-playfair'// ★後で簡単に呼び出せるように名前をつけます
 });
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' });
-
 
 export const metadata: Metadata = {
   robots: {
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // ★ htmlタグに設定したフォントの情報を追加します
-    <html lang="ja" className={`${inter.className} ${playfair.variable}`}>
+    <html lang="ja" className={`${inter.className} ${inter.variable} ${playfair.variable}`}>
 
       {/* ★ 不要な <body>{children}</body> を削除し、こちらに統一しました */}
       <body style={{
