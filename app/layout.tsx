@@ -5,13 +5,13 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Inter, Playfair_Display } from 'next/font/google';
 import type { Metadata } from "next";
-
-const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' });
 const playfair = Playfair_Display({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-playfair'// ★後で簡単に呼び出せるように名前をつけます
 });
+const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' });
+
 
 export const metadata: Metadata = {
   robots: {
