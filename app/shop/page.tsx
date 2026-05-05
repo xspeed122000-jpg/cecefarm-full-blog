@@ -10,21 +10,22 @@ export default function ShopPage() {
         {/* 上段：店舗詳細テキスト */}
         <section style={{ backgroundColor: '#fff', padding: '30px', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
           <h2 style={{ color: '#333' }}>Cece Farm & Cafe</h2>
-          <p style={{ color: '#666' }}>チェンマイの豊かな自然の中にある、植物に囲まれたカフェです。</p>
+          <p style={{ color: '#666' }}>A plant‑filled café nestled in Chiang Mai’s lush nature.<br/>
+ チェンマイの豊かな自然の中にある、植物に囲まれたカフェです。</p>
           
           <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
             <tbody>
               <tr>
-                <th style={tableHeaderStyle}>営業時間</th>
+                <th style={tableHeaderStyle}>Opening hours 営業時間</th>
                 <td style={tableDataStyle}>9:30 AM – 8:00 PM</td>
               </tr>
               <tr>
-                <th style={tableHeaderStyle}>住所</th>
-                <td style={tableDataStyle}>（ここに詳細な住所を入力してください）</td>
+                <th style={tableHeaderStyle}>Address 住所</th>
+                <td style={tableDataStyle}>THAILAND Chiang Mai 50180 Keilek Maerim 234 M.7</td>
               </tr>
               <tr>
-                <th style={tableHeaderStyle}>定休日</th>
-                <td style={tableDataStyle}>なし（年中無休）※もしあれば変更してください</td>
+                <th style={tableHeaderStyle}>Day Off 定休日</th>
+                <td style={tableDataStyle}>open all year round なし（年中無休）</td>
               </tr>
             </tbody>
           </table>

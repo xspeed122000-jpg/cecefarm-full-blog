@@ -14,9 +14,10 @@ const playfair = Playfair_Display({
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' });
 
 export const metadata: Metadata = {
+  // ★ Googleなどの検索エンジンに見つけてもらう設定です
   robots: {
-    index: false, // 後で書き換える
-    follow: false, // 後で書き換える
+    index: true, 
+    follow: true,
   },
 };
 
