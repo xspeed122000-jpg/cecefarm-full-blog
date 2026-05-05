@@ -6,6 +6,8 @@ import Footer from '@/components/Footer';
 import { Inter, Playfair_Display } from 'next/font/google';
 import type { Metadata } from "next";
 
+import { GoogleAnalytics } from '@next/third-parties/google'; // ★ 追加
+
 const playfair = Playfair_Display({
   subsets: ['latin'],
   display: 'swap',
@@ -47,6 +49,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <Footer />
       </body>
+      {/* ★ </body>の直後にこれを追加（測定IDを入れてください） */}
+      <GoogleAnalytics gaId="G-H0M06NKHPL" />
     </html>
   );
 }

@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@next/third-parties": "^16.2.4",
     "@portabletext/react": "^6.0.3",
     "@sanity/table": "^2.0.1",
     "@sanity/vision": "^5.22.0",
