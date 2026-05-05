@@ -66,7 +66,7 @@ export default function ContactPage() {
                         </div>
                         <div>
                             <label style={labelStyle}>Email</label>
-                            <input type="email" placeholder="Your Email address" style={inputStyle} />
+                            <input type="email" placeholder="contact@cecefarm.com" style={inputStyle} />
                         </div>
                         <div>
                             <label style={labelStyle}>Message</label>
