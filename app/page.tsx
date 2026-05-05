@@ -6,7 +6,7 @@ import { createClient } from 'next-sanity';
 // ★ ここに電話（client）の組み立て設定を追加します！
 const client = createClient({
   // ↓ ここは Itemsページと同じご自身のプロジェクトIDを入れてください
-  projectId: "88s4pwup", 
+  projectId: "88s4pwup",
   dataset: "production",
   apiVersion: "2024-01-01",
   useCdn: false,
@@ -50,7 +50,7 @@ async function getPopularPlants() {
     "category": category,
     "imageUrl": mainImage.asset->url
   }`;
-  
+
   // ※ 上部で定義した client を使います
   const plants = await client.fetch(query, { slugs: popularSlugs });
 
@@ -58,10 +58,20 @@ async function getPopularPlants() {
   return popularSlugs.map(slug => plants.find((p: any) => p.slug === slug)).filter(Boolean);
 }
 
-// ★ 2. ページ本体の関数内でデータを呼び出します
+// ★ 追加：最新の投稿を取得する関数（[0...5] で6件取得します）
+async function getLatestPosts() {
+  const query = `*[_type == "post"] | order(publishedAt desc)[0...5] {
+    title,
+    "slug": slug.current,
+    "date": publishedAt, // 投稿日
+    "imageUrl": mainImage.asset->url
+  }`;
+  return await client.fetch(query);
+}
 export default async function HomePage() {
-  // データを取得
+  // ★ 両方のデータを個別に取得します
   const popularPlants = await getPopularPlants();
+  const latestPosts = await getLatestPosts(); // ← これを追加！
 
   return (
     <main>
@@ -130,7 +140,7 @@ export default async function HomePage() {
       <section style={{ backgroundColor: '#fff', padding: '80px 20px' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
           <h2 style={{ textAlign: 'center', marginBottom: '50px' }}>Popular Plants</h2>
-          
+
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px' }}>
             {/* ★ dummyArticles から popularPlants に変更 */}
             {popularPlants.map((item: any) => (
@@ -159,14 +169,24 @@ export default async function HomePage() {
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <h2 style={{ textAlign: 'center', marginBottom: '50px' }}>Latest Articles</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {popularPlants.map((item, i) => (
-              <Link href="#" key={item.id} style={{ display: 'flex', gap: '15px', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '15px', textDecoration: 'none', color: '#444' }}>
-                {/* 投稿日 */}
-                <div style={{ fontSize: '0.9rem', color: '#888', minWidth: '85px' }}>{item.date}</div>
+            
+            {/* ★ 修正：popularPlants ではなく latestPosts を使います */}
+            {latestPosts.map((item: any, i: number) => (
+              <Link 
+                href={`/items/${item.slug}`} // href="#" だった部分を修正
+                key={item.slug} 
+                style={{ display: 'flex', gap: '15px', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '15px', textDecoration: 'none', color: '#444' }}
+              >
+                {/* 投稿日（Sanityの日記を整形） */}
+                <div style={{ fontSize: '0.9rem', color: '#888', minWidth: '85px' }}>
+                  {new Date(item.date).toLocaleDateString('ja-JP').replace(/\//g, '.')}
+                </div>
+                
                 {/* タイトル */}
                 <div style={{ flex: '1', fontSize: '1rem' }}>{item.title}</div>
-                {/* ★追加：ピカピカするNewアイコン（CSSアニメーション） */}
-                {i < 3 && ( // 最新3記事にNewを表示
+                
+                {/* 最新3記事にNewを表示 */}
+                {i < 3 && (
                   <div className="new-badge" style={{ fontSize: '0.8rem', marginLeft: '10px' }}>NEW</div>
                 )}
               </Link>
