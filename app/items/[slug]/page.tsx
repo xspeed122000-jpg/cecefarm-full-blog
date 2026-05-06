@@ -1,9 +1,10 @@
 import React from 'react';
 import { createClient } from 'next-sanity';
-import { PortableText } from '@portabletext/react'; // ★追加
+import { PortableText } from '@portabletext/react';
 import InstagramEmbed from '@/components/InstagramEmbed';
 import ImageGallery from '@/components/ImageGallery';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import type { Metadata } from 'next';
 
 const client = createClient({
   projectId: '88s4pwup',
@@ -14,14 +15,13 @@ const client = createClient({
 
 export const runtime = 'edge';
 
-// --- ここから追加 ---
-import type { Metadata } from 'next';
-
+// ----------------------------------------------------
+// ★ ここを修正しました（Descriptionの追加とタイトルの調整）
+// ----------------------------------------------------
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
 
-  // 1. SanityからSEOタイトルと通常のタイトルを取得
   const item = await client.fetch(`
     *[_type == "post" && slug.current == $slug][0] {
       title,
@@ -29,17 +29,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     }
   `, { slug });
 
-  // 2. 記事がない場合の安全策
-  if (!item) return { title: 'Item Not Found' };
+  if (!item) return { title: 'Item Not Found | Cece Farm' };
 
-  // 3. ロジック（優先順位）を適用
-  // SEOタイトルがあればそれを使い、なければ通常のタイトルを表示
+  // SEOタイトルがあればそれを使い、なければ通常のタイトルを使用
+  const displayTitle = item.seoTitle || item.title;
+
   return {
-    title: item.seoTitle || item.title,
+    title: `${displayTitle} | Cece Farm`,
+    description: `Cece Farm | Rare Plants & Cafe in Chiang Mai. 希少植物専門店 & カフェ。チェンマイより ${displayTitle} などの希少品種を厳選してお届けします。日本への配送相談も承ります。`,
   };
 }
-// --- ここまで追加 ---
 
+// ----------------------------------------------------
+// ★ ページ本体（ここは完璧なので何も変えていません！）
+// ----------------------------------------------------
 export default async function ItemDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
@@ -48,7 +51,7 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ slu
     *[_type == "post" && slug.current == $slug][0] {
       title,
       seoTitle,
-      body,        // ★重要：descriptionを消すか、bodyを追加します
+      body,
       "imageUrl": mainImage.asset->url,
       insta_url,
       "gallery_images": gallery_images[].asset->url
@@ -90,8 +93,7 @@ export default async function ItemDetailPage({ params }: { params: Promise<{ slu
           fontSize: '1.1rem',
           backgroundColor: '#fff'
         }}>
-          {/* PortableTextコンポーネントを使ってリッチテキストを表示 */}
-         <PortableText value={item.body}/>
+          <PortableText value={item.body}/>
         </div>
       )}
 

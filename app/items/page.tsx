@@ -3,12 +3,15 @@
 import { createClient } from 'next-sanity';
 import Image from "next/image";
 import Link from "next/link";
+import { Metadata } from 'next';
 
 export const runtime = 'edge';
+export const metadata: Metadata = {
+  title: "Our Collection | Cece Farm",
+  description: "Cece Farm's Rare Plant Collection. 希少植物コレクション一覧です。",
+};
 
 const client = createClient({
-  // ★ projectId に直接、ご自身のプロジェクトID（英数字の文字列）を記述してください
-  // 例: projectId: "abc12345", 
   projectId: "88s4pwup",
   dataset: "production",
   apiVersion: "2024-01-01",
@@ -27,6 +30,7 @@ async function getItems() {
   }`;
   return await client.fetch(query);
 }
+
 
 // ★ 1. 関数が searchParams を受け取れるようにします
 export default async function ItemsPage({
@@ -180,7 +184,7 @@ export default async function ItemsPage({
                             fontSize: '1.1rem', // 少しだけ大きく
                             fontWeight: '500',  // bold（太字）をやめる
                             color: '#2C3E35',   // ただの黒ではなく、少し上品なダークグリーン系の黒に
-                            fontFamily: 'var(--font-playfair), var(--font-inter), sans-serif', 
+                            fontFamily: 'var(--font-playfair), var(--font-inter), sans-serif',
                             letterSpacing: '0.02em'
                           }}>
                             {item.title}

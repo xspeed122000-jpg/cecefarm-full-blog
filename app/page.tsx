@@ -86,6 +86,14 @@ export default async function HomePage() {
             maxWidth: '260px',
             margin: '0 auto 10px auto' // ★ ロゴの下の文字との隙間もさらに詰めました
           }}>
+            <h1 style={{
+              fontSize: '0px', // 目には見えないけれど、検索エンジンには読み取らせるテクニックです
+              margin: 0,
+              padding: 0,
+              position: 'absolute'
+            }}>
+              Cece Farm - チェンマイの希少植物専門店
+            </h1>
             <Image
               src="/home/logo.png" // 手書き風の新ロゴに差し替え
               alt="Cece Farm Logo"
@@ -169,22 +177,22 @@ export default async function HomePage() {
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <h2 style={{ textAlign: 'center', marginBottom: '50px' }}>Latest Articles</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            
+
             {/* ★ 修正：popularPlants ではなく latestPosts を使います */}
             {latestPosts.map((item: any, i: number) => (
-              <Link 
+              <Link
                 href={`/items/${item.slug}`} // href="#" だった部分を修正
-                key={item.slug} 
+                key={item.slug}
                 style={{ display: 'flex', gap: '15px', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '15px', textDecoration: 'none', color: '#444' }}
               >
                 {/* 投稿日（Sanityの日記を整形） */}
                 <div style={{ fontSize: '0.9rem', color: '#888', minWidth: '85px' }}>
                   {new Date(item.date).toLocaleDateString('ja-JP').replace(/\//g, '.')}
                 </div>
-                
+
                 {/* タイトル */}
                 <div style={{ flex: '1', fontSize: '1rem' }}>{item.title}</div>
-                
+
                 {/* 最新3記事にNewを表示 */}
                 {i < 3 && (
                   <div className="new-badge" style={{ fontSize: '0.8rem', marginLeft: '10px' }}>NEW</div>

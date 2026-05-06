@@ -15,12 +15,19 @@ const playfair = Playfair_Display({
 });
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' });
 
+// app/layout.tsx
+
 export const metadata: Metadata = {
-  // ★ Googleなどの検索エンジンに見つけてもらう設定です
+  title: {
+    default: "Cece Farm | チェンマイの希少植物専門店 & カフェ",
+    template: "%s | Cece Farm"
+  },
+  description: "タイ・チェンマイのメーリムに位置する希少な熱帯植物を扱うファーム＆カフェです。プロの視点で厳選した植物をご提案します。",
   robots: {
-    index: true, 
+    index: true,
     follow: true,
   },
+  // Keywordsは現在のSEOでは重要視されないため、設定しなくても問題ありません。
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
