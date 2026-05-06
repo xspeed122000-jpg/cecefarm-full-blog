@@ -2,8 +2,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from 'next-sanity';
 
-export const runtime = 'edge';
-export const revalidate = 0;
+// 一時的なテスト：Edgeを無効にして静的なページとしてビルドしてみる
+// export const runtime = 'edge'; // これをコメントアウト
+export const revalidate = 60;    // 0ではなく60（1分キャッシュ）にしてみる
 
 const client = createClient({
   projectId: "88s4pwup",
