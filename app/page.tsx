@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from 'next-sanity';
 
+export const runtime = 'edge';
 export const revalidate = 0; // ★ 追加：キャッシュを無効化し、常に最新のデータを取得する
 // ★ ここに電話（client）の組み立て設定を追加します！
 const client = createClient({
