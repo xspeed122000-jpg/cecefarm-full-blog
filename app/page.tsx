@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from 'next-sanity';
 
+export const revalidate = 0; // ★ 追加：キャッシュを無効化し、常に最新のデータを取得する
 // ★ ここに電話（client）の組み立て設定を追加します！
 const client = createClient({
   // ↓ ここは Itemsページと同じご自身のプロジェクトIDを入れてください
@@ -60,10 +61,11 @@ async function getPopularPlants() {
 
 // ★ 追加：最新の投稿を取得する関数（[0...5] で6件取得します）
 async function getLatestPosts() {
-  const query = `*[_type == "post"] | order(publishedAt desc)[0...5] {
+  // 1. order(_createdAt desc) に変更し、確実に最新順にします
+  const query = `*[_type == "post"] | order(_createdAt desc)[0...5] {
     title,
     "slug": slug.current,
-    "date": publishedAt, // 投稿日
+    "date": coalesce(publishedAt, _createdAt), // 2. 公開日が空欄なら、自動作成日を使う安全策
     "imageUrl": mainImage.asset->url
   }`;
   return await client.fetch(query);
