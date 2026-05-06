@@ -35,7 +35,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const displayTitle = item.seoTitle || item.title;
 
   return {
-    title: `${displayTitle} | Cece Farm`,
+    // ★ | Cece Farm を削除（layout.tsxが自動で付けてくれます）
+    title: displayTitle, 
     description: `Cece Farm | Rare Plants & Cafe in Chiang Mai. 希少植物専門店 & カフェ。チェンマイより ${displayTitle} などの希少品種を厳選してお届けします。日本への配送相談も承ります。`,
   };
 }
