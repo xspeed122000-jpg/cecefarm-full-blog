@@ -25,7 +25,7 @@ export default function PizzaPage() {
         We are currently preparing to deliver the best pizza to you.<br />
         Please wait a little longer until our opening.<br />
         現在、最高のピザをお届けするための準備を進めております。<br />
-        オープンまでもうしばらくお待ちください。
+        オープンまで、もうしばらくお待ちください。
       </p>
     </main>
   );
