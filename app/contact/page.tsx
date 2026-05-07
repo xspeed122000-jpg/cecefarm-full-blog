@@ -81,7 +81,7 @@ export default function ContactPage() {
     );
 }
 
-// スタイル定義（一箇所にまとめることでエラーを防ぎます）
+// スタイル定義（一箇所にまとめることで、エラーを防ぎます）
 const infoItemStyle = { display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px', fontSize: '0.95rem' };
 const snsRowStyle = { display: 'flex', alignItems: 'center', gap: '15px' };
 const smallQrStyle = { width: '50px', height: '50px', borderRadius: '4px', border: '1px solid #eee' };
