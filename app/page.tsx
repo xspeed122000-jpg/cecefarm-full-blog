@@ -7,8 +7,8 @@ import { createClient } from 'next-sanity';
 export const revalidate = 60;    // 0ではなく60（1分キャッシュ）にしてみる
 
 const client = createClient({
-  projectId: "88s4pwup",
-  dataset: "production",
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID, // 「あだ名」で呼ぶ
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
   apiVersion: "2024-01-01",
   useCdn: false,
 });
@@ -100,7 +100,7 @@ export default async function HomePage() {
               if (!item) return null;
               const d = item.date ? new Date(item.date) : new Date();
               const dateString = isNaN(d.getTime()) ? "" : `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
-              
+
               return (
                 <Link href={`/items/${item.slug}`} key={item.slug} style={{ display: 'flex', gap: '15px', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '15px', textDecoration: 'none', color: '#444' }}>
                   <div style={{ fontSize: '0.9rem', color: '#888', minWidth: '85px' }}>{dateString}</div>
@@ -113,7 +113,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
         .new-badge { color: #ff0000; font-weight: bold; animation: blink 1s infinite; }
       ` }} />
