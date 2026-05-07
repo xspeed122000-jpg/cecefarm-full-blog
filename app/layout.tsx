@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     apple: "/apple-icon.png",
     shortcut: "/favicon.ico",
   },
-  // Keywordsは現在のSEOでは重要視されないため、設定しなくても問題ありません。
+  // Keywordsは現在のSEOでは重要視されないため設定しなくても問題ありません。
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
