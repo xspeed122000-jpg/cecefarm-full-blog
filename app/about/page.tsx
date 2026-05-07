@@ -65,7 +65,7 @@ export default function AboutPage() {
           Chiang Mai, Thailand, is a world-renowned sanctuary for rare foliage plants. Our founding mission is to bridge the gap between these botanical treasures and collectors worldwide, ensuring a safe, affordable, and seamless delivery to your doorstep.
         </p>
         <p style={{ fontSize: '1rem', lineHeight: '1.8', color: '#666' }}>
-          タイ・チェンマイは、世界でも有数の希少な観葉植物の宝庫です。私たちの創業理念は、これらの貴重な植物を適正な価格で、かつ安全に世界中のコレクターの皆様へお届けすることにあります。
+          タイ・チェンマイは世界でも有数の希少な観葉植物の宝庫です。私たちの創業理念は、これらの貴重な植物を適正な価格で、かつ安全に世界中のコレクターの皆様へお届けすることにあります。
         </p>
       </div>
 
