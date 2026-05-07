@@ -27,6 +27,11 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+    shortcut: "/favicon.ico",
+  },
   // Keywordsは現在のSEOでは重要視されないため、設定しなくても問題ありません。
 };
 
