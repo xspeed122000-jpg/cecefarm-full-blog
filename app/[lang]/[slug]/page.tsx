@@ -15,7 +15,6 @@ const portableTextComponents = {
 };
 
 async function getStaticPage(slug: string) {
-    // 念のため、本文（body）の中身も取得できているか確認するクエリ
     const query = `*[_type == "staticPage" && slug.current == $slug][0]`;
     const data = await client.fetch(query, { slug });
     return data;
