@@ -40,7 +40,7 @@ const nextConfig: NextConfig = {
         permanent: true, // 301リダイレクト（評価を引き継ぐ設定）
       },
       {
-        source: '/items/page/',
+        source: '/items/page',
         destination: '/items',
         permanent: true,
       },

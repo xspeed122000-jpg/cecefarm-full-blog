@@ -21,8 +21,8 @@ async function getStaticPage(slug: string) {
     return data;
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-    const { slug } = await params;
+export default async function Page({ params }: { params: { lang: string, slug: string } }) {
+  const { lang, slug } = params;
     const page = await getStaticPage(slug);
 
     if (!page) {
