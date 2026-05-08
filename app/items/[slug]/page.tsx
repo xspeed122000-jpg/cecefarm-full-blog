@@ -7,10 +7,10 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import type { Metadata } from 'next';
 
 const client = createClient({
-  projectId: '88s4pwup',
-  dataset: 'production',
-  useCdn: false,
-  apiVersion: '2024-03-01',
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
+  apiVersion: "2024-01-01",
+  useCdn: false, // ここが重要です
 });
 
 export const runtime = 'edge';

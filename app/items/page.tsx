@@ -12,10 +12,10 @@ export const metadata: Metadata = {
 };
 
 const client = createClient({
-  projectId: "88s4pwup",
-  dataset: "production",
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
   apiVersion: "2024-01-01",
-  useCdn: false,
+  useCdn: false, // ここが重要です
 });
 
 async function getItems() {
