@@ -2,9 +2,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from 'next-sanity';
 
-// 一時的なテスト：Edgeを無効にして静的なページとしてビルドしてみる
-// export const runtime = 'edge'; // これをコメントアウト
-export const revalidate = 60;    // 0ではなく60（1分キャッシュ）にしてみる
+// 【修正箇所】キャッシュを一切使わず、毎回サーバーで最新データを取得する設定
+export const dynamic = 'force-dynamic'; 
+// export const revalidate = 60; // これはコメントアウトか削除
 
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID, // 「あだ名」で呼ぶ
@@ -40,10 +40,23 @@ async function getPopularPlants() {
 
 async function getLatestPosts() {
   try {
-    const query = `*[_type == "post"] | order(_createdAt desc)[0...5] { title, "slug": slug.current, "date": coalesce(publishedAt, _createdAt), "imageUrl": mainImage.asset->url }`;
-    const data = await client.fetch(query);
+    const query = `*[_type == "post"] | order(_createdAt desc)[0...5] { 
+      title, 
+      "slug": slug.current, 
+      "date": coalesce(publishedAt, _createdAt), 
+      "imageUrl": mainImage.asset->url 
+    }`;
+    
+    // 【修正箇所】fetchのオプションにキャッシュ無効を追加
+    const data = await client.fetch(query, {}, {
+      next: { revalidate: 0 } // ここでも0（常に最新）を指定
+    });
+    
     return Array.isArray(data) ? data : [];
-  } catch (e) { return []; }
+  } catch (e) { 
+    console.error("LatestPosts Error:", e);
+    return []; 
+  }
 }
 
 export default async function HomePage() {
