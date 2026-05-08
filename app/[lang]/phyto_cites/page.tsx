@@ -48,6 +48,24 @@ export default async function PhytoPage({
 
   return (
     <main style={{ padding: '40px 20px', maxWidth: '800px', margin: '0 auto' }}>
+        {/* 言語切り替えバー */}
+            <div style={{
+                display: 'flex',
+                gap: '15px',
+                alignItems: 'center',
+                margin: '20px 0 40px 0',
+                paddingBottom: '10px',
+                borderBottom: '1px solid #eee',
+                fontSize: '0.9rem',
+                color: '#666'
+            }}>
+                <span style={{ fontWeight: 'bold' }}>Language:</span>
+                <a href="#jp" style={{ color: '#0070f3', textDecoration: 'none' }}>JP</a>
+                <span style={{ color: '#ccc' }}>|</span>
+                <a href="#en" style={{ color: '#0070f3', textDecoration: 'none' }}>EN</a>
+                <span style={{ color: '#ccc' }}>|</span>
+                <a href="#th" style={{ color: '#0070f3', textDecoration: 'none' }}>TH</a>
+            </div>
       <h1>{page.title}</h1>
       <article>
         {/* components={components} を追加することで画像が表示されるようになります */}
