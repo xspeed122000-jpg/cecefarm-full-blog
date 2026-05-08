@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from 'next-sanity';
 
+export const runtime = 'edge';
 // 【修正箇所】キャッシュを一切使わず、毎回サーバーで最新データを取得する設定
 export const dynamic = 'force-dynamic'; 
 // export const revalidate = 60; // これはコメントアウトか削除
