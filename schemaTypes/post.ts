@@ -5,6 +5,26 @@ export default defineType({
   title: 'Post',
   type: 'document',
   fields: [
+    // --- ここに言語設定を追加 ---
+    defineField({
+      name: 'language',
+      title: 'Language',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Japanese', value: 'jp' },
+          { title: 'English', value: 'en' },
+          { title: 'Thai', value: 'th' },
+        ],
+      },
+      initialValue: 'jp', // 最初からJPを選択状態にする
+    }),
+    
+    defineField({
+      name: 'title',
+      title: 'Title',
+      type: 'string',
+    }),
     defineField({
       name: 'title',
       title: 'Title',
