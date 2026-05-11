@@ -20,13 +20,22 @@ async function getStaticPage(slug: string) {
     return data;
 }
 
-export default async function Page({ params }: { params: { lang: string, slug: string } }) {
-  const { lang, slug } = params;
-    const page = await getStaticPage(slug);
+export default async function StaticPage({ params }: { params: any }) {
+  const { lang, slug } = await params;
 
-    if (!page) {
-        notFound();
-    }
+  // 安全装置：もし slug（ページ名）がなければ、何もしない（またはエラーを回避する）
+  if (!slug) {
+    return <div>Page not found</div>;
+  }
+
+  // クエリを実行する際に、必ず変数を渡す
+  const query = `*[_type == "staticPage" && slug.current == $slug && language == $lang][0]`;
+  const page = await client.fetch(query, { 
+    slug: slug, // ここが確実に渡されていることが大事
+    lang: lang 
+  });
+
+  if (!page) return <div>Content not found</div>;
 
     return (
         <main style={{ maxWidth: '800px', margin: '120px auto', padding: '0 20px' }}>
