@@ -1,3 +1,5 @@
+// app/[lang]/items/page.tsx
+import { Suspense } from 'react'; // 1. Suspenseをインポート
 import { client } from "@/sanityClient";
 import { Metadata } from 'next';
 import ItemsListClient from './ItemsListClient'; // 次に作るファイル
@@ -23,13 +25,16 @@ async function getItems(lang: string) {
   return await client.fetch(query, { lang });
 }
 
-// サーバーコンポーネントはこれだけシンプルになります
 export default async function ItemsPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   const items = await getItems(lang);
 
-  // 全データをクライアント側に渡します
-  return <ItemsListClient items={items} lang={lang} />;
+  return (
+    // 2. クライアントコンポーネントを Suspense で囲む
+    <Suspense fallback={<div>Loading...</div>}>
+      <ItemsListClient items={items} lang={lang} />
+    </Suspense>
+  );
 }
 
 export async function generateStaticParams() {
