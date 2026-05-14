@@ -30,7 +30,7 @@ export default function Footer() {
                 <div style={{ flex: '1', minWidth: '200px' }}>
                     <h3 style={{ fontSize: '0.9rem', color: '#555555' }}>Categories</h3>
                     <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.85rem' }}>
-                        <Link href="${lang}/items" style={{ color: '#7f7c7c', textDecoration: 'none' }}>All Plants</Link>
+                        <Link href="${lang}/items`}>items" style={{ color: '#7f7c7c', textDecoration: 'none' }}>All Plants</Link>
                         <Link href="/jp/service/phyto_cites" style={{ color: '#7f7c7c', textDecoration: 'none' }}>Phyto & CITES</Link>
                     </nav>
                 </div>
@@ -39,9 +39,9 @@ export default function Footer() {
                 <div style={{ flex: '1', minWidth: '150px' }}>
                     <h3 style={{ fontSize: '0.9rem', color: '#555555' }}>Support</h3>
                     <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.85rem' }}>
-                        <Link href="${lang}/sitemap" style={{ color: '#7f7c7c', textDecoration: 'none' }}>Sitemap</Link>
-                        <Link href="${lang}/privacy-policy" style={{ color: '#7f7c7c', textDecoration: 'none' }}>Privacy Policy</Link>
-                        <Link href="${lang}/contact" style={{ color: '#7f7c7c', textDecoration: 'none' }}>Contact</Link>
+                        <Link href="${lang/sitemap}/sitemap" style={{ color: '#7f7c7c', textDecoration: 'none' }}>Sitemap</Link>
+                        <Link href="${lang/privacy-policy}/privacy-policy" style={{ color: '#7f7c7c', textDecoration: 'none' }}>Privacy Policy</Link>
+                        <Link href="${lang/contact}/contact" style={{ color: '#7f7c7c', textDecoration: 'none' }}>Contact</Link>
                     </nav>
                 </div>
             </div>
