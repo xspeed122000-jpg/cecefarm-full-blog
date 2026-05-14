@@ -11,3 +11,12 @@ import config from '@/sanity.config' // プロジェクトルートにある設�
 export default function StudioPage() {
   return <NextStudio config={config} />
 }
+// app/studio/[[...index]]/page.tsx (または studio フォルダ内の page.tsx)
+
+export function generateStaticParams() {
+  // 管理画面（/studio）として、空のパスを1つだけ生成することをNext.jsに伝えます
+  return [{ index: [] }];
+}
+
+// 静的書き出しモードで管理画面を動かすために、念のため追加
+export const dynamic = 'force-static';
