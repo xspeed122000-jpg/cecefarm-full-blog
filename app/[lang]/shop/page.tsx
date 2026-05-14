@@ -1,5 +1,3 @@
-// app/shop/page.tsx
-
 export default function ShopPage() {
   return (
     <div style={{ padding: '80px 20px', maxWidth: '1000px', margin: '0 auto', fontFamily: 'sans-serif' }}>
@@ -61,6 +59,7 @@ const tableDataStyle = {
   borderBottom: '1px solid #eee',
   fontSize: '0.9rem'
 }
+
 export async function generateStaticParams() {
   return [
     { lang: 'jp' },

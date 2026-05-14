@@ -1,15 +1,10 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  // 画像の許可設定
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'export', // これを追加（静的書き出しモード）
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'cdn.sanity.io',
-      },
-    ],
+    unoptimized: true, // 静的書き出しでは画像の最適化を無効にする必要があります
   },
+
   async redirects() {
     return [
       // 1. 旧URLから新URL（日本語）への転送
@@ -48,4 +43,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
