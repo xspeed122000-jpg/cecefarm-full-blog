@@ -31,7 +31,7 @@ export default function Footer() {
                     <h3 style={{ fontSize: '0.9rem', color: '#555555' }}>Categories</h3>
                     <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.85rem' }}>
                         <Link href={`/${lang}/items`} style={{ color: '#7f7c7c', textDecoration: 'none' }}>All Plants</Link>
-                        <Link href={`/${lang}/phyto_cites`}  style={{ color: '#7f7c7c', textDecoration: 'none' }}>Phyto & CITES</Link>
+                        <Link href={`/${lang}/service/phyto_cites`}  style={{ color: '#7f7c7c', textDecoration: 'none' }}>Phyto & CITES</Link>
                     </nav>
                 </div>
 
