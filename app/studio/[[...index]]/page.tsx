@@ -1,22 +1,15 @@
-'use client'
+// app/studio/[[...index]]/page.tsx
+import Studio from './Studio'
 
-/**
- * このファイルは Sanity Studio（管理画面）を表示するための入り口です。
- * localhost:3000/studio にアクセスした際に実行されます。
- */
+// Next.jsに「/studio は静的なページだよ」と教える設定
+export const dynamic = 'force-static'
 
-import { NextStudio } from 'next-sanity/studio'
-import config from '@/sanity.config' // プロジェクトルートにある設定ファイルを読み込みます
+// 設定（Server）側でビルド時のパスを確定させる
+export function generateStaticParams() {
+  return [{ index: [] }]
+}
 
 export default function StudioPage() {
-  return <NextStudio config={config} />
+  // 上で作った Client Component を呼び出す
+  return <Studio />
 }
-// app/studio/[[...index]]/page.tsx (または studio フォルダ内の page.tsx)
-
-export function generateStaticParams() {
-  // 管理画面（/studio）として、空のパスを1つだけ生成することをNext.jsに伝えます
-  return [{ index: [] }];
-}
-
-// 静的書き出しモードで管理画面を動かすために、念のため追加
-export const dynamic = 'force-static';
