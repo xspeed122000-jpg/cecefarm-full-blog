@@ -39,9 +39,9 @@ export default function Footer() {
                 <div style={{ flex: '1', minWidth: '150px' }}>
                     <h3 style={{ fontSize: '0.9rem', color: '#555555' }}>Support</h3>
                     <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.85rem' }}>
-                        <Link href={`/${lang}/Sitemap`} style={{ color: '#7f7c7c', textDecoration: 'none' }}>Sitemap</Link>
-                        <Link href={`/${lang}/Privacy Policy`} style={{ color: '#7f7c7c', textDecoration: 'none' }}>Privacy Policy</Link>
-                        <Link href={`/${lang}/Contact`} style={{ color: '#7f7c7c', textDecoration: 'none' }}>Contact</Link>
+                        <Link href={`/${lang}/sitemap`} style={{ color: '#7f7c7c', textDecoration: 'none' }}>sitemap</Link>
+                        <Link href={`/${lang}/privacy-policy`} style={{ color: '#7f7c7c', textDecoration: 'none' }}>privacy-policy</Link>
+                        <Link href={`/${lang}/contact`} style={{ color: '#7f7c7c', textDecoration: 'none' }}>contact</Link>
                     </nav>
                 </div>
             </div>
