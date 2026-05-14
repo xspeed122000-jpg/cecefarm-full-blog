@@ -30,3 +30,10 @@ export default function PizzaPage() {
     </main>
   );
 }
+export async function generateStaticParams() {
+  return [
+    { lang: 'jp' },
+    { lang: 'en' },
+    { lang: 'th' }
+  ];
+}

@@ -1,20 +1,23 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
 
 export default function Header() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
-  // --- 1. 状態（State）の定義 ---
+  // --- 言語を判定するロジック ---
+  const segments = pathname.split('/');
+  const currentLang = ['jp', 'en', 'th'].includes(segments[1]) ? segments[1] : 'jp';
+
   const [isServiceOpen, setIsServiceOpen] = useState(false);
   const [keyword, setKeyword] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // --- 2. 効果（Effect）とハンドラー ---
   useEffect(() => {
     const q = searchParams.get('q');
     if (q) setKeyword(q);
@@ -30,14 +33,15 @@ export default function Header() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // ★ router.push をやめて、確実にページを再読み込みさせる
-    window.location.href = `/items?q=${encodeURIComponent(keyword)}`;
+    window.location.href = `/${currentLang}/items?q=${encodeURIComponent(keyword)}`;
     setIsMenuOpen(false);
   };
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const langPath = (path: string) => `/${currentLang}${path === '/' ? '' : path}`;
 
   const hamburgerButtonStyle: React.CSSProperties = {
     background: isMenuOpen ? '#000' : 'none',
@@ -52,7 +56,6 @@ export default function Header() {
     transition: 'all 0.3s ease'
   };
 
-  // --- 3. 実際の表示（JSX） ---
   return (
     <>
       <header style={headerStyle}>
@@ -97,26 +100,26 @@ export default function Header() {
 
         <div className="header-container" style={containerStyle}>
           <div className="logo-area">
-            <Link href="/">
+            <Link href={langPath('/')}>
               <img src="/logo.png" alt="Cece Farm" style={logoStyle} />
             </Link>
           </div>
 
           <nav className="nav-menu desktop-only" style={navStyle}>
-            <Link href="/" style={navLinkStyle}>Home</Link>
+            <Link href={langPath('/')} style={navLinkStyle}>Home</Link>
             <div className="service-container">
-              <Link href="/services" style={navLinkStyle}>Service ▾</Link>
+              <Link href={langPath('/service')} style={navLinkStyle}>Service ▾</Link>
               <div className="service-dropdown">
-                <Link href="/jp/phyto_cites" className="dropdown-item">検疫証明書取得 (JP)</Link>
-                <Link href="/en/phyto_cites" className="dropdown-item">Phyto / CITES (EN)</Link>
-                <Link href="/th/phyto_cites" className="dropdown-item">Phyto / CITES (TH)</Link>
+                <Link href="/jp/service/phyto_cites" className="dropdown-item">検疫証明書取得 (JP)</Link>
+                <Link href="/en/service/phyto_cites" className="dropdown-item">Phyto / CITES (EN)</Link>
+                <Link href="/th/service/phyto_cites" className="dropdown-item">Phyto / CITES (TH)</Link>
               </div>
             </div>
-            <Link href="/about" style={navLinkStyle}>About</Link>
-            <Link href="/items" style={navLinkStyle}>Items</Link>
-            <Link href="/pizza" style={navLinkStyle}>Pizza</Link>
-            <Link href="/shop" style={navLinkStyle}>Shop Info</Link>
-            <Link href="/contact" style={navLinkStyle}>Contact</Link>
+            <Link href={langPath('/about')} style={navLinkStyle}>About</Link>
+            <Link href={langPath('/items')} style={navLinkStyle}>Items</Link>
+            <Link href={langPath('/pizza')} style={navLinkStyle}>Pizza</Link>
+            <Link href={langPath('/shop')} style={navLinkStyle}>Shop Info</Link>
+            <Link href={langPath('/contact')} style={navLinkStyle}>Contact</Link>
           </nav>
 
           <div className="search-area">
@@ -139,22 +142,22 @@ export default function Header() {
 
         {/* スマホメニュー本体 */}
         <nav className="nav-menu mobile-only">
-          <Link href="/" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Home</Link>
+          <Link href={langPath('/')} onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Home</Link>
 
           <div style={{ ...mobileNavLinkStyle, cursor: 'pointer' }} onClick={() => setIsServiceOpen(!isServiceOpen)}>
             Service {isServiceOpen ? '▴' : '▾'}
           </div>
           <div className="mobile-service-sub">
-            <Link href="/jp/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>検疫証明書取得 (JP)</Link>
-            <Link href="/en/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>Phyto / CITES (EN)</Link>
-            <Link href="/th/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>Phyto / CITES (TH)</Link>
+            <Link href="/jp/service/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>検疫証明書取得 (JP)</Link>
+            <Link href="/en/service/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>Phyto / CITES (EN)</Link>
+            <Link href="/th/service/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>Phyto / CITES (TH)</Link>
           </div>
 
-          <Link href="/about" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>About</Link>
-          <Link href="/items" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Items</Link>
-          <Link href="/pizza" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Pizza</Link>
-          <Link href="/shop" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Shop Info</Link>
-          <Link href="/contact" onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Contact</Link>
+          <Link href={langPath('/about')} onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>About</Link>
+          <Link href={langPath('/items')} onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Items</Link>
+          <Link href={langPath('/pizza')} onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Pizza</Link>
+          <Link href={langPath('/shop')} onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Shop Info</Link>
+          <Link href={langPath('/contact')} onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Contact</Link>
         </nav>
       </header>
 
@@ -165,7 +168,7 @@ export default function Header() {
   );
 }
 
-// --- 4. スタイル（CSS）の定義 ---
+// --- スタイル（CSS）の定義 ---
 const headerStyle: React.CSSProperties = {
   borderBottom: '1px solid #eee',
   padding: '10px 20px',
@@ -196,24 +199,24 @@ const logoStyle: React.CSSProperties = {
 const navStyle: React.CSSProperties = { 
   display: 'flex', 
   gap: '15px',
-  alignItems: 'center' // 垂直方向の中央揃え
+  alignItems: 'center'
 };
 
 const navLinkStyle: React.CSSProperties = {
   textDecoration: 'none',
   color: '#333',
   fontSize: '0.85rem',
-  fontWeight: '500', // ★ 600から500（少し細め）に変更
-  letterSpacing: '0.05em', // ★ 文字の間隔を少し開けてスッキリさせる
-  textTransform: 'uppercase' // ★（おまけ）英語を大文字に揃えるとさらに洗練されます
+  fontWeight: '500',
+  letterSpacing: '0.05em',
+  textTransform: 'uppercase'
 };
 
 const mobileNavLinkStyle: React.CSSProperties = {
   textDecoration: 'none',
   color: '#333',
   fontSize: '1.1rem',
-  fontWeight: '500', // ★ こちらも500に変更
-  letterSpacing: '0.05em', // ★ 文字の間隔を開ける
+  fontWeight: '500',
+  letterSpacing: '0.05em',
   padding: '15px 0',
   borderBottom: '1px solid #f5f5f5',
   display: 'block'

@@ -19,12 +19,7 @@ export default defineType({
       },
       initialValue: 'jp', // 最初からJPを選択状態にする
     }),
-    
-    defineField({
-      name: 'title',
-      title: 'Title',
-      type: 'string',
-    }),
+
     defineField({
       name: 'title',
       title: 'Title',

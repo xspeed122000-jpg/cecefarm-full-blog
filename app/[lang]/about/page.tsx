@@ -124,3 +124,10 @@ export default function AboutPage() {
     </main>
   );
 }
+export async function generateStaticParams() {
+  return [
+    { lang: 'jp' },
+    { lang: 'en' },
+    { lang: 'th' }
+  ];
+}

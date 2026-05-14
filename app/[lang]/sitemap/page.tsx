@@ -1,6 +1,4 @@
 // app/sitemap/page.tsx
-export const runtime = 'edge';
-
 export default function SitemapPage() {
   const links = [
     { name: 'Top Page', href: '/' },
@@ -22,4 +20,11 @@ export default function SitemapPage() {
       </ul>
     </main>
   );
+}
+export async function generateStaticParams() {
+  return [
+    { lang: 'jp' },
+    { lang: 'en' },
+    { lang: 'th' }
+  ];
 }

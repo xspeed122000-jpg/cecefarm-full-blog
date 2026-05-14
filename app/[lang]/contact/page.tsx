@@ -89,3 +89,10 @@ const labelStyle = { display: 'block', fontSize: '0.8rem', color: '#666', margin
 const inputStyle = { width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '1rem', boxSizing: 'border-box' as const, fontFamily: 'inherit' };
 const submitButtonStyle = { backgroundColor: '#2d5a27', color: '#fff', padding: '15px', borderRadius: '8px', border: 'none', fontWeight: 'bold' as const, cursor: 'pointer', fontSize: '1rem' };
 const buttonStyle = (bgColor: string) => ({ flex: 1, padding: '12px', borderRadius: '8px', textAlign: 'center' as const, textDecoration: 'none', backgroundColor: bgColor, color: '#fff', fontWeight: 'bold' as const, fontSize: '0.85rem' });
+export async function generateStaticParams() {
+  return [
+    { lang: 'jp' },
+    { lang: 'en' },
+    { lang: 'th' }
+  ];
+}

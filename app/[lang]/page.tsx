@@ -2,9 +2,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from 'next-sanity';
 
-export const runtime = 'edge';
-// 【修正箇所】キャッシュを一切使わず、毎回サーバーで最新データを取得する設定
-export const dynamic = 'force-dynamic'; 
 // export const revalidate = 60; // これはコメントアウトか削除
 
 const client = createClient({
@@ -60,7 +57,8 @@ async function getLatestPosts() {
   }
 }
 
-export default async function HomePage() {
+export default async function Page({ params }: { params: { lang: string } }) {
+  const { lang } = await params; // ここで params から lang を取り出す
   // データを取得。失敗しても空の配列として扱う
   const popularPlants = await getPopularPlants() || [];
   const latestPosts = await getLatestPosts() || [];
@@ -77,9 +75,9 @@ export default async function HomePage() {
           <h2 style={{ fontSize: '1.8rem', letterSpacing: '0.15em', fontWeight: 'bold', color: '#333' }}>OUR SERVICES</h2>
         </div>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', justifyContent: 'center', gap: '50px', flexWrap: 'wrap' }}>
-          <ServiceItem image="/home/home_service_01.webp" title="Plants (Items)" subTitle="Rare & Exotic Collection" text={`Experience the beauty of nature with our curated selection of rare variegated plants.\n\n自社農園から厳選した、希少な斑入りモンステラなどのレアプランツをご紹介。`} href="/items" />
-          <ServiceItem image="/home/home_service_02.webp" title="Plant Export Support" subTitle="Phyto & CITES Service" text={`We provide professional assistance for obtaining Phytosanitary and CITES certificates.\n\n複雑な植物検疫証明書（Phyto）やCITESの手続きを完全サポート。`} href="/service" />
-          <ServiceItem image="/home/home_service_03.webp" title="Pizza & Coffee" subTitle="Cafe & Kitchen" text={`Enjoy authentic pizzas crafted by professional chefs and premium coffee.\n\nプロの職人が焼き上げる本格ピザと、厳選された豆を使用したこだわりのコーヒー。`} href="/contact" />
+          <ServiceItem image="/home/home_service_01.webp" title="Plants (Items)" subTitle="Rare & Exotic Collection" text={`Experience the beauty of nature with our curated selection of rare variegated plants.\n\n自社農園から厳選した、希少な斑入りモンステラなどのレアプランツをご紹介。`} href={`/${lang}/items`} />
+          <ServiceItem image="/home/home_service_02.webp" title="Plant Export Support" subTitle="Phyto & CITES Service" text={`We provide professional assistance for obtaining Phytosanitary and CITES certificates.\n\n複雑な植物検疫証明書（Phyto）やCITESの手続きを完全サポート。`} href={`/${lang}/service`} />
+          <ServiceItem image="/home/home_service_03.webp" title="Pizza & Coffee" subTitle="Cafe & Kitchen" text={`Enjoy authentic pizzas crafted by professional chefs and premium coffee.\n\nプロの職人が焼き上げる本格ピザと、厳選された豆を使用したこだわりのコーヒー。`} href={`/${lang}/pizza`} />
         </div>
       </section>
 
@@ -89,7 +87,7 @@ export default async function HomePage() {
           <h2 style={{ textAlign: 'center', marginBottom: '50px' }}>Popular Plants</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px' }}>
             {popularPlants.map((item: any) => item && (
-              <Link href={`/items/${item.slug}`} key={item.slug} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Link href={`/${lang}/items/${item.slug}`} key={item.slug} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div style={{ border: '1px solid #eee', borderRadius: '8px', overflow: 'hidden' }}>
                   <div style={{ position: 'relative', width: '100%', height: '250px', backgroundColor: '#f0f0f0' }}>
                     {item.imageUrl && <Image src={item.imageUrl} alt={item.title || ''} fill style={{ objectFit: 'cover' }} />}
@@ -116,7 +114,7 @@ export default async function HomePage() {
               const dateString = isNaN(d.getTime()) ? "" : `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 
               return (
-                <Link href={`/items/${item.slug}`} key={item.slug} style={{ display: 'flex', gap: '15px', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '15px', textDecoration: 'none', color: '#444' }}>
+                <Link href={`/${lang}/items/${item.slug}`} key={item.slug} style={{ display: 'flex', gap: '15px', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '15px', textDecoration: 'none', color: '#444' }}>
                   <div style={{ fontSize: '0.9rem', color: '#888', minWidth: '85px' }}>{dateString}</div>
                   <div style={{ flex: '1', fontSize: '1rem' }}>{item.title}</div>
                   {i < 3 && <div className="new-badge" style={{ fontSize: '0.8rem', marginLeft: '10px' }}>NEW</div>}
@@ -134,4 +132,13 @@ export default async function HomePage() {
       ` }} />
     </main>
   );
+}
+// app/[lang]/page.tsx の末尾などに追加
+
+export async function generateStaticParams() {
+  return [
+    { lang: 'jp' },
+    { lang: 'en' },
+    { lang: 'th' }
+  ];
 }

@@ -1,7 +1,4 @@
 // 1. 基本設定
-export const runtime = 'edge'; // Cloudflare Pagesにはこれが必要
-export const dynamic = 'force-dynamic'; // 常に最新のSanityデータを取得
-
 import { client } from '@/sanityClient';
 import { PortableText } from '@portabletext/react';
 import imageUrlBuilder from '@sanity/image-url';
@@ -96,4 +93,11 @@ export default async function PhytoPage({
       </article>
     </main>
   );
+}
+export async function generateStaticParams() {
+  return [
+    { lang: 'jp' },
+    { lang: 'en' },
+    { lang: 'th' }
+  ];
 }

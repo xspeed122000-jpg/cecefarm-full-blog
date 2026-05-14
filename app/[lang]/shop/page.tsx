@@ -61,3 +61,10 @@ const tableDataStyle = {
   borderBottom: '1px solid #eee',
   fontSize: '0.9rem'
 }
+export async function generateStaticParams() {
+  return [
+    { lang: 'jp' },
+    { lang: 'en' },
+    { lang: 'th' }
+  ];
+}

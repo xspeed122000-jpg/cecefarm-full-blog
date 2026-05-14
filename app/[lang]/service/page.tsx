@@ -1,7 +1,9 @@
+import Image from 'next/image';
+
 export default function ServicesPage() {
   return (
     <div style={{ padding: '80px 20px', maxWidth: '1000px', margin: '0 auto', fontFamily: 'sans-serif' }}>
-      
+
       {/* イントロダクション */}
       <section style={{ textAlign: 'center', marginBottom: '80px' }}>
         <h1 style={{ fontSize: '2.5rem', color: '#2d5a27', marginBottom: '20px' }}>Our Services</h1>
@@ -13,7 +15,7 @@ export default function ServicesPage() {
 
       {/* サービス一覧 */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '60px' }}>
-        
+
         {/* 1. 植物販売 & 育成 */}
         <section style={serviceSectionStyle}>
           <div style={textContainerStyle}>
@@ -23,9 +25,13 @@ export default function ServicesPage() {
               モンステラ、フィロデンドロン、サンセベリアなど、コレクター向けの高品質な株を取り揃えています。
             </p>
           </div>
-          <div style={imagePlaceholderStyle}>
-            {/* ここに農園の写真を後で入れられます */}
-            <span style={{ color: '#aaa' }}>Nursery Photo</span>
+          <div style={{ ...imagePlaceholderStyle, position: 'relative', overflow: 'hidden' }}>
+            <Image
+              src="/service/nursery.webp"
+              alt="Cece Farm Nursery"
+              fill
+              style={{ objectFit: 'cover' }}
+            />
           </div>
         </section>
 
@@ -39,12 +45,17 @@ export default function ServicesPage() {
               複雑な通関手続きを専門スタッフが代行し、安全にお手元までお届けします。
             </p>
           </div>
-          <div style={imagePlaceholderStyle}>
-            <span style={{ color: '#aaa' }}>Export Support Photo</span>
+          <div style={{ ...imagePlaceholderStyle, position: 'relative', overflow: 'hidden' }}>
+            <Image
+              src="/service/export_support.webp"
+              alt="Export Support Service"
+              fill
+              style={{ objectFit: 'cover' }}
+            />
           </div>
         </section>
 
-        {/* 3. カフェ & レストラン */}
+        {/* 3. カフェ & ピザ */}
         <section style={serviceSectionStyle}>
           <div style={textContainerStyle}>
             <h2 style={serviceTitleStyle}>03. Cece Cafe & Dining</h2>
@@ -53,8 +64,13 @@ export default function ServicesPage() {
               緑に囲まれた空間で、特別なひとときをお過ごしいただけます。
             </p>
           </div>
-          <div style={imagePlaceholderStyle}>
-            <span style={{ color: '#aaa' }}>Cafe Photo</span>
+          <div style={{ ...imagePlaceholderStyle, position: 'relative', overflow: 'hidden' }}>
+            <Image
+              src="/service/cafe.webp"
+              alt="Cece Cafe"
+              fill
+              style={{ objectFit: 'cover' }}
+            />
           </div>
         </section>
 
@@ -100,3 +116,10 @@ const imagePlaceholderStyle: React.CSSProperties = {
   alignItems: 'center',
   justifyContent: 'center',
 };
+export async function generateStaticParams() {
+  return [
+    { lang: 'jp' },
+    { lang: 'en' },
+    { lang: 'th' }
+  ];
+}

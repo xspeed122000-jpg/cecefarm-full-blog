@@ -1,8 +1,6 @@
 import { createClient } from 'next-sanity';
 import { PortableText } from '@portabletext/react'; // 本文がSanityのリッチテキスト（ブロックエディタ）の場合に使用
 
-export const revalidate = 60; // 1分キャッシュ（Aプランの安定設定）
-
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
@@ -52,4 +50,11 @@ export default async function PrivacyPolicyPage() {
       </div>
     </main>
   );
+}
+export async function generateStaticParams() {
+  return [
+    { lang: 'jp' },
+    { lang: 'en' },
+    { lang: 'th' }
+  ];
 }
