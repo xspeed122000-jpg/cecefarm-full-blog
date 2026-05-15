@@ -26,42 +26,60 @@ function ServiceItem({ image, title, subTitle, text, href }: any) {
   );
 }
 
-// データ取得（空でもエラーにならないように [] を返す）
+// --- getPopularPlants (人気の植物) ---
 async function getPopularPlants(lang: string) {
   try {
-    const popularSlugs = ["caladium-black-knight", "monstera-lechleriana-variegata", "philodendron-caramel-marble-variegated"];
-    const query = `*[_type == "post" && language == $lang] { title, "slug": slug.current, "category": category, "imageUrl": mainImage.asset->url }`;
-    const plants = await client.fetch(query, { slugs: popularSlugs });
-    return popularSlugs.map(slug => (plants || []).find((p: any) => p?.slug === slug)).filter(Boolean);
-  } catch (e) { return []; }
+    // 以前動いていた条件（例: isPopular == true）に言語条件を足します
+    // ここでは仮に isPopular というフラグを使っていると想定します
+    const query = `*[_type == "post" && (language == $lang || lang == $lang) && isPopular == true] | order(_createdAt desc)[0...4] { 
+      title,
+      "slug": slug.current,
+      "imageUrl": mainImage.asset->url
+    }`;
+
+    // もし isPopular などのフラグがない場合は、単にその言語の記事を出す
+    const fallbackQuery = `*[_type == "post" && (language == $lang || lang == $lang)] | order(_createdAt desc)[0...4] {
+      title,
+      "slug": slug.current,
+      "imageUrl": mainImage.asset->url
+    }`;
+
+    const data = await client.fetch(query, { lang }, { next: { revalidate: 0 } });
+
+    // もし人気記事が0件なら、とりあえずその言語の最新記事を出すようにします
+    if (data.length === 0) {
+      return await client.fetch(fallbackQuery, { lang });
+    }
+
+    return Array.isArray(data) ? data : [];
+  } catch (e) {
+    console.error("PopularPlants Error:", e);
+    return [];
+  }
 }
 
-// 1. 引数に lang: string を追加
+// --- getLatestPosts (最新記事) ---
 async function getLatestPosts(lang: string) {
   try {
-    // 2. クエリに && language == $lang を追加
-    const query = `*[_type == "post" && language == $lang] | order(_createdAt desc)[0...5] { 
+    // 念のため language フィールドが存在するかどうかもチェックに加えます
+    const query = `*[_type == "post" && (language == $lang || lang == $lang)] | order(_createdAt desc)[0...5] { 
       title, 
       "slug": slug.current, 
       "date": coalesce(publishedAt, _createdAt), 
       "imageUrl": mainImage.asset->url 
     }`;
-    
-    // 3. fetch の第2引数に { lang } を渡す
-    const data = await client.fetch(query, { lang }, {
-      next: { revalidate: 0 } 
-    });
-    
+
+    const data = await client.fetch(query, { lang }, { next: { revalidate: 0 } });
     return Array.isArray(data) ? data : [];
-  } catch (e) { 
+  } catch (e) {
     console.error("LatestPosts Error:", e);
-    return []; 
+    return [];
   }
 }
 
 export default async function Page({ params }: { params: Promise<{ lang: string }> }) {
   // Next.js 15のルール通り、paramsをawaitして lang を取得
-  const { lang } = await params; 
+  const { lang } = await params;
 
   // 4. 関数に lang を渡して実行
   const popularPlants = await getPopularPlants(lang) || []; // こちらも同様に修正が必要かもしれません
