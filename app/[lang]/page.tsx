@@ -27,27 +27,29 @@ function ServiceItem({ image, title, subTitle, text, href }: any) {
 }
 
 // データ取得（空でもエラーにならないように [] を返す）
-async function getPopularPlants() {
+async function getPopularPlants(lang: string) {
   try {
     const popularSlugs = ["caladium-black-knight", "monstera-lechleriana-variegata", "philodendron-caramel-marble-variegated"];
-    const query = `*[_type == "post" && slug.current in $slugs] { title, "slug": slug.current, "category": category, "imageUrl": mainImage.asset->url }`;
+    const query = `*[_type == "post" && language == $lang] { title, "slug": slug.current, "category": category, "imageUrl": mainImage.asset->url }`;
     const plants = await client.fetch(query, { slugs: popularSlugs });
     return popularSlugs.map(slug => (plants || []).find((p: any) => p?.slug === slug)).filter(Boolean);
   } catch (e) { return []; }
 }
 
-async function getLatestPosts() {
+// 1. 引数に lang: string を追加
+async function getLatestPosts(lang: string) {
   try {
-    const query = `*[_type == "post"] | order(_createdAt desc)[0...5] { 
+    // 2. クエリに && language == $lang を追加
+    const query = `*[_type == "post" && language == $lang] | order(_createdAt desc)[0...5] { 
       title, 
       "slug": slug.current, 
       "date": coalesce(publishedAt, _createdAt), 
       "imageUrl": mainImage.asset->url 
     }`;
     
-    // 【修正箇所】fetchのオプションにキャッシュ無効を追加
-    const data = await client.fetch(query, {}, {
-      next: { revalidate: 0 } // ここでも0（常に最新）を指定
+    // 3. fetch の第2引数に { lang } を渡す
+    const data = await client.fetch(query, { lang }, {
+      next: { revalidate: 0 } 
     });
     
     return Array.isArray(data) ? data : [];
@@ -57,11 +59,13 @@ async function getLatestPosts() {
   }
 }
 
-export default async function Page({ params }: { params: { lang: string } }) {
-  const { lang } = await params; // ここで params から lang を取り出す
-  // データを取得。失敗しても空の配列として扱う
-  const popularPlants = await getPopularPlants() || [];
-  const latestPosts = await getLatestPosts() || [];
+export default async function Page({ params }: { params: Promise<{ lang: string }> }) {
+  // Next.js 15のルール通り、paramsをawaitして lang を取得
+  const { lang } = await params; 
+
+  // 4. 関数に lang を渡して実行
+  const popularPlants = await getPopularPlants(lang) || []; // こちらも同様に修正が必要かもしれません
+  const latestPosts = await getLatestPosts(lang) || [];
 
   return (
     <main>
