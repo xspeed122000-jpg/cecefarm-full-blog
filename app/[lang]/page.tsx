@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from 'next-sanity';
 
-// export const revalidate = 60; // これはコメントアウトか削除
+export const dynamicParams = false; // 指定した言語（jp, en, th）以外は受け付けない設定
 
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID, // 「あだ名」で呼ぶ
@@ -31,14 +31,15 @@ async function getPopularPlants(lang: string) {
   try {
     // 以前動いていた条件（例: isPopular == true）に言語条件を足します
     // ここでは仮に isPopular というフラグを使っていると想定します
-    const query = `*[_type == "post" && (language == $lang || lang == $lang) && isPopular == true] | order(_createdAt desc)[0...4] { 
+    const query = `*[_type == "post" && (language == $lang || lang == $lang) && isPopular == true] | order(_createdAt desc)[0...6] { 
+    // ...
       title,
       "slug": slug.current,
       "imageUrl": mainImage.asset->url
     }`;
 
     // もし isPopular などのフラグがない場合は、単にその言語の記事を出す
-    const fallbackQuery = `*[_type == "post" && (language == $lang || lang == $lang)] | order(_createdAt desc)[0...4] {
+    const fallbackQuery = `*[_type == "post" && (language == $lang || lang == $lang)] | order(_createdAt desc)[0...3] {
       title,
       "slug": slug.current,
       "imageUrl": mainImage.asset->url
@@ -58,8 +59,8 @@ async function getPopularPlants(lang: string) {
   }
 }
 
-// --- getLatestPosts (最新記事) ---
-async function getLatestPosts(lang: string) {
+// --- getLatestArticles (最新記事) ---
+async function getLatestArticles(lang: string) {
   try {
     // 念のため language フィールドが存在するかどうかもチェックに加えます
     const query = `*[_type == "post" && (language == $lang || lang == $lang)] | order(_createdAt desc)[0...5] { 
@@ -82,9 +83,10 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
   const { lang } = await params;
 
   // 4. 関数に lang を渡して実行
-  const popularPlants = await getPopularPlants(lang) || []; // こちらも同様に修正が必要かもしれません
-  const latestPosts = await getLatestPosts(lang) || [];
+  const popularPlants = await getPopularPlants(lang); // ★ここに lang が入っているか？
+  const latestArticlesData = await getLatestArticles(lang); // ★ここに lang が入っているか？
 
+  
   return (
     <main>
       {/* 1. Our Services セクション */}
@@ -107,7 +109,12 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
       <section style={{ backgroundColor: '#fff', padding: '80px 20px' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
           <h2 style={{ textAlign: 'center', marginBottom: '50px' }}>Popular Plants</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px' }}>
+          <div style={{
+            display: 'grid',
+            // PCでは3カラム、スマホ(600px以下)では2カラムにする指定
+            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+            gap: '15px' // 少し隙間を狭くすると2個並びが綺麗に見えます
+          }}>
             {popularPlants.map((item: any) => item && (
               <Link href={`/${lang}/items/${item.slug}`} key={item.slug} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div style={{ border: '1px solid #eee', borderRadius: '8px', overflow: 'hidden' }}>
@@ -130,7 +137,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <h2 style={{ textAlign: 'center', marginBottom: '50px' }}>Latest Articles</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {latestPosts.length > 0 ? latestPosts.map((item: any, i: number) => {
+            {latestArticlesData.length > 0 ? latestArticlesData.map((item: any, i: number) => {
               if (!item) return null;
               const d = item.date ? new Date(item.date) : new Date();
               const dateString = isNaN(d.getTime()) ? "" : `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
@@ -155,12 +162,6 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     </main>
   );
 }
-// app/[lang]/page.tsx の末尾などに追加
-
-export async function generateStaticParams() {
-  return [
-    { lang: 'jp' },
-    { lang: 'en' },
-    { lang: 'th' }
-  ];
+export function generateStaticParams() {
+  return [{ lang: 'jp' }, { lang: 'en' }, { lang: 'th' }];
 }

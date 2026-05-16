@@ -4,7 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
 
-export default function Header() {
+interface HeaderProps {
+  lang: string;
+}
+
+export default function Header({ lang }: HeaderProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -16,31 +20,17 @@ export default function Header() {
   const [isServiceOpen, setIsServiceOpen] = useState(false);
   const [keyword, setKeyword] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     const q = searchParams.get('q');
     if (q) setKeyword(q);
   }, [searchParams]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 400);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     window.location.href = `/${currentLang}/items?q=${encodeURIComponent(keyword)}`;
     setIsMenuOpen(false);
   };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   const langPath = (path: string) => `/${currentLang}${path === '/' ? '' : path}`;
 
   const hamburgerButtonStyle: React.CSSProperties = {
@@ -61,9 +51,9 @@ export default function Header() {
       <header style={headerStyle}>
         <style dangerouslySetInnerHTML={{
           __html: `
-          .service-container { position: relative; }
+          .service-container { relative; }
           .service-dropdown { 
-            display: none; position: absolute; top: 100%; left: 0; 
+            display: none; absolute; top: 100%; left: 0; 
             background: white; min-width: 180px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);
             padding: 10px 0; z-index: 100; border-radius: 8px;
           }
@@ -161,9 +151,6 @@ export default function Header() {
         </nav>
       </header>
 
-      {showScrollTop && (
-        <button onClick={scrollToTop} style={scrollTopButtonStyle}>▲</button>
-      )}
     </>
   );
 }
@@ -173,9 +160,7 @@ const headerStyle: React.CSSProperties = {
   borderBottom: '1px solid #eee',
   padding: '10px 20px',
   backgroundColor: '#FAF8F5',
-  position: 'fixed',
   width: '100%',
-  top: 0,
   zIndex: 1000,
   boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
   boxSizing: 'border-box'
@@ -196,8 +181,8 @@ const logoStyle: React.CSSProperties = {
   display: 'block'
 };
 
-const navStyle: React.CSSProperties = { 
-  display: 'flex', 
+const navStyle: React.CSSProperties = {
+  display: 'flex',
   gap: '15px',
   alignItems: 'center'
 };
@@ -244,22 +229,4 @@ const buttonStyle: React.CSSProperties = {
   borderRadius: '0 20px 20px 0',
   cursor: 'pointer',
   fontSize: '0.85rem'
-};
-
-const scrollTopButtonStyle: React.CSSProperties = {
-  position: 'fixed',
-  bottom: '20px',
-  right: '20px',
-  width: '45px',
-  height: '45px',
-  borderRadius: '50%',
-  backgroundColor: 'rgba(45, 90, 39, 0.8)',
-  color: '#fff',
-  border: 'none',
-  fontSize: '1.2rem',
-  cursor: 'pointer',
-  zIndex: 999,
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center'
 };

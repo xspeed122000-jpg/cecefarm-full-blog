@@ -21,6 +21,13 @@ export default defineType({
     }),
 
     defineField({
+      name: 'isPopular',
+      title: 'Popular Article (Display on Top Page)',
+      type: 'boolean',
+      initialValue: false, // 最初はオフに設定
+    }),
+
+    defineField({
       name: 'title',
       title: 'Title',
       type: 'string',

@@ -7,9 +7,12 @@ import ImageGallery from '@/components/ImageGallery';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import type { Metadata } from 'next';
 
+export const dynamicParams = false; // 指定した言語（jp, en, th）以外は受け付けない設定
+
 // SEO用メタデータの生成
-export async function generateMetadata({ params }: { params: any }): Promise<Metadata> {
-    const { lang, slug } = await params;
+export async function generateMetadata({ params }: { params: Promise<{ lang: string; slug: string }> }): Promise<Metadata> {
+  // paramsをawaitしてから、langとslugを両方取り出す
+  const { lang, slug } = await params;
 
     const item = await client.fetch(`
         *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == $lang][0] {

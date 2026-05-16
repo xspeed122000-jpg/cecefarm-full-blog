@@ -116,10 +116,6 @@ const imagePlaceholderStyle: React.CSSProperties = {
   alignItems: 'center',
   justifyContent: 'center',
 };
-export async function generateStaticParams() {
-  return [
-    { lang: 'jp' },
-    { lang: 'en' },
-    { lang: 'th' }
-  ];
+export function generateStaticParams() {
+  return [{ lang: 'jp' }, { lang: 'en' }, { lang: 'th' }];
 }

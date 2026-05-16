@@ -43,9 +43,9 @@ export default function ItemsListClient({ items, lang }: { items: any[], lang: s
       </h1>
 
       {/* カテゴリータグ */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', marginBottom: '60px', borderBottom: '1px solid #eee', paddingBottom: '30px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', marginBottom: '60px', borderBottom: '1px solid #1c352d', paddingBottom: '30px' }}>
         {sortedCategories.map(category => (
-          <a key={category} href={`#${category}`} style={{ padding: '8px 20px', backgroundColor: '#2d5a27', color: '#fff', borderRadius: '25px', textDecoration: 'none', fontSize: '0.9rem', fontWeight: '600' }}>
+          <a key={category} href={`#${category}`} style={{ padding: '8px 20px', backgroundColor: '#ffffff', border: '1px solid #1c352d', color: '#1c352d', borderRadius: '25px', textDecoration: 'none', fontSize: '0.9rem', fontWeight: '600' }}>
             {category} ({groupedItems[category].length})
           </a>
         ))}

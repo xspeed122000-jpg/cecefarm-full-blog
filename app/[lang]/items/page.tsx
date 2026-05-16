@@ -4,13 +4,11 @@ import { client } from "@/sanityClient";
 import { Metadata } from 'next';
 import ItemsListClient from './ItemsListClient'; // 次に作るファイル
 
-export async function generateMetadata({ params }: { params: any }): Promise<Metadata> {
-  const { lang } = await params;
-  const title = lang === 'th' ? "คอลเลกชันของเรา" : lang === 'en' ? "Our Collection" : "私たちのコレクション";
-  return {
-    title: `${title} | Cece Farm`,
-    description: "Cece Farm's Rare Plant Collection.",
-  };
+export const dynamicParams = false; // 指定した言語（jp, en, th）以外は受け付けない設定
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+    const { lang } = await params; // items ページには slug はないので lang だけにする
+    return { title: `Items | Cece Farm (${lang})` };
 }
 
 async function getItems(lang: string) {
