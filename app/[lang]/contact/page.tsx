@@ -15,7 +15,7 @@ export default function ContactPage() {
                     
                     <div style={infoItemStyle}>
                         <Clock size={20} style={{ color: '#2d5a27' }} />
-                        <span>Open 9:30 AM – 8:00 PM</span>
+                        <span>Open 9:00 AM – 5:00 PM</span>
                     </div>
 
                     <div style={infoItemStyle}>
