@@ -11,14 +11,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://www.googletagmanager.com/gtag/js?id=G-H0M06NKHPL" // ★ここに本物のIDを入れてください
           strategy="afterInteractive"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'GoogleAnalytics gaId=G-H0M06NKHPL); // ★ここも本物のIDに
-          `}
-        </Script>
+        // ⭕️ 変更後（エラーが出ない安全な書き方）
+<Script
+  id="google-analytics"
+  strategy="afterInteractive"
+  dangerouslySetInnerHTML={{
+    __html: `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-H0M06NKHPL'); 
+    `,
+  }}
+/>
       </head>
 
       {/* 背景を白、文字を濃いグレーに固定して、ブラックアウトを防ぎます */}

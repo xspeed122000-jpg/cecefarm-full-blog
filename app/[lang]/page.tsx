@@ -5,11 +5,45 @@ import { createClient } from 'next-sanity';
 export const dynamicParams = false; // 指定した言語（jp, en, th）以外は受け付けない設定
 
 const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID, // 「あだ名」で呼ぶ
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
   apiVersion: "2024-01-01",
   useCdn: false,
 });
+
+// 静的テキストデータにお問い合わせボタンの文字を追加
+const infoText: Record<string, { title: string; desc: string; hoursLabel: string; hoursValue: string; addressLabel: string; addressValue: string; buttonText: string; contactButtonText: string }> = {
+  jp: {
+    title: "農園とカフェへのアクセス",
+    desc: "チェンマイ・メーリムの豊かな自然に囲まれた Cece Farm & Cafe では、大切に育てられた希少な熱帯植物（レアプランツ）の鑑賞・購入と、プロの職人が焼き上げる本格ピザ、厳選されたオーガニックコーヒーをゆったりとお楽しみいただけます。",
+    hoursLabel: "⏰ 営業時間",
+    hoursValue: "9:00 - 17:00 （定休日: 水曜日）",
+    addressLabel: "📍 住所",
+    addressValue: "タイ チェンマイ県 メーリム区 キレック (Ki Lek, Mae Rim, Chiang Mai)",
+    buttonText: "🗺️ Google マップで場所を見る",
+    contactButtonText: "📩 お問い合わせはこちら"
+  },
+  en: {
+    title: "VISIT CECE FARM & CAFE",
+    desc: "Surrounded by the lush nature of Mae Rim, Chiang Mai, Cece Farm & Cafe offers a unique relaxing space where you can browse our rare exotic plants while enjoying authentic chef-crafted pizzas and premium organic coffee.",
+    hoursLabel: "⏰ Opening Hours",
+    hoursValue: "9:00 AM - 5:00 PM (Closed on Wednesdays)",
+    addressLabel: "📍 Address",
+    addressValue: "Ki Lek, Mae Rim District, Chiang Mai, Thailand",
+    buttonText: "🗺️ Open Google Maps",
+    contactButtonText: "📩 Contact Us"
+  },
+  th: {
+    title: "เยี่ยมชม CECE FARM & CAFE",
+    desc: "ล้อมรอบด้วยธรรมชาติอันร่มรื่นของแม่ริม เชียงใหม่ Cece Farm & Cafe พร้อมต้อนรับทุกท่านด้วยต้นไม้หายากที่พวกเราตั้งใจดูแล พร้อมเสิร์ฟพิซซ่าแสนอร่อยโดยเชฟมืออาชีพและกาแฟออร์แกนิกคัดสรรพิเศษในบรรยากาศผ่อนคลาย",
+    hoursLabel: "⏰ เวลาทำการ",
+    hoursValue: "09:00 น. - 17:00 น. (ปิดวันพุธ)",
+    addressLabel: "📍 ที่อยู่",
+    addressValue: "ขี้เหล็ก, อำเภอแม่ริม, เชียงใหม่, ประเทศไทย",
+    buttonText: "🗺️ เปิด Google Maps",
+    contactButtonText: "📩 ติดต่อเรา"
+  }
+};
 
 // コンポーネント（変更なし）
 function ServiceItem({ image, title, subTitle, text, href }: any) {
@@ -26,71 +60,14 @@ function ServiceItem({ image, title, subTitle, text, href }: any) {
   );
 }
 
-// --- getPopularPlants (人気の植物) ---
-async function getPopularPlants(lang: string) {
-  try {
-    // 以前動いていた条件（例: isPopular == true）に言語条件を足します
-    // ここでは仮に isPopular というフラグを使っていると想定します
-    const query = `*[_type == "post" && (language == $lang || lang == $lang) && isPopular == true] | order(_createdAt desc)[0...6] { 
-    // ...
-      title,
-      "slug": slug.current,
-      "imageUrl": mainImage.asset->url
-    }`;
-
-    // もし isPopular などのフラグがない場合は、単にその言語の記事を出す
-    const fallbackQuery = `*[_type == "post" && (language == $lang || lang == $lang)] | order(_createdAt desc)[0...3] {
-      title,
-      "slug": slug.current,
-      "imageUrl": mainImage.asset->url
-    }`;
-
-    const data = await client.fetch(query, { lang }, { next: { revalidate: 0 } });
-
-    // もし人気記事が0件なら、とりあえずその言語の最新記事を出すようにします
-    if (data.length === 0) {
-      return await client.fetch(fallbackQuery, { lang });
-    }
-
-    return Array.isArray(data) ? data : [];
-  } catch (e) {
-    console.error("PopularPlants Error:", e);
-    return [];
-  }
-}
-
-// --- getLatestArticles (最新記事) ---
-async function getLatestArticles(lang: string) {
-  try {
-    // 念のため language フィールドが存在するかどうかもチェックに加えます
-    const query = `*[_type == "post" && (language == $lang || lang == $lang)] | order(_createdAt desc)[0...5] { 
-      title, 
-      "slug": slug.current, 
-      "date": coalesce(publishedAt, _createdAt), 
-      "imageUrl": mainImage.asset->url 
-    }`;
-
-    const data = await client.fetch(query, { lang }, { next: { revalidate: 0 } });
-    return Array.isArray(data) ? data : [];
-  } catch (e) {
-    console.error("LatestPosts Error:", e);
-    return [];
-  }
-}
-
 export default async function Page({ params }: { params: Promise<{ lang: string }> }) {
-  // Next.js 15のルール通り、paramsをawaitして lang を取得
   const { lang } = await params;
+  const currentInfo = infoText[lang] || infoText['en'];
 
-  // 4. 関数に lang を渡して実行
-  const popularPlants = await getPopularPlants(lang); // ★ここに lang が入っているか？
-  const latestArticlesData = await getLatestArticles(lang); // ★ここに lang が入っているか？
-
-  
   return (
     <main>
       {/* 1. Our Services セクション */}
-      <section style={{ padding: '20px 20px 100px 20px', backgroundColor: '#fff' }}>
+      <section style={{ padding: '20px 20px 80px 20px', backgroundColor: '#fff' }}>
         <div style={{ textAlign: 'center', marginBottom: '60px' }}>
           <div style={{ maxWidth: '260px', margin: '0 auto 10px auto' }}>
             <h1 style={{ fontSize: '0px', margin: 0, padding: 0, position: 'absolute' }}>Cece Farm - チェンマイの希少植物専門店</h1>
@@ -105,52 +82,82 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
         </div>
       </section>
 
-      {/* 2. Popular Plants セクション */}
-      <section style={{ backgroundColor: '#fff', padding: '80px 20px' }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-          <h2 style={{ textAlign: 'center', marginBottom: '50px' }}>Popular Plants</h2>
-          <div style={{
-            display: 'grid',
-            // PCでは3カラム、スマホ(600px以下)では2カラムにする指定
-            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-            gap: '15px' // 少し隙間を狭くすると2個並びが綺麗に見えます
-          }}>
-            {popularPlants.map((item: any) => item && (
-              <Link href={`/${lang}/items/${item.slug}`} key={item.slug} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div style={{ border: '1px solid #eee', borderRadius: '8px', overflow: 'hidden' }}>
-                  <div style={{ position: 'relative', width: '100%', height: '250px', backgroundColor: '#f0f0f0' }}>
-                    {item.imageUrl && <Image src={item.imageUrl} alt={item.title || ''} fill style={{ objectFit: 'cover' }} />}
-                  </div>
-                  <div style={{ padding: '20px', textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.8rem', color: '#666', margin: '0 0 5px 0' }}>{item.category || 'Cece Farm'}</p>
-                    <h4 style={{ margin: '0', fontSize: '1.1rem', color: '#222' }}>{item.title}</h4>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* 2. Visit Cece Farm & Cafe セクション */}
+      <section style={{ padding: '80px 20px', backgroundColor: '#fafafa', borderTop: '1px solid #f0f0f0' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
+          
+          <h2 style={{ fontSize: '1.8rem', letterSpacing: '0.15em', fontWeight: 'bold', color: '#333', marginBottom: '30px' }}>
+            {currentInfo.title}
+          </h2>
 
-      {/* 3. Latest Articles セクション */}
-      <section style={{ padding: '80px 20px', backgroundColor: '#fafafa' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <h2 style={{ textAlign: 'center', marginBottom: '50px' }}>Latest Articles</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {latestArticlesData.length > 0 ? latestArticlesData.map((item: any, i: number) => {
-              if (!item) return null;
-              const d = item.date ? new Date(item.date) : new Date();
-              const dateString = isNaN(d.getTime()) ? "" : `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
-
-              return (
-                <Link href={`/${lang}/items/${item.slug}`} key={item.slug} style={{ display: 'flex', gap: '15px', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '15px', textDecoration: 'none', color: '#444' }}>
-                  <div style={{ fontSize: '0.9rem', color: '#888', minWidth: '85px' }}>{dateString}</div>
-                  <div style={{ flex: '1', fontSize: '1rem' }}>{item.title}</div>
-                  {i < 3 && <div className="new-badge" style={{ fontSize: '0.8rem', marginLeft: '10px' }}>NEW</div>}
-                </Link>
-              );
-            }) : <p style={{ textAlign: 'center', color: '#999' }}>No articles found.</p>}
+          <div style={{ position: 'relative', width: '100%', height: '350px', borderRadius: '12px', overflow: 'hidden', marginBottom: '40px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+            <Image src="/home/home_service_03.webp" alt="Cece Farm and Cafe" fill style={{ objectFit: 'cover' }} />
           </div>
+
+          <p style={{ fontSize: '1rem', lineHeight: '1.9', color: '#555', marginBottom: '40px', textAlign: 'left', whiteSpace: 'pre-wrap', maxWidth: '700px', margin: '0 auto 40px auto' }}>
+            {currentInfo.desc}
+          </p>
+
+          <div style={{ display: 'block', textAlign: 'left', backgroundColor: '#fff', padding: '30px', borderRadius: '8px', border: '1px solid #eee', marginBottom: '40px', maxWidth: '600px', margin: '0 auto 40px auto' }}>
+            <div style={{ marginBottom: '15px' }}>
+              <strong style={{ display: 'block', color: '#333', marginBottom: '5px', fontSize: '0.9rem' }}>{currentInfo.hoursLabel}</strong>
+              <span style={{ color: '#666', fontSize: '1rem' }}>{currentInfo.hoursValue}</span>
+            </div>
+            <div>
+              <strong style={{ display: 'block', color: '#333', marginBottom: '5px', fontSize: '0.9rem' }}>{currentInfo.addressLabel}</strong>
+              <span style={{ color: '#666', fontSize: '1rem' }}>{currentInfo.addressValue}</span>
+            </div>
+          </div>
+
+          {/* ボタン配置エリア（縦並びでスマートに配置） */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
+            
+            {/* Googleマップボタン（ボタニカルグリーン・主ボタン） */}
+            <a 
+              href="https://maps.google.com/?q=Cece+Farm+Chiang+Mai" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ 
+                display: 'inline-block', 
+                backgroundColor: '#2C3E35', 
+                color: '#fff', 
+                padding: '15px 45px', 
+                borderRadius: '30px', 
+                textDecoration: 'none', 
+                fontWeight: 'bold', 
+                fontSize: '1rem',
+                boxShadow: '0 4px 10px rgba(44,62,53,0.2)',
+                width: '100%',
+                maxWidth: '320px'
+              }}
+            >
+              {currentInfo.buttonText}
+            </a>
+
+            {/* 新設: お問い合わせボタン（ホワイト背景にグリーン枠・副ボタン） */}
+            <Link
+              href={`/${lang}/contact`}
+              style={{ 
+                display: 'inline-block', 
+                backgroundColor: '#fff', 
+                color: '#2C3E35', 
+                padding: '13px 45px', 
+                borderRadius: '30px', 
+                textDecoration: 'none', 
+                fontWeight: 'bold', 
+                fontSize: '0.95rem',
+                border: '2px solid #2C3E35',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.03)',
+                width: '100%',
+                maxWidth: '320px',
+                boxSizing: 'border-box'
+              }}
+            >
+              {currentInfo.contactButtonText}
+            </Link>
+
+          </div>
+
         </div>
       </section>
 
@@ -162,6 +169,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     </main>
   );
 }
+
 export function generateStaticParams() {
   return [{ lang: 'jp' }, { lang: 'en' }, { lang: 'th' }];
 }

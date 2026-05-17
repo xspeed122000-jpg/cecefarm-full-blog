@@ -51,9 +51,9 @@ export default function Header({ lang }: HeaderProps) {
       <header style={headerStyle}>
         <style dangerouslySetInnerHTML={{
           __html: `
-          .service-container { relative; }
+          .service-container { position: relative; } /* 👈 position: を追加して修正 */
           .service-dropdown { 
-            display: none; absolute; top: 100%; left: 0; 
+            display: none; position: absolute; top: 100%; left: 0; /* 👈 position: を追加して修正 */
             background: white; min-width: 180px; box-shadow: 0 8px 16px rgba(0,0,0,0.1);
             padding: 10px 0; z-index: 100; border-radius: 8px;
           }
@@ -73,14 +73,12 @@ export default function Header({ lang }: HeaderProps) {
               justify-content: center; padding: 0 10px; box-sizing: border-box;
             }
             .nav-menu.mobile-only {
-              display: ${isMenuOpen ? 'flex' : 'none'} !important;
               position: absolute; top: 100%; left: 0; width: 100%;
               background: white; flex-direction: column; padding: 20px;
               box-shadow: 0 10px 15px rgba(0,0,0,0.1); box-sizing: border-box;
               z-index: 999;
             }
             .mobile-service-sub { 
-               display: ${isServiceOpen ? 'flex' : 'none'} !important;
                flex-direction: column; background: #fafafa; padding-left: 20px;
             }
             .desktop-only { display: none !important; }
@@ -130,14 +128,14 @@ export default function Header({ lang }: HeaderProps) {
           </div>
         </div>
 
-        {/* スマホメニュー本体 */}
-        <nav className="nav-menu mobile-only">
+        {/* スマホメニュー本体：Reactのインラインスタイルで確実に出し入れを制御 */}
+        <nav className="nav-menu mobile-only" style={{ display: isMenuOpen ? 'flex' : 'none' }}>
           <Link href={langPath('/')} onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Home</Link>
 
           <div style={{ ...mobileNavLinkStyle, cursor: 'pointer' }} onClick={() => setIsServiceOpen(!isServiceOpen)}>
             Service {isServiceOpen ? '▴' : '▾'}
           </div>
-          <div className="mobile-service-sub">
+          <div className="mobile-service-sub" style={{ display: isServiceOpen ? 'flex' : 'none' }}>
             <Link href="/jp/service/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>検疫証明書取得 (JP)</Link>
             <Link href="/en/service/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>Phyto / CITES (EN)</Link>
             <Link href="/th/service/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>Phyto / CITES (TH)</Link>
@@ -150,13 +148,13 @@ export default function Header({ lang }: HeaderProps) {
           <Link href={langPath('/contact')} onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Contact</Link>
         </nav>
       </header>
-
     </>
   );
 }
 
 // --- スタイル（CSS）の定義 ---
 const headerStyle: React.CSSProperties = {
+  position: 'relative', // 👈 ここに relative を追加。上に言語バーが来てもスマホメニューがズレないように固定
   borderBottom: '1px solid #eee',
   padding: '10px 20px',
   backgroundColor: '#FAF8F5',

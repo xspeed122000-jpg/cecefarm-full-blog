@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export', // これを追加（静的書き出しモード）
+  output: 'export', // 静的書き出しモード
   images: {
     unoptimized: true, // 静的書き出しでは画像の最適化を無効にする必要があります
   },
@@ -19,20 +19,22 @@ const nextConfig = {
         destination: '/items/:slug',
         permanent: false,
       },
-      {
-        source: '/th', // 旧URL
-        destination: '/', // 新しい対応ページ（とりあえずトップなど）
-        permanent: true, // 301リダイレクト（評価を引き継ぐ設定）
-      },
+      /* 👇 タイ語ページ新設のため、古い /th からの転送は削除（コメントアウト）します
+        {
+          source: '/th', 
+          destination: '/', 
+          permanent: true, 
+        },
+      */
       {
         source: '/items/category/plants',
         destination: '/items',
         permanent: true,
       },
       {
-        source: '/contact-us', // 旧URL
-        destination: '/contact', // 新しい対応ページ（とりあえずトップなど）
-        permanent: true, // 301リダイレクト（評価を引き継ぐ設定）
+        source: '/contact-us', 
+        destination: '/contact', 
+        permanent: true, 
       },
       {
         source: '/items/page',

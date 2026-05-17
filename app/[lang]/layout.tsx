@@ -1,4 +1,3 @@
-// app/layout.tsx
 import React from 'react';
 import { Suspense } from 'react';
 import TopBar from '@/components/TopBar';
