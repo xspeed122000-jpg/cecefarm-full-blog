@@ -27,7 +27,7 @@ export default function ServicesPage() {
           </div>
           <div style={{ ...imagePlaceholderStyle, position: 'relative', overflow: 'hidden' }}>
             <Image
-              src="/service/nursery.webp"
+              src="/service/cecenursery.webp"
               alt="Cece Farm Nursery"
               fill
               style={{ objectFit: 'cover' }}
@@ -66,7 +66,7 @@ export default function ServicesPage() {
           </div>
           <div style={{ ...imagePlaceholderStyle, position: 'relative', overflow: 'hidden' }}>
             <Image
-              src="/service/cafe.webp"
+              src="/service/cececafe_service.webp"
               alt="Cece Cafe"
               fill
               style={{ objectFit: 'cover' }}
