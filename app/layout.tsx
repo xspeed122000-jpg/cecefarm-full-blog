@@ -11,7 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://www.googletagmanager.com/gtag/js?id=G-H0M06NKHPL" // ★ここに本物のIDを入れてください
           strategy="afterInteractive"
         />
-        // ⭕️ 変更後（エラーが出ない安全な書き方）
+       
 <Script
   id="google-analytics"
   strategy="afterInteractive"

@@ -46,6 +46,7 @@ export default defineType({
       rows: 3,
       description: '検索結果に表示される紹介文を入力してください（160文字程度推奨）',
     }),
+
     defineField({
       name: 'slug',
       title: 'Slug',
@@ -53,6 +54,36 @@ export default defineType({
       options: {
         source: 'title',
         maxLength: 96,
+
+        // 👇 ここからを差し替えてみてください
+        isUnique: async (slug, context) => {
+          const { document, getClient } = context;
+
+          // 1. TypeScriptの「undefinedかもしれない」エラーを防ぐための安全ガード
+          if (!document) return true;
+
+          const client = getClient({ apiVersion: '2023-01-01' });
+          const id = document._id.replace(/^drafts\./, '');
+
+          // 2. ドキュメントから言語設定を取得（TypeScriptのエラーを防ぐため (document as any) と記述しています）
+          // ※もしSanity内で言語を選んでいる項目の名前（name）が 'lang' の場合は、以下の .language を .lang に書き換えてください。
+          const currentLanguage = (document as any).language || 'jp';
+
+          // 3. 「同じ言語の枠内」だけで重複をチェックするGROQクエリ
+          const query = `*[_type == $type && slug.current == $slug && language == $language && _id != $id && !(_id in [ $id, "drafts." + $id ])][0]`;
+          const params = {
+            type: document._type,
+            slug,
+            language: currentLanguage,
+            id,
+          };
+
+          const result = await client.fetch(query, params);
+
+          // 他に同じ言語で同じSlugが見つからなければ、重複なしとしてPublishを許可
+          return !result;
+        },
+        // 👆 ここまで
       },
     }),
     defineField({
