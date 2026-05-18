@@ -38,6 +38,49 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     };
 }
 
+// 👇 1. ファイルの上部（Page関数の外など）に、見出しの見た目を定義する「components」を追加します
+// 📄 修正版の portableTextComponents
+
+const portableTextComponents = {
+    block: {
+        // 🟢 H2（大見出し）
+        h2: ({ children }: any) => (
+            <h2 style={{
+                fontSize: '1.8rem',
+                color: '#2d5a27',
+                borderLeft: '5px solid #2d5a27',
+                paddingLeft: '12px',
+                marginTop: '45px',
+                marginBottom: '20px',
+                fontWeight: 'bold',
+                lineHeight: '1.4'
+            }}>
+                {children}
+            </h2>
+        ),
+        // 🔵 H3（中見出し）
+        h3: ({ children }: any) => (
+            <h3 style={{
+                fontSize: '1.4rem',
+                color: '#333',
+                borderBottom: '1px solid #ddd',
+                paddingBottom: '8px',
+                marginTop: '35px',
+                marginBottom: '15px',
+                fontWeight: 'bold',
+                lineHeight: '1.4'
+            }}>
+                {children}
+            </h3>
+        ),
+        // ⚪️ 普通の段落（Pタグ）の余白設定
+        normal: ({ children }: any) => (
+            // 👇 REGULAR_TEXT_STYLE を消去し、スッキリさせました
+            <p style={{ marginBottom: '24px' }}>{children}</p>
+        ),
+    },
+};
+
 // 2. メインのページコンポーネント（自動リダイレクト機能を搭載）
 export default async function Page({ params }: { params: any }) {
     const { lang, slug } = await params;
@@ -85,7 +128,7 @@ export default async function Page({ params }: { params: any }) {
 
             {item.body && (
                 <div className="prose" style={{ lineHeight: '1.8', color: '#333', margin: '40px 0', fontSize: '1.1rem' }}>
-                    <PortableText value={item.body} />
+                    <PortableText value={item.body} components={portableTextComponents} />
                 </div>
             )}
 
