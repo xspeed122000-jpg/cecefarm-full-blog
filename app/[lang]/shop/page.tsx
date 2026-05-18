@@ -15,7 +15,7 @@ export default function ShopPage() {
             <tbody>
               <tr>
                 <th style={tableHeaderStyle}>Opening hours 営業時間</th>
-                <td style={tableDataStyle}>9:30 AM – 5:00 PM</td>
+                <td style={tableDataStyle}>9:00 AM – 5:00 PM</td>
               </tr>
               <tr>
                 <th style={tableHeaderStyle}>Address 住所</th>
