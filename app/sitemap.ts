@@ -8,7 +8,7 @@ import { client } from "@/sanityClient";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 🟢 1. あなたのサイトの本番ドメイン
-  const baseUrl = 'https://cecefarm.com'; 
+  const baseUrl = 'https://cecefarm.com';
   const languages = ['jp', 'en', 'th'];
 
   // 🟢 2. 静的なページ（各言語のトップページなど）のURLを生成
@@ -21,7 +21,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // 🟢 3. Sanityからすべての記事（postとstaticPage）のスラグと更新日時を取得
   const query = `*[(_type == "post" || _type == "staticPage")] { "slug": slug.current, _updatedAt }`;
-  const items = await client.fetch(query);
+  // useCdn: true の client を使うか、以下のようにリクエストを送ります
+  const items = await client.fetch(query, {}, { cache: 'force-cache', next: { revalidate: 3600 } });
 
   // 🟢 4. 「言語 × 記事スラグ」の全組み合わせのURLを自動生成
   const dynamicPaths = languages.flatMap((lang) =>
