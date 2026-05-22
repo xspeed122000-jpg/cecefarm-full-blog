@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from 'next-sanity';
+import { Metadata } from 'next';
 
 export const dynamicParams = false; // 指定した言語（jp, en, th）以外は受け付けない設定
 
@@ -10,6 +11,26 @@ const client = createClient({
   apiVersion: "2024-01-01",
   useCdn: true,
 });
+
+// 1. トップページ用のメタデータを定義
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  const baseUrl = 'https://cecefarm.com';
+
+  return {
+    title: 'Cece Farm | Rare plants from Chiang Mai', // サイトのタイトル
+    description: 'Welcome to Cece Farm. Discover rare plants from Chiang Mai, Thailand.', // サイトの説明
+    alternates: {
+      canonical: `${baseUrl}/${lang}`,
+      languages: {
+        'ja': `${baseUrl}/jp`,
+        'en': `${baseUrl}/en`,
+        'th': `${baseUrl}/th`,
+        'x-default': `${baseUrl}/en`,
+      },
+    },
+  };
+}
 
 // 静的テキストデータにお問い合わせボタンの文字を追加
 const infoText: Record<string, { title: string; desc: string; hoursLabel: string; hoursValue: string; addressLabel: string; addressValue: string; buttonText: string; contactButtonText: string }> = {
@@ -85,7 +106,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
       {/* 2. Visit Cece Farm & Cafe セクション */}
       <section style={{ padding: '80px 20px', backgroundColor: '#fafafa', borderTop: '1px solid #f0f0f0' }}>
         <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-          
+
           <h2 style={{ fontSize: '1.8rem', letterSpacing: '0.15em', fontWeight: 'bold', color: '#333', marginBottom: '30px' }}>
             {currentInfo.title}
           </h2>
@@ -111,20 +132,20 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
 
           {/* ボタン配置エリア（縦並びでスマートに配置） */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
-            
+
             {/* Googleマップボタン（ボタニカルグリーン・主ボタン） */}
-            <a 
-              href="https://maps.google.com/?q=Cece+Farm+Chiang+Mai" 
-              target="_blank" 
+            <a
+              href="https://maps.google.com/?q=Cece+Farm+Chiang+Mai"
+              target="_blank"
               rel="noopener noreferrer"
-              style={{ 
-                display: 'inline-block', 
-                backgroundColor: '#2C3E35', 
-                color: '#fff', 
-                padding: '15px 45px', 
-                borderRadius: '30px', 
-                textDecoration: 'none', 
-                fontWeight: 'bold', 
+              style={{
+                display: 'inline-block',
+                backgroundColor: '#2C3E35',
+                color: '#fff',
+                padding: '15px 45px',
+                borderRadius: '30px',
+                textDecoration: 'none',
+                fontWeight: 'bold',
                 fontSize: '1rem',
                 boxShadow: '0 4px 10px rgba(44,62,53,0.2)',
                 width: '100%',
@@ -137,14 +158,14 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
             {/* 新設: お問い合わせボタン（ホワイト背景にグリーン枠・副ボタン） */}
             <Link
               href={`/${lang}/contact`}
-              style={{ 
-                display: 'inline-block', 
-                backgroundColor: '#fff', 
-                color: '#2C3E35', 
-                padding: '13px 45px', 
-                borderRadius: '30px', 
-                textDecoration: 'none', 
-                fontWeight: 'bold', 
+              style={{
+                display: 'inline-block',
+                backgroundColor: '#fff',
+                color: '#2C3E35',
+                padding: '13px 45px',
+                borderRadius: '30px',
+                textDecoration: 'none',
+                fontWeight: 'bold',
                 fontSize: '0.95rem',
                 border: '2px solid #2C3E35',
                 boxShadow: '0 4px 10px rgba(0,0,0,0.03)',

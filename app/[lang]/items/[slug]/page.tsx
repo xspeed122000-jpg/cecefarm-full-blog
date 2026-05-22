@@ -13,14 +13,13 @@ export const dynamicParams = false;
 export async function generateMetadata({ params }: { params: Promise<{ lang: string; slug: string }> }): Promise<Metadata> {
     const { lang, slug } = await params;
 
-    // まず指定された言語で取得を試みる
+    // ... (データ取得のロジックはそのまま) ...
     let item = await client.fetch(`
         *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == $lang][0] {
             title, seoTitle, metaDescription
         }
     `, { slug, lang });
 
-    // 📝 もし見つからず、かつ現在の言語が「jp」以外なら、予備として「jp」のデータを取得する
     if (!item && lang !== 'jp') {
         item = await client.fetch(`
             *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == "jp"][0] {
@@ -32,9 +31,21 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     if (!item) return { title: 'Not Found | Cece Farm' };
 
     const displayTitle = item.seoTitle || item.title;
+    const baseUrl = 'https://cecefarm.com';
+
+    // 🌟 ここから下がSEO設定の修正部分です
     return {
         title: displayTitle,
-        description: `Cece Farm | ${displayTitle}. Rare plants from Chiang Mai.`,
+        description: item.metaDescription || `Cece Farm | ${displayTitle}. Rare plants from Chiang Mai.`,
+        alternates: {
+            canonical: `${baseUrl}/${lang}/items/${slug}`,
+            languages: {
+                'ja': `${baseUrl}/jp/items/${slug}`, // 'jp' ではなく一般的な 'ja' を使うのがSEOの標準です
+                'en': `${baseUrl}/en/items/${slug}`,
+                'th': `${baseUrl}/th/items/${slug}`,
+                'x-default': `${baseUrl}/en/items/${slug}`, // デフォルト（または英語）を指定するのがルールです
+            },
+        },
     };
 }
 
