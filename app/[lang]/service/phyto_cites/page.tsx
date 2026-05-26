@@ -2,6 +2,7 @@
 import { client } from '@/sanityClient';
 import { PortableText } from '@portabletext/react';
 import imageUrlBuilder from '@sanity/image-url';
+import { Metadata } from 'next';
 
 // 画像のURLを作るための準備
 const builder = imageUrlBuilder(client);
@@ -29,7 +30,32 @@ const components = {
   },
 };
 
-// ⭕️ 古い「const languages = [...]」は丸ごと消去しました
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+
+  // Sanityからタイトルを取得
+  const page = await client.fetch(
+    `*[_type == "staticPage" && slug.current match "phyto_cites*" && language == $lang][0]`,
+    { lang }
+  );
+
+  const title = page?.title || 'Phyto / CITES Information';
+  const baseUrl = 'https://cecefarm.com';
+  const slugPath = 'service/phyto_cites';
+
+  return {
+    title: `${title} | Cece Farm`,
+    alternates: {
+      canonical: `${baseUrl}/${lang}/${slugPath}`,
+      languages: {
+        'ja': `${baseUrl}/jp/${slugPath}`,
+        'en': `${baseUrl}/en/${slugPath}`,
+        'th': `${baseUrl}/th/${slugPath}`,
+        'x-default': `${baseUrl}/en/${slugPath}`,
+      },
+    },
+  };
+}
 
 export default async function PhytoPage({
   params,
@@ -47,7 +73,7 @@ export default async function PhytoPage({
 
   return (
     <main style={{ padding: '40px 20px', maxWidth: '800px', margin: '0 auto' }}>
-      
+
       {/* ⭕️ 古い「<nav>〜</nav>」のエリアを丸ごと綺麗に消去しました */}
 
       <h1 style={{ fontSize: '1.8rem', color: '#333', marginBottom: '30px' }}>
@@ -59,7 +85,7 @@ export default async function PhytoPage({
       </article>
     </main>
   );
-}export async function generateStaticParams() {
+} export async function generateStaticParams() {
   return [
     { lang: 'jp' },
     { lang: 'en' },
