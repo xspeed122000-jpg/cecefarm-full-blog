@@ -1,0 +1,14 @@
+/phyto_cites              /jp/service/phyto_cites      302
+/posts/:slug              /jp/items/:slug              302
+
+/items/category/plants    /jp/items                    301
+/contact-us               /jp/contact                  301
+/items/page               /jp/items                    301
+
+/about                    /jp/about                    301
+/items                    /jp/items                    301
+/contact                  /jp/contact                  301
+/shop                     /jp/shop                     301
+/service                  /jp/service                  301
+/pizza                     /jp/pizza                    301
+/privacy-policy           /jp/privacy-policy           301
