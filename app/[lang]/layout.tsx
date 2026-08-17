@@ -4,15 +4,7 @@ import TopBar from '@/components/TopBar';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
-import { Inter, Playfair_Display } from 'next/font/google';
 import type { Metadata } from "next";
-
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-playfair'// ★後で簡単に呼び出せるように名前をつけます
-});
-const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' });
 
 export const metadata: Metadata = {
   title: {
@@ -29,10 +21,8 @@ export const metadata: Metadata = {
     apple: "/apple-icon.png",
     shortcut: "/favicon.ico",
   },
-  // Keywordsは現在のSEOでは重要視されないため設定しなくても問題ありません。
 };
 
-// 1. 引数に params を追加し、Promise型として定義します
 export default async function RootLayout({
   children,
   params
@@ -40,7 +30,7 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: Promise<{ lang: string }>;
 }) {
-  // 2. await を使って、中身（lang）を取り出します
+
   const { lang } = await params;
 
   return (
@@ -55,7 +45,7 @@ export default async function RootLayout({
 
       <main style={{
         flex: 1,
-        paddingTop: '120px', // ★ここをロゴやメニューが綺麗に見える高さ（110px〜130px）に微調整してください
+        paddingTop: '120px',
         boxSizing: 'border-box'
       }}>
         {children}

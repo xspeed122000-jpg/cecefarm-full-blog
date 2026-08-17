@@ -1,7 +1,7 @@
 import React from 'react';
 import { client } from "@/sanityClient";
 import { PortableText } from "@portabletext/react";
-import { notFound, redirect } from "next/navigation"; // 📝 redirect を追加
+import { notFound } from "next/navigation";
 import InstagramEmbed from '@/components/InstagramEmbed';
 import ImageGallery from '@/components/ImageGallery';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -9,11 +9,10 @@ import type { Metadata } from 'next';
 
 export const dynamicParams = false;
 
-// 1. SEO用メタデータの生成（予備対策を追加）
 export async function generateMetadata({ params }: { params: Promise<{ lang: string; slug: string }> }): Promise<Metadata> {
     const { lang, slug } = await params;
 
-    // ... (データ取得のロジックはそのまま) ...
+
     let item = await client.fetch(`
         *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == $lang][0] {
             title, seoTitle, metaDescription
@@ -33,7 +32,6 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     const displayTitle = item.seoTitle || item.title;
     const baseUrl = 'https://cecefarm.com';
 
-    // 🌟 ここから下がSEO設定の修正部分です
     return {
         title: displayTitle,
         description: item.metaDescription || `Cece Farm | ${displayTitle}. Rare plants from Chiang Mai.`,
@@ -49,8 +47,6 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     };
 }
 
-// 👇 1. ファイルの上部（Page関数の外など）に、見出しの見た目を定義する「components」を追加します
-// 📄 修正版の portableTextComponents
 
 const portableTextComponents = {
     block: {
@@ -92,13 +88,11 @@ const portableTextComponents = {
     },
 };
 
-// 2. メインのページコンポーネント（自動リダイレクト機能を搭載）
 export default async function Page({ params }: { params: any }) {
     const { lang, slug } = await params;
 
     if (!slug) return notFound();
 
-    // まずは指定された言語（en や th）で記事を探す
     let item = await client.fetch(`
         *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == $lang][0] {
             title, seoTitle, body,
@@ -108,20 +102,6 @@ export default async function Page({ params }: { params: any }) {
         }
     `, { slug, lang });
 
-    // 📝 【ここが核心】もし指定された言語の記事がまだ無くて、それが「jp」以外（en/th）の場合
-    if (!item && lang !== 'jp') {
-        // 日本語版の記事が実在するか確認する
-        const jpItem = await client.fetch(`
-            *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == "jp"][0] { _id }
-        `, { slug });
-
-        // 日本語版が存在するなら、エラーにせず、自動的に日本語版のURLへと「飛ばす」！
-        if (jpItem) {
-            redirect(`/jp/items/${slug}`);
-        }
-    }
-
-    // 日本語版すら存在しない本当の「お探しのページは見つかりません」の時だけ404を出す
     if (!item) return notFound();
 
     return (
@@ -152,24 +132,23 @@ export default async function Page({ params }: { params: any }) {
         </main>
     );
 }
-// 📄 app/[lang]/items/[slug]/page.tsx の最下部を以下に書き換え
 
 export async function generateStaticParams() {
-    const languages = ['jp', 'en', 'th'];
+    const query = `
+        *[
+            (_type == "post" || _type == "staticPage")
+            && defined(slug.current)
+            && language in ["jp", "en", "th"]
+        ] {
+            "slug": slug.current,
+            language
+        }
+    `;
 
-    // 📝 修正：post だけでなく staticPage のスラグも一緒に取得するように変更
-    const query = `*[(_type == "post" || _type == "staticPage")] { "slug": slug.current }`;
     const items = await client.fetch(query);
 
-    // 言語 × スラグ の全組み合わせを生成
-    return languages.flatMap((lang) =>
-        items.map((item: any) => {
-            // 万が一slugが空のデータがあってもエラーにならないための安全ガード
-            if (!item.slug) return [];
-            return {
-                lang: lang,
-                slug: item.slug,
-            };
-        }).flat()
-    );
+    return items.map((item: any) => ({
+        lang: item.language,
+        slug: item.slug,
+    }));
 }
