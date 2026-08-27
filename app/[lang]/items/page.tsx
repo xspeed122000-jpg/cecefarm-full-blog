@@ -1,40 +1,73 @@
-// app/[lang]/items/page.tsx
-import { Suspense } from 'react'; // 1. Suspenseをインポート
+import { Suspense } from 'react';
 import { client } from "@/sanityClient";
 import { Metadata } from 'next';
-import ItemsListClient from './ItemsListClient'; // 次に作るファイル
+import ItemsListClient from './ItemsListClient';
 
-export const dynamicParams = false; // 指定した言語（jp, en, th）以外は受け付けない設定
+export const dynamicParams = false;
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-    const { lang } = await params; // items ページには slug はないので lang だけにする
-    return { title: `Items | Cece Farm (${lang})` };
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ lang: string }>
+}): Promise<Metadata> {
+  const { lang } = await params;
+
+  return {
+    title: `Items | Cece Farm (${lang})`
+  };
 }
 
 async function getItems(lang: string) {
   const query = `*[_type == "post" && language == $lang] | order(publishedAt desc) {
     title,
     "slug": slug.current,
-    category,
-    Category,
-    "categories": categories[]->title, 
+    "categories": categories[]->{
+      _id,
+      title,
+      "slug": slug.current
+    },
     "imageUrl": mainImage.asset->url
   }`;
+
   return await client.fetch(query, { lang });
 }
 
-export default async function ItemsPage({ params }: { params: Promise<{ lang: string }> }) {
+async function getCategories() {
+  const query = `*[_type == "category" && defined(slug.current)] | order(title asc) {
+    _id,
+    title,
+    description,
+    "slug": slug.current
+  }`;
+
+  return await client.fetch(query);
+}
+
+export default async function ItemsPage({
+  params
+}: {
+  params: Promise<{ lang: string }>
+}) {
   const { lang } = await params;
+
   const items = await getItems(lang);
+  const categories = await getCategories();
 
   return (
-    // 2. クライアントコンポーネントを Suspense で囲む
     <Suspense fallback={<div>Loading...</div>}>
-      <ItemsListClient items={items} lang={lang} />
+      <ItemsListClient
+        items={items}
+        categories={categories}
+        lang={lang}
+      />
     </Suspense>
   );
 }
 
 export async function generateStaticParams() {
-  return [{ lang: 'jp' }, { lang: 'en' }, { lang: 'th' }];
+  return [
+    { lang: 'jp' },
+    { lang: 'en' },
+    { lang: 'th' }
+  ];
 }

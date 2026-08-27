@@ -6,6 +6,7 @@ import InstagramEmbed from '@/components/InstagramEmbed';
 import ImageGallery from '@/components/ImageGallery';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 export const dynamicParams = false;
 
@@ -14,10 +15,19 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 
     let item = await client.fetch(`
-        *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == $lang][0] {
-            title, seoTitle, metaDescription
+    *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == $lang][0] {
+        title,
+        seoTitle,
+        body,
+        "imageUrl": mainImage.asset->url,
+        insta_url,
+        "gallery_images": gallery_images[].asset->url,
+        "categories": categories[]->{
+            title,
+            "slug": slug.current
         }
-    `, { slug, lang });
+    }
+`, { slug, lang });
 
     if (!item && lang !== 'jp') {
         item = await client.fetch(`
@@ -94,19 +104,45 @@ export default async function Page({ params }: { params: any }) {
     if (!slug) return notFound();
 
     let item = await client.fetch(`
-        *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == $lang][0] {
-            title, seoTitle, body,
-            "imageUrl": mainImage.asset->url,
-            insta_url,
-            "gallery_images": gallery_images[].asset->url
-        }
-    `, { slug, lang });
+  *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == $lang][0] {
+    title,
+    seoTitle,
+    body,
+    "imageUrl": mainImage.asset->url,
+    insta_url,
+    "gallery_images": gallery_images[].asset->url,
+    "categories": categories[]->{
+      title,
+      "slug": slug.current
+    }
+  }
+`, { slug, lang });
 
     if (!item) return notFound();
 
+    const primaryCategory = item.categories?.[0];
+
     return (
         <main style={{ padding: '40px 20px', maxWidth: '800px', margin: '80px auto', fontFamily: 'sans-serif' }}>
-            <Breadcrumbs items={[{ label: item.title }]} />
+            <Breadcrumbs
+                items={[
+                    {
+                        label: 'Items',
+                        href: `/${lang}/items`,
+                    },
+                    ...(primaryCategory
+                        ? [
+                            {
+                                label: primaryCategory.title,
+                                href: `/${lang}/items/category/${primaryCategory.slug}`,
+                            },
+                        ]
+                        : []),
+                    {
+                        label: item.title,
+                    },
+                ]}
+            />
             <h1 style={{ fontSize: '2.5rem', color: '#2d5a27', marginTop: '20px' }}>{item.title}</h1>
 
             {item.imageUrl && (
@@ -129,6 +165,28 @@ export default async function Page({ params }: { params: any }) {
                     <ImageGallery images={item.gallery_images} />
                 </div>
             )}
+
+            {primaryCategory && (
+                <div
+                    style={{
+                        marginTop: '60px',
+                        paddingTop: '30px',
+                        borderTop: '1px solid #ddd',
+                    }}
+                >
+                    <Link
+                        href={`/${lang}/items/category/${primaryCategory.slug}`}
+                        style={{
+                            color: '#2d5a27',
+                            textDecoration: 'none',
+                            fontWeight: '600',
+                        }}
+                    >
+                        ← {primaryCategory.title} の一覧へ戻る
+                    </Link>
+                </div>
+            )}
+
         </main>
     );
 }
