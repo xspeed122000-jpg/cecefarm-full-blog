@@ -15,18 +15,11 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 
     let item = await client.fetch(`
-    *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == $lang][0] {
-        title,
-        seoTitle,
-        body,
-        "imageUrl": mainImage.asset->url,
-        insta_url,
-        "gallery_images": gallery_images[].asset->url,
-        "categories": categories[]->{
-            title,
-            "slug": slug.current
-        }
-    }
+  *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == $lang][0] {
+    title,
+    seoTitle,
+    metaDescription
+  }
 `, { slug, lang });
 
     if (!item && lang !== 'jp') {
