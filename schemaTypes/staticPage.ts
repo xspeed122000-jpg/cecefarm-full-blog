@@ -1,16 +1,17 @@
-// schemaTypes/staticPage.ts
-import { defineField, defineType } from 'sanity'
+import { defineField, defineType, getPublishedId } from 'sanity'
 
 export default defineType({
     name: 'staticPage',
     title: 'Static Page',
     type: 'document',
+
     fields: [
         defineField({
             name: 'title',
             title: 'Title',
             type: 'string',
         }),
+
         defineField({
             name: 'slug',
             title: 'Slug',
@@ -18,8 +19,40 @@ export default defineType({
             options: {
                 source: 'title',
                 maxLength: 96,
+
+                isUnique: async (slug, context) => {
+                    const { document } = context;
+
+                    if (!slug || !document?.language || !document?._id) {
+                        return true;
+                    }
+
+                    const client = context.getClient({
+                        apiVersion: '2025-02-19',
+                    });
+
+                    const publishedId = getPublishedId(document._id);
+
+                    const query = `
+        !defined(*[
+            _type == "staticPage"
+            && language == $language
+            && slug.current == $slug
+            && _id != $id
+            && _id != $publishedId
+        ][0]._id)
+    `;
+
+                    return await client.fetch(query, {
+                        language: document.language,
+                        slug,
+                        id: document._id,
+                        publishedId,
+                    });
+                },
             },
         }),
+
         defineField({
             name: 'language',
             title: 'Language',
@@ -32,7 +65,7 @@ export default defineType({
                 ],
             },
         }),
-        // 修正後
+
         defineField({
             name: 'body',
             title: 'Body',
@@ -41,7 +74,7 @@ export default defineType({
                 { type: 'block' },
                 { type: 'image' },
                 { type: 'table' },
-                { type: 'customHtml' }, // ★名前だけで呼び出せるようになります
+                { type: 'customHtml' },
             ],
         }),
     ],
