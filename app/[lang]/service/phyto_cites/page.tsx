@@ -1,34 +1,7 @@
-// 1. 基本設定
 import { client } from '@/sanityClient';
 import { PortableText } from '@portabletext/react';
-import imageUrlBuilder from '@sanity/image-url';
 import { Metadata } from 'next';
-
-// 画像のURLを作るための準備
-const builder = imageUrlBuilder(client);
-function urlFor(source: any) {
-  return builder.image(source);
-}
-
-// PortableTextの画像表示ルール
-const components = {
-  types: {
-    image: ({ value }: any) => {
-      return (
-        <div style={{ margin: '20px 0', textAlign: 'center' }}>
-          <img
-            src={urlFor(value).url()}
-            alt={value.alt || 'Content Image'}
-            style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
-          />
-          {value.caption && (
-            <p style={{ fontSize: '14px', color: '#666' }}>{value.caption}</p>
-          )}
-        </div>
-      );
-    },
-  },
-};
+import { portableTextComponents } from '@/components/PortableTextComponents';
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
@@ -64,7 +37,6 @@ export default async function PhytoPage({
 }) {
   const { lang } = await params;
 
-  // Sanityからデータを取得
   // slug.current match "phyto_cites*" は、slugが "phyto_cites" で始まるものを探します
   const query = `*[_type == "staticPage" && slug.current match "phyto_cites*" && language == $lang][0]`;
   const page = await client.fetch(query, { lang });
@@ -81,7 +53,10 @@ export default async function PhytoPage({
       </h1>
 
       <article style={{ lineHeight: '1.8', color: '#444' }}>
-        <PortableText value={page.body} components={components} />
+        <PortableText
+          value={page.body}
+          components={portableTextComponents}
+        />
       </article>
     </main>
   );

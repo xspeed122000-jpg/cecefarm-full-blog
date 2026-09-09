@@ -1,5 +1,6 @@
 import { client } from "@/sanityClient";
 import { PortableText } from "@portabletext/react";
+import { portableTextComponents } from "@/components/PortableTextComponents";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -79,7 +80,10 @@ export default async function TermsPage({
                     fontSize: "1rem",
                 }}
             >
-                <PortableText value={page.body} />
+                <PortableText
+                    value={page.body}
+                    components={portableTextComponents}
+                />
             </div>
         </main>
     );

@@ -1,4 +1,3 @@
-import React from 'react';
 import { client } from "@/sanityClient";
 import { PortableText } from "@portabletext/react";
 import { notFound } from "next/navigation";
@@ -7,6 +6,7 @@ import ImageGallery from '@/components/ImageGallery';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { portableTextComponents } from "@/components/PortableTextComponents";
 
 export const dynamicParams = false;
 
@@ -49,47 +49,6 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
         },
     };
 }
-
-
-const portableTextComponents = {
-    block: {
-        // 🟢 H2（大見出し）
-        h2: ({ children }: any) => (
-            <h2 style={{
-                fontSize: '1.8rem',
-                color: '#2d5a27',
-                borderLeft: '5px solid #2d5a27',
-                paddingLeft: '12px',
-                marginTop: '45px',
-                marginBottom: '20px',
-                fontWeight: 'bold',
-                lineHeight: '1.4'
-            }}>
-                {children}
-            </h2>
-        ),
-        // 🔵 H3（中見出し）
-        h3: ({ children }: any) => (
-            <h3 style={{
-                fontSize: '1.4rem',
-                color: '#333',
-                borderBottom: '1px solid #ddd',
-                paddingBottom: '8px',
-                marginTop: '35px',
-                marginBottom: '15px',
-                fontWeight: 'bold',
-                lineHeight: '1.4'
-            }}>
-                {children}
-            </h3>
-        ),
-        // ⚪️ 普通の段落（Pタグ）の余白設定
-        normal: ({ children }: any) => (
-            // 👇 REGULAR_TEXT_STYLE を消去し、スッキリさせました
-            <p style={{ marginBottom: '24px' }}>{children}</p>
-        ),
-    },
-};
 
 export default async function Page({ params }: { params: any }) {
     const { lang, slug } = await params;
