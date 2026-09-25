@@ -74,6 +74,27 @@ export default async function Page({ params }: { params: any }) {
 
     const primaryCategory = item.categories?.[0];
 
+    const priceNotice = {
+        jp: {
+            title: '価格について',
+            text: '価格は下のInstagram投稿内に表示しています。植物は個体ごとにサイズ・状態が異なるため、同じ種類でも価格が変わる場合があります。',
+            note: '表示価格は投稿内の個体に対する価格です。売却後は同じ種類でも価格が異なる場合があります。',
+        },
+        en: {
+            title: 'About the price',
+            text: 'The price is shown in the Instagram post below. Prices may vary between individual plants depending on size and condition.',
+            note: 'The displayed price applies to the individual plant shown in the post. After it is sold, another plant of the same variety may have a different price.',
+        },
+        th: {
+            title: 'เกี่ยวกับราคา',
+            text: 'ราคาจะแสดงอยู่ในโพสต์ Instagram ด้านล่าง ราคาอาจแตกต่างกันในแต่ละต้น ขึ้นอยู่กับขนาดและสภาพของต้นไม้',
+            note: 'ราคาที่แสดงเป็นราคาของต้นไม้ต้นที่อยู่ในโพสต์นั้น หลังจากขายแล้ว ต้นอื่นในสายพันธุ์เดียวกันอาจมีราคาแตกต่างกัน',
+        },
+    };
+
+    const notice =
+        priceNotice[lang as keyof typeof priceNotice] || priceNotice.en;
+
     return (
         <main style={{ padding: '40px 20px', maxWidth: '800px', margin: '80px auto', fontFamily: 'sans-serif' }}>
             <Breadcrumbs
@@ -102,7 +123,54 @@ export default async function Page({ params }: { params: any }) {
             )}
 
             {item.insta_url && (
-                <div style={{ margin: '40px 0' }}><InstagramEmbed url={item.insta_url} /></div>
+                <div style={{ margin: '40px 0' }}>
+
+                    <div
+                        style={{
+                            background: '#f4f8f3',
+                            border: '1px solid #d8e5d5',
+                            borderLeft: '5px solid #2d5a27',
+                            borderRadius: '8px',
+                            padding: '16px 18px',
+                            marginBottom: '24px',
+                        }}
+                    >
+                        <div
+                            style={{
+                                fontWeight: '700',
+                                color: '#2d5a27',
+                                marginBottom: '8px',
+                                fontSize: '1.05rem',
+                            }}
+                        >
+                            {notice.title}
+                        </div>
+
+                        <p
+                            style={{
+                                margin: 0,
+                                lineHeight: '1.7',
+                                color: '#333',
+                            }}
+                        >
+                            {notice.text}
+                        </p>
+                    </div>
+
+                    <InstagramEmbed url={item.insta_url} />
+
+                    <p
+                        style={{
+                            marginTop: '14px',
+                            fontSize: '0.9rem',
+                            lineHeight: '1.6',
+                            color: '#666',
+                        }}
+                    >
+                        {notice.note}
+                    </p>
+
+                </div>
             )}
 
             {item.body && (
