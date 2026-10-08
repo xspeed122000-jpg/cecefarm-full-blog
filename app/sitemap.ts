@@ -1,37 +1,69 @@
-// 📄 app/sitemap.ts
+// app/sitemap.ts
 
-// 👇 静的エクスポート（output: 'export'）に対応するための設定を追記
-export const dynamic = 'force-static';
-
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from "next";
 import { client } from "@/sanityClient";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // 🟢 1. あなたのサイトの本番ドメイン
-  const baseUrl = 'https://cecefarm.com';
-  const languages = ['jp', 'en', 'th'];
+export const dynamic = "force-static";
 
-  // 🟢 2. 静的なページ（各言語のトップページなど）のURLを生成
-  const staticPaths = languages.flatMap((lang) => [
+const baseUrl = "https://cecefarm.com";
+const languages = ["jp", "en", "th"] as const;
+
+type SitemapPost = {
+  slug: string;
+  language?: string | null;
+  contentType?: string | null;
+  _updatedAt?: string;
+};
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // 1. トップページとJournal一覧
+  const staticPaths: MetadataRoute.Sitemap = languages.flatMap((lang) => [
     {
       url: `${baseUrl}/${lang}`,
       lastModified: new Date(),
-    }
+    },
+    {
+      url: `${baseUrl}/${lang}/journal`,
+      lastModified: new Date(),
+    },
   ]);
 
-  // 🟢 3. Sanityからすべての記事（postとstaticPage）のスラグと更新日時を取得
-  const query = `*[(_type == "post" || _type == "staticPage")] { "slug": slug.current, _updatedAt }`;
-  // useCdn: true の client を使うか、以下のようにリクエストを送ります
-  const items = await client.fetch(query, {}, { cache: 'force-cache', next: { revalidate: 3600 } });
+  // 2. Sanityから公開済みの投稿を取得
+  const query = `*[
+    _type == "post" &&
+    defined(slug.current)
+  ] {
+    "slug": slug.current,
+    language,
+    contentType,
+    _updatedAt
+  }`;
 
-  // 🟢 4. 「言語 × 記事スラグ」の全組み合わせのURLを自動生成
-  const dynamicPaths = languages.flatMap((lang) =>
-    items.map((item: any) => ({
-      url: `${baseUrl}/${lang}/items/${item.slug}`,
-      lastModified: item._updatedAt ? new Date(item._updatedAt) : new Date(),
-    }))
+  const posts = await client.fetch<SitemapPost[]>(
+    query,
+    {},
+    { next: { revalidate: 3600 } }
   );
 
-  // すべて合体させて一つのサイトマップとして出力
+  // 3. 投稿をItemsとJournalに分ける
+  const dynamicPaths: MetadataRoute.Sitemap = posts.flatMap((post) => {
+    const section =
+      post.contentType === "journal" ? "journal" : "items";
+
+    // 言語が設定されている記事は、その言語のURLのみ生成
+    // 古いItemsで言語が未設定の場合は、従来どおり3言語で生成
+    const targetLanguages =
+      post.language && languages.some((lang) => lang === post.language)
+        ? [post.language]
+        : [...languages];
+
+    return targetLanguages.map((lang) => ({
+      url: `${baseUrl}/${lang}/${section}/${post.slug}`,
+      lastModified: post._updatedAt
+        ? new Date(post._updatedAt)
+        : new Date(),
+    }));
+  });
+
   return [...staticPaths, ...dynamicPaths];
 }
