@@ -32,6 +32,33 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   };
 }
 
+type JournalPost = {
+  _id: string;
+  title: string;
+  slug: string;
+  imageUrl?: string;
+  publishedAt?: string;
+};
+
+async function getLatestJournalPosts(lang: string): Promise<JournalPost[]> {
+  const query = `
+    *[
+      _type == "post"
+      && contentType == "journal"
+      && language == $lang
+      && defined(slug.current)
+    ] | order(publishedAt desc) [0...3] {
+      _id,
+      title,
+      "slug": slug.current,
+      "imageUrl": mainImage.asset->url,
+      publishedAt
+    }
+  `;
+
+  return await client.fetch(query, { lang });
+}
+
 // 静的テキストデータにお問い合わせボタンの文字を追加
 const infoText: Record<string, { title: string; desc: string; hoursLabel: string; hoursValue: string; addressLabel: string; addressValue: string; buttonText: string; contactButtonText: string }> = {
   jp: {
@@ -84,6 +111,7 @@ function ServiceItem({ image, title, subTitle, text, href }: any) {
 export default async function Page({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   const currentInfo = infoText[lang] || infoText['en'];
+  const latestJournalPosts = await getLatestJournalPosts(lang);
 
   return (
     <main>
@@ -102,6 +130,148 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
           <ServiceItem image="/home/home_service_03.webp" title="Pizza & Coffee" subTitle="Cafe & Kitchen" text={`Enjoy authentic pizzas crafted by professional chefs and premium coffee.\n\nプロの職人が焼き上げる本格ピザと、厳選された豆を使用したこだわりのコーヒー。`} href={`/${lang}/pizza`} />
         </div>
       </section>
+
+      {/* Latest Journal セクション */}
+      {latestJournalPosts.length > 0 && (
+        <section
+          style={{
+            padding: '80px 20px',
+            backgroundColor: '#f7faf8',
+            borderTop: '1px solid #eee',
+          }}
+        >
+          <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '45px' }}>
+              <h2
+                style={{
+                  fontSize: '1.8rem',
+                  letterSpacing: '0.1em',
+                  color: '#2C3E35',
+                  marginBottom: '15px',
+                }}
+              >
+                LATEST JOURNAL
+              </h2>
+
+              <p style={{ color: '#666', lineHeight: 1.8 }}>
+                {lang === 'jp'
+                  ? 'Cece Farmの新着情報や、植物・国際配送に関する記事をご紹介します。'
+                  : lang === 'th'
+                    ? 'ข่าวสารและบทความเกี่ยวกับพืชและการจัดส่งระหว่างประเทศจาก Cece Farm'
+                    : 'News and stories about plants and international shipping from Cece Farm.'}
+              </p>
+            </div>
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '30px',
+              }}
+            >
+              {latestJournalPosts.map((post) => (
+                <Link
+                  key={post._id}
+                  href={`/${lang}/journal/${post.slug}`}
+                  style={{ textDecoration: 'none', color: 'inherit' }}
+                >
+                  <article
+                    style={{
+                      backgroundColor: '#fff',
+                      borderRadius: '12px',
+                      overflow: 'hidden',
+                      boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
+                      height: '100%',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '100%',
+                        height: '220px',
+                        backgroundColor: '#f0f0f0',
+                      }}
+                    >
+                      {post.imageUrl ? (
+                        <img
+                          src={post.imageUrl}
+                          alt={post.title}
+                          loading="lazy"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#aaa',
+                          }}
+                        >
+                          No Image
+                        </div>
+                      )}
+                    </div>
+
+                    <div style={{ padding: '22px' }}>
+                      <h3
+                        style={{
+                          fontSize: '1.2rem',
+                          lineHeight: 1.5,
+                          color: '#2C3E35',
+                          margin: '0 0 12px',
+                        }}
+                      >
+                        {post.title}
+                      </h3>
+
+                      {post.publishedAt && (
+                        <time
+                          style={{ fontSize: '0.85rem', color: '#888' }}
+                        >
+                          {new Date(post.publishedAt).toLocaleDateString(
+                            lang === 'jp'
+                              ? 'ja-JP'
+                              : lang === 'th'
+                                ? 'th-TH'
+                                : 'en-US'
+                          )}
+                        </time>
+                      )}
+                    </div>
+                  </article>
+                </Link>
+              ))}
+            </div>
+
+            <div style={{ textAlign: 'center', marginTop: '45px' }}>
+              <Link
+                href={`/${lang}/journal`}
+                style={{
+                  display: 'inline-block',
+                  padding: '14px 35px',
+                  border: '2px solid #2C3E35',
+                  borderRadius: '30px',
+                  color: '#2C3E35',
+                  textDecoration: 'none',
+                  fontWeight: 'bold',
+                  fontSize: '0.95rem',
+                }}
+              >
+                {lang === 'jp'
+                  ? 'すべての記事を見る →'
+                  : lang === 'th'
+                    ? 'ดูบทความทั้งหมด →'
+                    : 'View All Articles →'}
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 2. Visit Cece Farm & Cafe セクション */}
       <section style={{ padding: '80px 20px', backgroundColor: '#fafafa', borderTop: '1px solid #f0f0f0' }}>

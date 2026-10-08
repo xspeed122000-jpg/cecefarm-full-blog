@@ -7,6 +7,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { portableTextComponents } from "@/components/PortableTextComponents";
+import ServiceCTA from '@/components/ServiceCTA';
 
 export const dynamicParams = false;
 
@@ -15,17 +16,33 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 
     let item = await client.fetch(`
-  *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == $lang][0] {
-    title,
-    seoTitle,
-    metaDescription
+  *[
+    (
+      (_type == "post" && contentType != "journal")
+      || _type == "staticPage"
+    )
+    && slug.current == $slug
+    && language == $lang
+ ][0] {
+  _id,
+  title,
+  seoTitle,
+  body,
+  ctaLinks,
+  "imageUrl": mainImage.asset->url,
+    insta_url,
+    "gallery_images": gallery_images[].asset->url,
+    "categories": categories[]->{
+      title,
+      "slug": slug.current
+    }
   }
 `, { slug, lang });
 
     if (!item && lang !== 'jp') {
         item = await client.fetch(`
             *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == "jp"][0] {
-                title, seoTitle, metaDescription
+                title, seoTitle, description
             }
         `, { slug });
     }
@@ -37,7 +54,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
     return {
         title: displayTitle,
-        description: item.metaDescription || `Cece Farm | ${displayTitle}. Rare plants from Chiang Mai.`,
+        description: item.description || `Cece Farm | ${displayTitle}. Rare plants from Chiang Mai.`,
         alternates: {
             canonical: `${baseUrl}/${lang}/items/${slug}`,
             languages: {
@@ -56,10 +73,19 @@ export default async function Page({ params }: { params: any }) {
     if (!slug) return notFound();
 
     let item = await client.fetch(`
-  *[(_type == "post" || _type == "staticPage") && slug.current == $slug && language == $lang][0] {
+  *[
+    (
+      (_type == "post" && contentType != "journal")
+      || _type == "staticPage"
+    )
+    && slug.current == $slug
+    && language == $lang
+  ][0] {
+    _id,
     title,
     seoTitle,
     body,
+    ctaLinks,
     "imageUrl": mainImage.asset->url,
     insta_url,
     "gallery_images": gallery_images[].asset->url,
@@ -71,6 +97,27 @@ export default async function Page({ params }: { params: any }) {
 `, { slug, lang });
 
     if (!item) return notFound();
+
+    const relatedArticles = await client.fetch(
+        `
+    *[
+      _type == "post"
+      && contentType == "journal"
+      && language == $lang
+      && references($itemId)
+      && defined(slug.current)
+    ] | order(publishedAt desc) [0...6] {
+      _id,
+      title,
+      "slug": slug.current,
+      "imageUrl": mainImage.asset->url
+    }
+  `,
+        {
+            lang,
+            itemId: item._id,
+        }
+    );
 
     const primaryCategory = item.categories?.[0];
 
@@ -185,6 +232,107 @@ export default async function Page({ params }: { params: any }) {
                     <ImageGallery images={item.gallery_images} />
                 </div>
             )}
+
+            {relatedArticles.length > 0 && (
+                <section style={{ margin: "70px 0 50px" }}>
+                    <h2
+                        style={{
+                            fontSize: "1.8rem",
+                            borderLeft: "5px solid #2d5a27",
+                            paddingLeft: "15px",
+                            marginBottom: "30px",
+                            color: "#2C3E35",
+                        }}
+                    >
+                        {lang === "jp"
+                            ? "関連記事"
+                            : lang === "th"
+                                ? "บทความที่เกี่ยวข้อง"
+                                : "Related Articles"}
+                    </h2>
+
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                            gap: "25px",
+                        }}
+                    >
+                        {relatedArticles.map((article: any) => (
+                            <Link
+                                key={article._id}
+                                href={`/${lang}/journal/${article.slug}`}
+                                style={{
+                                    textDecoration: "none",
+                                    color: "inherit",
+                                }}
+                            >
+                                <article
+                                    style={{
+                                        borderRadius: "12px",
+                                        overflow: "hidden",
+                                        boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
+                                        backgroundColor: "#fff",
+                                        height: "100%",
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            width: "100%",
+                                            height: "220px",
+                                            backgroundColor: "#f9f9f9",
+                                        }}
+                                    >
+                                        {article.imageUrl ? (
+                                            <img
+                                                src={article.imageUrl}
+                                                alt={article.title}
+                                                style={{
+                                                    width: "100%",
+                                                    height: "100%",
+                                                    objectFit: "cover",
+                                                }}
+                                            />
+                                        ) : (
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    height: "100%",
+                                                    color: "#ccc",
+                                                }}
+                                            >
+                                                No Image
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div
+                                        style={{
+                                            padding: "20px",
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        <h3
+                                            style={{
+                                                margin: 0,
+                                                fontSize: "1.1rem",
+                                                lineHeight: 1.5,
+                                                color: "#2C3E35",
+                                            }}
+                                        >
+                                            {article.title}
+                                        </h3>
+                                    </div>
+                                </article>
+                            </Link>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            <ServiceCTA lang={lang} ctaLinks={item.ctaLinks} />
 
             {primaryCategory && (
                 <div

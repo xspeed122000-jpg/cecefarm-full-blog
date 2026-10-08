@@ -21,6 +21,21 @@ export default defineType({
     }),
 
     defineField({
+      name: 'contentType',
+      title: 'Content Type',
+      type: 'string',
+      description: 'Item（植物）または Journal（記事）を選択してください',
+      options: {
+        list: [
+          { title: 'Item', value: 'item' },
+          { title: 'Journal', value: 'journal' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'item',
+    }),
+
+    defineField({
       name: 'isPopular',
       title: 'Popular Article (Display on Top Page)',
       type: 'boolean',
@@ -137,17 +152,60 @@ export default defineType({
         layout: 'grid',
       },
     }),
-  ],
+
+    // Journal記事に表示する関連植物
+    defineField({
+      name: 'relatedItems',
+      title: 'Related Items',
+      type: 'array',
+      description: 'Journal記事に関連して表示する植物を選択してください',
+      of: [
+        {
+          type: 'reference',
+          to: [{ type: 'post' }],
+          options: {
+            filter: '!defined(contentType) || contentType == "item"',
+          },
+        },
+      ],
+    }),
+
+    defineField({
+      name: 'ctaLinks',
+      title: 'CTA Links',
+      type: 'array',
+      description: 'Journal記事の下部に表示する案内を選択してください（複数選択可）',
+      of: [{ type: 'string' }],
+      options: {
+        list: [
+          {
+            title: 'International Shipping',
+            value: 'international-shipping',
+          },
+          {
+            title: 'Taking Plants Home / Phyto & CITES',
+            value: 'taking-plants-home',
+          },
+        ],
+      },
+    }),
+
+  ], // ← fields はここで終了
 
   preview: {
     select: {
       title: 'title',
-      author: 'author.name',
+      language: 'language',
+      contentType: 'contentType',
       media: 'mainImage',
     },
-    prepare(selection) {
-      const { author } = selection
-      return { ...selection, subtitle: author && `by ${author}` }
+    prepare({ title, language, contentType, media }) {
+      return {
+        title,
+        subtitle: `${language?.toUpperCase() || ''} · ${contentType === 'journal' ? 'Journal' : 'Item'
+          }`,
+        media,
+      }
     },
   },
 })

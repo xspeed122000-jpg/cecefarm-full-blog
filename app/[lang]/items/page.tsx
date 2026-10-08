@@ -18,7 +18,11 @@ export async function generateMetadata({
 }
 
 async function getItems(lang: string) {
-  const query = `*[_type == "post" && language == $lang] | order(publishedAt desc) {
+const query = `*[
+  _type == "post"
+  && language == $lang
+  && contentType != "journal"
+] | order(publishedAt desc) {
     title,
     "slug": slug.current,
     "categories": categories[]->{

@@ -103,8 +103,8 @@ export default function Header({ lang }: HeaderProps) {
                 <Link href="/th/service/phyto_cites" className="dropdown-item">Phyto / CITES (TH)</Link>
               </div>
             </div>
-            <Link href={langPath('/about')} style={navLinkStyle}>About</Link>
             <Link href={langPath('/items')} style={navLinkStyle}>Items</Link>
+            <Link href={langPath('/journal')} style={navLinkStyle}>Journal</Link>
             <Link href={langPath('/pizza')} style={navLinkStyle}>Pizza</Link>
             <Link href={langPath('/shop')} style={navLinkStyle}>Shop Info</Link>
             <Link href={langPath('/contact')} style={navLinkStyle}>Contact</Link>
@@ -141,8 +141,8 @@ export default function Header({ lang }: HeaderProps) {
             <Link href="/th/service/phyto_cites" onClick={() => setIsMenuOpen(false)} style={{ ...mobileNavLinkStyle, fontSize: '0.9rem', border: 'none' }}>Phyto / CITES (TH)</Link>
           </div>
 
-          <Link href={langPath('/about')} onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>About</Link>
           <Link href={langPath('/items')} onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Items</Link>
+          <Link href={langPath('/journal')} onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Journal</Link>
           <Link href={langPath('/pizza')} onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Pizza</Link>
           <Link href={langPath('/shop')} onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Shop Info</Link>
           <Link href={langPath('/contact')} onClick={() => setIsMenuOpen(false)} style={mobileNavLinkStyle}>Contact</Link>
