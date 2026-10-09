@@ -362,7 +362,10 @@ export default async function Page({ params }: { params: any }) {
 export async function generateStaticParams() {
     const query = `
         *[
-            (_type == "post" || _type == "staticPage")
+            (
+                (_type == "post" && contentType != "journal")
+                || _type == "staticPage"
+            )
             && defined(slug.current)
             && language in ["jp", "en", "th"]
         ] {
