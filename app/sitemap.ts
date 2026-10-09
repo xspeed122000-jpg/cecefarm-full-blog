@@ -17,16 +17,47 @@ type SitemapPost = {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 1. トップページとJournal一覧
-  const staticPaths: MetadataRoute.Sitemap = languages.flatMap((lang) => [
-    {
+  const staticPaths: MetadataRoute.Sitemap = [
+    // 各言語のトップページ
+    ...languages.map((lang) => ({
       url: `${baseUrl}/${lang}`,
       lastModified: new Date(),
-    },
-    {
+    })),
+
+    // Journal一覧
+    ...languages.map((lang) => ({
       url: `${baseUrl}/${lang}/journal`,
       lastModified: new Date(),
+    })),
+
+    // Items一覧
+    ...languages.map((lang) => ({
+      url: `${baseUrl}/${lang}/items`,
+      lastModified: new Date(),
+    })),
+
+    // 植物検疫・国際配送
+    ...languages.map((lang) => ({
+      url: `${baseUrl}/${lang}/service/phyto_cites`,
+      lastModified: new Date(),
+    })),
+
+    // 販売・配送規約（タイ語は英語版を使用）
+    {
+      url: `${baseUrl}/jp/terms`,
+      lastModified: new Date(),
     },
-  ]);
+    {
+      url: `${baseUrl}/en/terms`,
+      lastModified: new Date(),
+    },
+
+    // プライバシーポリシー
+    ...languages.map((lang) => ({
+      url: `${baseUrl}/${lang}/privacy-policy`,
+      lastModified: new Date(),
+    })),
+  ];
 
   // 2. Sanityから公開済みの投稿を取得
   const query = `*[
