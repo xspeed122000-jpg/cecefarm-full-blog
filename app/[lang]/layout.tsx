@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import type { Metadata } from "next";
+import { client } from '@/sanityClient';
 
 export const metadata: Metadata = {
   title: {
@@ -33,11 +34,54 @@ export default async function RootLayout({
 
   const { lang } = await params;
 
+  // Journal記事の翻訳先URLをビルド時に取得
+  const journalPosts = await client.fetch(`
+    *[
+      _type == "post" &&
+      contentType == "journal" &&
+      defined(slug.current)
+    ] {
+      language,
+      "slug": slug.current,
+      "translations": journalTranslations[]->{
+        language,
+        "slug": slug.current
+      }
+    }
+  `);
+
+  const journalTranslationMap: Record<
+    string,
+    Record<string, string>
+  > = {};
+
+  for (const post of journalPosts) {
+    if (!post.language || !post.slug) continue;
+
+    const currentPath = `/${post.language}/journal/${post.slug}`;
+
+    const paths: Record<string, string> = {
+      [post.language]: currentPath,
+    };
+
+    for (const translation of post.translations || []) {
+      if (translation?.language && translation?.slug) {
+        paths[translation.language] =
+          `/${translation.language}/journal/${translation.slug}`;
+      }
+    }
+
+    journalTranslationMap[currentPath] = paths;
+  }
+
   return (
     <>
       {/* 上部固定エリア（トップバー + ヘッダー） */}
       <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 1000 }}>
-        <TopBar lang={lang} />
+        <TopBar
+          lang={lang}
+          journalTranslationMap={journalTranslationMap}
+        />
         <Suspense fallback={<div style={{ height: '60px', backgroundColor: '#fff' }} />}>
           <Header lang={lang} />
         </Suspense>

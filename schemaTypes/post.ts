@@ -170,6 +170,26 @@ export default defineType({
       ],
     }),
 
+    // Journal記事の翻訳版を関連付ける
+    defineField({
+      name: 'journalTranslations',
+      title: 'Journal Translations',
+      type: 'array',
+      description:
+        'この記事に対応する他言語のJournal記事を選択してください。',
+      hidden: ({ document }) => document?.contentType !== 'journal',
+      of: [
+        {
+          type: 'reference',
+          to: [{ type: 'post' }],
+          options: {
+            filter: 'contentType == "journal"',
+          },
+        },
+      ],
+      validation: (Rule) => Rule.unique(),
+    }),
+
     defineField({
       name: 'ctaLinks',
       title: 'CTA Links',
