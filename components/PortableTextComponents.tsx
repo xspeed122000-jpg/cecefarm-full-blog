@@ -81,5 +81,74 @@ export const portableTextComponents = {
                 )}
             </div>
         ),
+
+        // Sanity Table
+        table: ({ value }: any) => {
+            const rows = value.rows || [];
+
+            if (rows.length === 0) return null;
+
+            return (
+                <div
+                    style={{
+                        overflowX: 'auto',
+                        margin: '30px 0',
+                    }}
+                >
+                    <table
+                        style={{
+                            width: '100%',
+                            borderCollapse: 'collapse',
+                            fontSize: '0.95rem',
+                            lineHeight: '1.6',
+                        }}
+                    >
+                        <thead>
+                            <tr>
+                                {rows[0].cells.map((cell: string, index: number) => (
+                                    <th
+                                        key={index}
+                                        style={{
+                                            padding: '12px',
+                                            border: '1px solid #ddd',
+                                            backgroundColor: '#f0f5ef',
+                                            color: '#2d5a27',
+                                            textAlign: 'left',
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        {cell}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {rows.slice(1).map((row: any, rowIndex: number) => (
+                                <tr key={rowIndex}>
+                                    {row.cells.map((cell: string, cellIndex: number) => (
+                                        <td
+                                            key={cellIndex}
+                                            style={{
+                                                padding: '12px',
+                                                border: '1px solid #ddd',
+                                                backgroundColor:
+                                                    rowIndex % 2 === 0 ? '#fff' : '#fafafa',
+                                                fontWeight:
+                                                    rowIndex === rows.length - 2
+                                                        ? 'bold'
+                                                        : 'normal',
+                                            }}
+                                        >
+                                            {cell}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        },
     },
 };
